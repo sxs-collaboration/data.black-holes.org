@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>SXS Data Server</title>
+        <link rel="stylesheet" type="text/css" href="/data/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script>
+         $(function() {
+             var body = "Error page%0D%0A  <" + encodeURIComponent(window.location)
+                      + ">%0D%0Afrom referrer%0D%0A  <" + encodeURIComponent(document.referrer) + ">";
+             if(window.location.search) {
+                 body += "%0D%0ASearch string: " + window.location.search;
+             }
+             $("a#email").attr("href", "mailto:questions@black-holes.org?subject=Gateway timeout on data.black-holes.org"
+                                     + "&body=" + body);
+         });
+        </script>
+    </head>
+    <body>
+        <div class="container">
+            <div class="page-header text-center">
+                <h1>SXS Data Server</h1>
+                <h2>Gateway timeout</h2>
+            </div>
+            <div  style="width: 60%; margin: 0 auto;">
+                <p>
+                    The server took too long to reply.  This may be because the server is currently
+                    overworked and you are requesting a very large file.  Please wait for a while
+                    and try again.
+                </p>
+                <p>
+                    If you believe this is an error, please
+                    email this page's URL along with any other information that may be relevant to
+                    <a href="mailto:questions@black-holes.org?subject=File not found on data.black-holes.org"
+                       id="email">questions@black-holes.org</a>.
+                    Otherwise, you may wish to visit the
+                    <a href="/data/waveforms/catalog.html">waveform catalog</a> or this site's
+                    <a href="https://www.black-holes.org">home page</a>.
+                </p>
+            </div>
+            <hr>
+        </div>
+    </body>
+</html>

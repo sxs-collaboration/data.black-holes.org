@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>SXS Data Server</title>
+        <link rel="stylesheet" href="/data/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_SVG" type="text/javascript"></script>
+        <script src="/data/js/mathjax.js"></script>
+        <script>
+         var loc = window.location.pathname;
+         var dir = loc.substring(0, loc.lastIndexOf('/'));
+         var json_file = dir + '/index.json'
+         $(function() {
+             $.getJSON(json_file, function(json) {
+                 $("#title").text(json.title);
+                 $("#subtitle").text(json.subtitle);
+                 $("#header").after(json.content);
+             })
+              .fail(function (qXHR, textStatus, errorThrown) {  window.location = json_file; });
+         });
+        </script>
+    </head>
+    <body>
+        <div class="container">
+            <div id="header" class="page-header text-center">
+                <h1 id="title"></h1>
+                <h2 id="subtitle"></h2>
+            </div>
+            <hr>
+        </div>
+    </body>
+</html>

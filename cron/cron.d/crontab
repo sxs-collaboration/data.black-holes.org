@@ -1,0 +1,45 @@
+MAILTO=boyle@astro.cornell.edu
+#MAILTO=server-admin@black-holes.org
+MAILFROM=cron@black-holes.org
+
+## NOTE: This crontab file has a slightly different format than most: after the time specification,
+## you also need to list the user under which the command will be executed.
+
+## NOTE: This `cron.d` directory and its contents must be owned by root, and not readable or
+## writable by group or other.
+
+
+##########
+## root ##
+##########
+
+# Hack to make sure permissions remain valid despite docker's best efforts
+*/30 * * * * root /web/servers/cron/scripts/root/fix_permissions.sh
+
+# Renew SSL certificates
+# Note that the certbot documentation recommends running twice per day at randomly chosen minutes.
+42 06,18 * * * root /web/servers/cron/scripts/root/update_ssl_certificates.sh >> /var/log/cron.log
+
+# Back up all the server files
+30 01 * * * root /web/servers/cron/scripts/root/backup.sh
+
+
+#########
+## web ##
+#########
+
+# Update doxygen files hourly (coordinates with cronjob on sxs-test)
+15 * * * * web rsync -crz --delete --delay-updates spectest@sxs-test.tapir.caltech.edu:~/spec-doxygen/Doc/Doxygen/html/ /web/repos/spec_doxygen/
+
+# A little while after the git cron job below, make sure all the JSON files are up to date
+10 2 * * * web python /web/servers/cron/scripts/web/refresh_waveform_catalog_json.py
+
+
+#########
+## git ##
+#########
+
+# Just try to update and get all the annex data; don't allow the `find` process to run all day
+1 2 * * * git cd /sxs-annex/SimulationAnnex.git && timeout --kill-after=1m 59m /web/servers/cron/scripts/git/git_annex_get_all_data.sh
+1 1 * * * git cd /nfs-data/Annex/SurrogateModeling.git && timeout --kill-after=1m 59m /web/servers/cron/scripts/git/git_annex_get_all_data.sh
+

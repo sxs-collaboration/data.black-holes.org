@@ -1,0 +1,19 @@
+version: '2'
+
+services:
+  letsencrypt:
+    build: build
+    volumes:
+      - ./certs:/etc/letsencrypt
+      - ./www:/var/www/letsencrypt
+
+    # Note that the entrypoint is `certbot`, so the `command` should just be arguments to that executable.
+
+    # # First-time command:
+    # command: ["certonly", "--webroot", "--email", "admin@black-holes.org", "--agree-tos", "-w", "/var/www/letsencrypt", "-d", "black-holes.org"]
+
+    # # Test renewals
+    # command: ["renew", "--dry-run"]
+
+    # Renewals (quiet for cron)
+    command: ["renew", "--quiet"]

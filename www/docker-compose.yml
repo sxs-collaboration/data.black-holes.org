@@ -1,0 +1,176 @@
+version: '3.1'
+
+services:
+  nginx:
+    image: nginx
+    restart: on-failure
+    ports:
+      - 80:80
+      - 443:443
+    depends_on:
+      - joomla
+      - wiki
+      - doxygen
+      - spec-bugs
+      - uwsgi
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/nginx-data.conf:/etc/nginx/nginx-data.conf:ro
+      - ./nginx/nginx-headers.conf:/etc/nginx/nginx-headers.conf:ro
+      - ./nginx/nginx-block-hackers.conf:/etc/nginx/nginx-block-hackers.conf:ro
+      - ./nginx/nginx-block-robots.conf:/etc/nginx/nginx-block-robots.conf:ro
+      - ./nginx/nginx-ssl.conf:/etc/nginx/nginx-ssl.conf:ro
+      - ../letsencrypt/certs:/etc/ssl/private:ro
+      - ../letsencrypt/www:/var/www/letsencrypt:ro
+      - ./nginx/dhparam.pem:/etc/ssl/certs/dhparam.pem:ro
+      - ./wiki/document_root/conf/users.auth.php:/etc/nginx/.htpasswd:ro
+      - ../data/document_root:/usr/share/nginx/html/data:ro
+      - ./nginx/document_root:/usr/share/nginx/html
+    logging:
+      options:
+        max-size: "100m"
+
+  oauth2_proxy:
+    build: oauth2_proxy/build
+    restart: on-failure
+    ports:
+      - 9180:4180
+    volumes:
+      - ./oauth2_proxy/oauth.ini:/etc/oauth.ini:ro
+    logging:
+      options:
+        max-size: "100m"
+    secrets:
+      - oauth2_proxy_client_id
+      - oauth2_proxy_client_secret
+      - oauth2_proxy_cookie_secret
+
+  responder:
+    image: nginx
+    restart: on-failure
+    volumes:
+      - ./responder_nginx.conf:/etc/nginx/nginx.conf:ro
+    logging:
+      options:
+        max-size: "1m"
+
+  oauth2:
+    build: oauth2/build
+    restart: on-failure
+    volumes:
+      - ./oauth2/www:/var/www/:ro
+    logging:
+      options:
+        max-size: "100m"
+    secrets:
+      - source: oauth2_proxy_client_id
+        target: client_id
+      - source: oauth2_proxy_client_secret
+        target: client_secret
+      - source: oauth2_proxy_cookie_secret
+        target: cookie_secret
+
+  joomladb:
+    image: mysql
+    restart: on-failure
+    volumes:
+      - ./joomladb:/var/lib/mysql
+    logging:
+      options:
+        max-size: "10m"
+
+  joomla:
+    image: joomla
+    restart: on-failure
+    command: bash -c "echo 'ServerName www.black-holes.org' >> /etc/apache2/apache2.conf && mdp=$$(cat /run/secrets/mdp) apache2-foreground"
+    depends_on:
+      - joomladb
+    volumes:
+      - ./joomla/php.ini:/usr/local/etc/php/conf.d/custom_php.ini:ro
+      - ./joomla/document_root:/var/www/html:ro
+      - ./joomla/document_root/cache:/var/www/html/cache  # Needs to be writeable
+      - /var/www/sessions
+    logging:
+      options:
+        max-size: "10m"
+    secrets:
+      - source: joomla_mysqli_default_pw
+        target: mdp
+
+  wiki:
+    build: wiki/build
+    restart: on-failure
+    volumes:
+      - ./wiki/document_root:/var/www/html/wiki
+    logging:
+      options:
+        max-size: "10m"
+
+  doxygen:
+    image: php:apache
+    restart: on-failure
+    command: bash -c "a2enmod rewrite && apache2-foreground"
+    volumes:
+      - ./doxygen/document_root:/var/www/html/doxygen:ro
+      - /web/repos/spec_doxygen:/var/www/html/doxygen/data:ro
+      # - /web/spec-doxygen-html/search/search.idx:/var/www/html/doxygen/search/search.idx:ro
+    logging:
+      options:
+        max-size: "10m"
+
+  spec-bugs:
+    build: spec-bugs/build
+    restart: on-failure
+    volumes:
+      - ./spec-bugs/document_root:/var/www/spec-bugs
+      - ./wiki/document_root/conf/users.auth.php:/var/www/htpasswd:ro
+    logging:
+      options:
+        max-size: "10m"
+
+  uwsgi:  # Used for serving download requests for data files
+    build: ../data/uwsgi/build
+    restart: on-failure
+    environment:
+      - GOOGLE_RECAPTCHA_SECRET=6Le3Ah4UAAAAADStZwhsviymeinCXfMbcuJnPCtV
+    volumes:
+      - ../data/document_root:/var/www/html
+      - ../data/uwsgi/wsgi.ini:/var/www/wsgi.ini
+      - ../data/uwsgi/download.py:/var/www/download.py
+      - /sxs-annex/SimulationAnnex.git:/var/www/html/waveforms/SimulationAnnex.git:ro
+      - /nfs-data/Annex/SurrogateModeling.git:/var/www/html/surrogates/storage:ro
+    logging:
+      options:
+        max-size: "10m"
+
+  # ### NOTE: Running this at the same time as `joomla` seems to be very dangerous.
+  # ### Also, you probably want to allow access to `/administrator` and remove `client_max_body_size` in nginx.conf
+  # joomla:
+  #   image: joomla
+  #   restart: "no"
+  #   command: bash -c "echo 'ServerName www.black-holes.org' >> /etc/apache2/apache2.conf && mdp=$$(cat /run/secrets/mdp) apache2-foreground"
+  #   depends_on:
+  #     - joomladb
+  #   volumes:
+  #     - ./joomla/php.ini:/usr/local/etc/php/conf.d/custom_php.ini:ro
+  #     - ./joomla/document_root:/var/www/html
+  #     - /var/www/sessions
+  #   logging:
+  #     options:
+  #       max-size: "10m"
+  #   secrets:
+  #     - source: joomla_readwrite_mysqli_default_pw
+  #       target: mdp
+
+
+secrets:
+  joomla_mysqli_default_pw:
+    file: ../secrets/joomla_mysqli_default_pw
+  joomla_readwrite_mysqli_default_pw:
+    file: ../secrets/joomla_readwrite_mysqli_default_pw
+  oauth2_proxy_client_id:
+    file: ../secrets/oauth2_proxy_client_id
+  oauth2_proxy_client_secret:
+    file: ../secrets/oauth2_proxy_client_secret
+  oauth2_proxy_cookie_secret:
+    file: ../secrets/oauth2_proxy_cookie_secret

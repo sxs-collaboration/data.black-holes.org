@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>SpEC: Spectral Einstein Code</title>
+        <link rel="stylesheet" href="SpEC.css" type="text/css" />
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_SVG" type="text/javascript"></script>
+        <script src="tex_accent_to_html.js"></script>
+        <script>
+         MathJax.Hub.Config({
+             tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]},
+             "SVG": {
+                 scale: 86.21,  // Undo default 116% scaling
+             },
+         });
+
+         /* function format_author_list(authors) {
+          *     return authors.map(function(author) {
+          *         var name = (author.given || "") + " " + (author.family || "");
+          *         if (name === " ") {
+          *             name = author.literal;
+          *         }
+          *         if (name === undefined) {
+          *             name = "";
+          *         }
+          *         return name.replace(/ /g, '&nbsp;');
+          *     }).join(', ');
+          * }*/
+         /* function sort_by_date(publication_a, publication_b) {
+          *     // Sort by year if possible
+          *     var year_a = publication_a.issued['date-parts'][0][0];
+          *     var year_b = publication_b.issued['date-parts'][0][0];
+          *     if (year_a != year_b) { return year_a - year_b; }
+          *     // If years were equal, sort by month.
+          *     // If month isn't given, assign lucky month 13
+          *     var month_a = publication_a.issued['date-parts'][0][1] || 13;
+          *     var month_b = publication_b.issued['date-parts'][0][1] || 13;
+          *     return month_a - month_b;
+          * }
+          * function get_each_year(publications) {
+          *     return publications.map(function(publication) {
+          *         return publication.issued['date-parts'][0][0];
+          *     });
+          * }
+          * function get_sorted_years(publications) {
+          *     var years = get_each_year(publications);
+          *     return $.uniqueSort(years).reverse();
+          * }*/
+         /* function groupBy(array, key) {
+          *     return xs.reduce(function (rv, x) {
+          *         let v = key instanceof Function ? key(x) : x[key];
+          *         let el = rv.find((r) => r && r.key === v);
+          *         if (el) {
+          *             el.values.push(x);
+          *         } else {
+          *             rv.push({ key: v, values: [x] });
+          *         }
+          *         return rv;
+          *     }, []);
+          * }*/
+
+         months_to_numbers = {'jan': 1, 'feb': 2, 'mar':  3, 'apr':  4, 'may':  5, 'jun':  6, 'jul': 7,
+                              'aug': 8, 'sep': 9, 'oct': 10, 'nov': 11, 'dec': 12, 'end': 13};
+         function sort_by_date(citation_a, citation_b) {
+             // Sort by year if possible
+             var year_a = citation_a.entryTags.year.trim();
+             var year_b = citation_b.entryTags.year.trim();
+             if (year_a != year_b) { return year_a - year_b; }
+             // If years were equal, sort by month.
+             // If month isn't given, assign lucky month 13
+             var month_a = citation_a.entryTags.month || 'end';
+             var month_b = citation_b.entryTags.month || 'end';
+             return months_to_numbers[month_a] - months_to_numbers[month_b];
+         }
+
+         function cleanup_title(title) {
+             title = title.replace(/\{/g, '').replace(/\}/g, '').replace(/\s\s*/g, ' ').replace(/^\s*/, '').replace(/\s*$/, '');
+             title = title.replace(/\\[vc~u'"^`][AEIOUSICNaeioursicng]/g, function(m) { return tex_accent_replacements[m] || m; });
+             return title;
+         }
+         function format_author_list(authors) {
+             authors = authors.replace(/\{/g, '').replace(/\}/g, '').replace(/\s\s*/g, ' ');
+             author_list = authors.split(' and ');
+             author_list = author_list.map(function(author) {
+                 author = author.replace(/\\u g/g, '&#287;').replace(/\\v g/g, '&#287;');
+                 if (author.match(',')) {
+                     author_parts = author.split(',');
+                     author = author_parts[1].trim() + ' ' + author_parts[0].trim();
+                 } else {
+                     author = author.trim();
+                 }
+                 return author.replace(/~/g, '&#8239;').replace(/ /g, '&nbsp;');
+             });
+             authors = author_list.join(', ');
+             authors = authors.replace(/\\[vc~u'"^`][AEIOUSICNaeioursicng]/g, function(m) { return tex_accent_replacements[m] || m; });
+             authors = authors.replace(/\\'\\i/g, '&iacute;');
+             return authors;
+         }
+         function format_citation(entry) {
+             // Get all the interesting information.  Only 'title', 'journal' or 'eprint', and 'year' are required.
+             var title = cleanup_title(entry.title);
+             var authors = format_author_list(entry.author || '');
+             var doi = (entry.doi || '').trim();
+             var url = (entry.url || '').trim();
+             var adsurl = (entry.adsurl || '').trim();
+             var journal = (entry.journal || '').replace('\\prd', 'Phys. Rev. D').trim();
+             var volume = (entry.volume || '').trim();
+             var pages = (entry.pages || '').replace(/-.*/, '').trim();
+             var year = entry.year.trim();
+             var month = (entry.month || 'end').trim();
+             var eprint = (entry.eprint || '').replace(/ar[xX]iv:/, '').trim();
+             // Construct the journal entry
+             if (! journal) {
+                 journal = 'ArXiv e-prints';
+             }
+             if (volume) {
+                 if (pages) {
+                     journal = journal + ' ' + volume + ', ' + pages;
+                 } else {
+                     journal = journal + ' ' + volume;
+                 }
+             }
+             if (journal && year) {
+                 journal = journal + ' (' + year + ')';
+             }
+             // Optionally add link to journal article
+             if (doi) {
+                 journal = '<a class="doi" href="http://dx.doi.org/' + doi + '">' + journal + '</a>';
+             } else if (url) {
+                 journal = '<a class="doi" href="' + url + '">' + journal + '</a>';
+             } else if (adsurl) {
+                 journal = '<a class="doi" href="' + adsurl + '">' + journal + '</a>';
+             }
+             // Add arxiv link if possible
+             var arxiv = '';
+             if (eprint) {
+                 arxiv = '[<a class="arxiv" href="https://arxiv.org/abs/' + eprint + '">arXiv:' + eprint + '</a>]';
+             }
+             // Combine everything
+             text = '<span class="title">' + title + '</span>\n'
+                  + '<span class="authors">' + authors + '</span>\n'
+                  + journal + '\n' + arxiv;
+             return text;
+         }
+         
+         // This function is executed once the page has loaded
+         $(function() {
+             console.log(tex_accent_replacements);
+             
+             if(!String.prototype.trim) { String.prototype.trim = function() { return $.trim(this); }; }
+
+             $.getScript("bibtexParse.js")
+              .then(eval)
+              .then(function() {
+                  $.get('SpEC.bib', function(bibtex_file) {
+                      var bibtex_json = bibtexParse.toJSON(bibtex_file);
+                      bibtex_json = bibtex_json.filter(function(citation) {
+                          // Ensure that this entry has 'title', 'journal', and 'year'; everything else is optional
+                          return Boolean(citation.entryTags.title)
+                              && Boolean(citation.entryTags.journal)
+                              && Boolean(citation.entryTags.year);
+                      });
+                      bibtex_json.sort(sort_by_date);
+                      var last_year = 0;
+                      var ref_counter = 1;
+                      bibtex_json.forEach(function(citation) {
+                          var entry = citation.entryTags;
+                          var year = entry.year;
+                          var text = format_citation(entry);
+                          if (year != last_year) {
+                              $('#publication-years').append('<li><a href="#publications-'+year+'">'+year+'</a></li>');
+                              $('#publications-by-year').append('<h3 id="publications-'+year+'">'+year+'</h3>');
+                              $('#publications-by-year').append('<ol id="publication-list-'+year+'" class="bibliography" start="'+ref_counter+'"></ol>');
+                              last_year = year;
+                          }
+                          $('#publication-list-'+year).append('<li>'+text+'</li>');
+                          ref_counter += 1;
+                      });
+                  });
+              });
+             /* .then(() => {
+              *     fetch('PublicationsSpEC.bib')
+              *         .then(res => res.text())
+              *         .then(bibtex => {
+              *             bibtexParse.toJSON(bibtex)
+              *                        .forEach(function(cit) {
+              *                            console.log(cit);
+              *                        })
+              *         })
+              * });*/
+             /* .done(function(bibtexParse) {
+              *     console.log('yep');
+              *     console.log(bibtexParse);
+              *     console.log(bibtexParse.toJSON('@article{sample1,title={sample title}}'));
+              * });*/
+             /* $.getJSON("SpEC_publications.json", function(publications) {
+              *     console.log(publications);
+              *     var years = get_sorted_years(publications);
+              *     publications.sort(sort_by_date);
+
+              *     var n_publications = publications.length;
+              *     for (var i=0; i<n_publications; ++i) {
+              *         console.log(format_author_list(publications[i].author));
+              *     }
+              * });*/
+             /* console.log(publications);*/
+             /* publications.forEach(function(publication) {
+              *     format_author_list(publication.author);
+              * });*/
+         });
+        </script>
+    </head>
+    <body>
+        <div id="header">
+            <h1>Spectral Einstein Code</h1>
+        </div>
+        <div id="toc">
+            <h2>Table of Contents</h2>
+            <ul>
+                <li><a href="#introduction">Introduction</a></li>
+                <li><a href="#contributors">Contributors</a></li>
+                <li><a href="#publications">Publications</a></li>
+                <li><a href="#external-software">External Software</a></li>
+            </ul>
+        </div>
+        <div id="main">
+            <h2 id="introduction">Introduction</h2>
+            <p>
+                The Spectral Einstein Code (SpEC) is a flexible infrastructure for solving partial
+                differential equations using multi-domain spectral methods.  While SpEC was
+                primarily designed for fully general-relativistic compact object simulations, it can
+                be applied to a wide range of hyperbolic and elliptic equations.  Some of its
+                features are:
+            </p>
+            <ul>
+                <li>A flexible domain decomposition supporting individual subdomains (cells,
+                    elements) of various topologies, e.g. blocks, spheres, cylinders, and any
+                    combination thereof. Subdomains can touch or overlap.</li>
+                <li>Solves hyperbolic and elliptic PDEs.</li>
+                <li>Interfaces to the visualization software ParaView and VisIt.</li>
+            </ul>
+            <div class="figure">
+                <img src="spec-resources/t33.png" alt="Binary black holes early in the inspiral phase (t=33)" />
+                <img src="spec-resources/t7920.png" alt="Binary black holes just before merger (t=7920)" />
+                <img src="spec-resources/t8200.png" alt="Binary black holes at the moment of merger (t=8200)" />
+                <img src="spec-resources/t9000.png" alt="Binary black holes well after merger (t=9000)" />
+                <p>SpEC simulation of inspiral and merger of two black holes</p>
+            </div>
+            <p>
+                The main application area of SpEC lies in simulating compact binary objects.
+                Specifically, it is one of the most accurate and efficient codes to compute the
+                gravitational waveforms for inspiraling and coalescing binary black holes.
+            </p>
+            <h2 id="contributors">Contributors</h2>
+            <p>
+                SpEC was originally developed by
+                <span class="name">Lawrence Kidder</span>,
+                <span class="name">Harald Pfeiffer</span>, and
+                <span class="name">Mark Scheel</span>, who remain the principal maintainers of the
+                code. Since then, many further individuals have contributed to SpEC. Most
+                especially,
+                <span class="name">Matthew Duez</span> and
+                <span class="name">Francois Foucart</span>
+                have developed the hydrodynamics module;
+                <span class="name">Béla Szilágyi</span> and
+                <span class="name">Dan Hemberger</span> have made numerous valuable additions throughout the code; and 
+                <span class="name">Lee Lindblom</span> has contributed significantly to the
+                algorithms used in SpEC.
+            </p>
+            <p>
+                The following researchers have substantially contributed to SpEC:
+                <span class="name">Andy Bohn</span>,
+                <span class="name">Michael Boyle</span>,
+                <span class="name">Luisa Buchman</span>,
+                <span class="name">M. Brett Deaton</span>,
+                <span class="name">Nils Deppe</span>,
+                <span class="name">Roland Haas</span>,
+                <span class="name">Francois Hebert</span>,
+                <span class="name">Kate Henriksson</span>,
+                <span class="name">Stephen Lau</span>,
+                <span class="name">Geoffrey Lovelace</span>,
+                <span class="name">Curran Muhlberger</span>,
+                <span class="name">Sergei Ossokine</span>,
+                <span class="name">Rob Owen</span>,
+                <span class="name">Saul Teukolsky</span>, and
+                <span class="name">Will Throwe</span>.
+            </p>
+            <p>
+                Further contributions to SpEC were made by
+                <span class="name">Kevin Barkett</span>,
+                <span class="name">Thomas Baumgarte</span>,
+                <span class="name">Jonathan Blackman</span>,
+                <span class="name">Wyatt Brege</span>,
+                <span class="name">Jeandrew Brink</span>,
+                <span class="name">Tony Chu</span>,
+                <span class="name">Michael Cohen</span>,
+                <span class="name">Gregory Cook</span>,
+                <span class="name">Matt Giesler</span>,
+                <span class="name">Jason Grigsby</span>,
+                <span class="name">Casey Handmer</span>,
+                <span class="name">Frank Herrmann</span>,
+                <span class="name">Ian Hinder</span>,
+                <span class="name">Jeff Kaplan</span>,
+                <span class="name">Prayush Kumar</span>,
+                <span class="name">Adam Lewis</span>,
+                <span class="name">François Limousin</span>,
+                <span class="name">Jonas Lippuner</span>,
+                <span class="name">Keith Matthews</span>,
+                <span class="name">Abdul Mroué</span>,
+                <span class="name">Lydia Nevin</span>,
+                <span class="name">Maria Okounkova</span>,
+                <span class="name">David Radice</span>,
+                <span class="name">Oliver Rinne</span>,
+                <span class="name">Olivier Sarbach</span>,
+                <span class="name">Deirdre Shoemaker</span>,
+                <span class="name">Leo C. Stein</span>,
+                <span class="name">Nick Tacik</span>,
+                <span class="name">Nick Taylor</span>,
+                <span class="name">Manuel Tiglio</span>,
+                <span class="name">Anil Zenginoglu</span>,
+                <span class="name">Fan Zhang</span>, and
+                <span class="name">Aaron Zimmerman</span>.
+            </p>
+            <p>
+                Finally, we thank the following undergraduate students for assisting with
+                visualization and running simulations with SpEC:
+                <span class="name">Nousha Afshari</span>,
+                <span class="name">Aliya Babul</span>,
+                <span class="name">Adam Bartnik</span>,
+                <span class="name">Deshpreet Bedi</span>,
+                <span class="name">Patrick Calhoun</span>,
+                <span class="name">Cameron Cogburn</span>,
+                <span class="name">Nick Demos</span>,
+                <span class="name">Patrick Fraser</span>,
+                <span class="name">Alyssa Garcia</span>,
+                <span class="name">Bryant Garcia</span>,
+                <span class="name">Daniel Jones</span>,
+                <span class="name">Haroon Khan</span>,
+                <span class="name">Dave Kotfis</span>,
+                <span class="name">Yor Limkumnerd</span>,
+                <span class="name">Ian MacCormack</span>,
+                <span class="name">Tamin Mansour</span>,
+                <span class="name">Robert McGehee</span>,
+                <span class="name">Dmitry Meyerson</span>,
+                <span class="name">Adam Neumann</span>,
+                <span class="name">Amin Nikbin</span>,
+                <span class="name">Hiroaki Oyaizu</span>,
+                <span class="name">Daniel Parada</span>,
+                <span class="name">Jennifer Seiler</span>,
+                <span class="name">Haolin Shi</span>,
+                <span class="name">Keara Soloway</span>,
+                <span class="name">Alexandre Streicher</span>, and
+                <span class="name">Allen Sussman</span>.
+            </p>
+            <h2 id="publications">Publications</h2>
+            <p>These publications have made use of SpEC:</p>
+            <ul id="publication-years"></ul>
+            <div id="publications-by-year">
+                
+            </div>
+            <h2 id="external-software">External Software</h2>
+            <p>
+                SpEC benefits from the years of work put into the following general-purpose
+                scientific software packages:
+            </p>
+            <ul>
+                <li><a href="http://www.mcs.anl.gov/petsc/petsc-as/">PETSc</a>: Parallel linear and nonlinear equation solvers</li>
+                <li><a href="http://www.cisl.ucar.edu/css/software/spherepack/">SPHEREPACK</a>: Spherical harmonic transforms</li>
+                <li><a href="http://www.fftw.org/">FFTW</a>: Fast Fourier transforms</li>
+                <li><a href="http://www.netlib.org/fftpack/">DFFTPACK</a>: Double-precision fast Fourier transforms</li>
+                <li><a href="http://www.gnu.org/s/gsl">GNU Scientific Library</a>: Mathematical routines for scientific applications</li>
+                <li><a href="http://www.nr.com/">Numerical Recipes</a>: Numerical routines for scientific computing</li>
+            </ul>
+        </div>
+        <div id="footer">
+            <p>
+                <span id="last-modified"></span>
+            </p>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>SXS Waveform Database Help and Documentation</title>
+        <link rel="stylesheet" type="text/css" href="/data/css/bootstrap.min.css">
+        <script type="text/javascript"
+                src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"
+                integrity="sha384-Ra6zh6uYMmH5ydwCqqMoykyf1T/+ZcnOQfFPhDrp2kI4OIxadnhsvvA2vv9A7xYv"
+                crossorigin="anonymous"></script>
+        <script src="/data/js/mathjax.js"></script>
+    </head>
+    <body>
+        <div class="container">
+            <div id="header" class="page-header text-center">
+                <h1 id="title">SXS Gravitational Waveform Database</h1>
+                <h2 id="subtitle">Help and Documentation</h2>
+            </div>
+
+            <h2>Data Columns</h2>
+            <table class="table table-striped">
+                <tr>
+                    <th>Column</th>
+                    <th>Description</th>
+                </tr>
+                <tr>
+                    <th>ID</th>
+                    <td>A unique identification string for a simulation.  It identifies the
+                        collaboration, type of binary, and number.</td>
+                </tr>
+                <tr>
+                    <th>Data</th>
+                    <td>Link to the metadata and downloadable data for a simulation.</td>
+                </tr>
+                <tr>
+                    <th>m<sub>1</sub>/m<sub>2</sub></th>
+                    <td>Ratio of the Christodoulou masses at the relaxation time.  We use $m_1>m_2$.</td>
+                </tr>
+                <tr>
+                    <th>&chi;<sub>1,2</sub></th>
+                    <td>Dimensionless spin magnitudes at the relaxation time.</td>
+                </tr>
+                <tr>
+                    <th>&chi;<sub>{1,2}{X,Y,Z}</sub></th>
+                    <td>Dimensionless spin vector components at the relaxation time.</td>
+                </tr>
+                <tr>
+                    <th>Ecc</th>
+                    <td>Eccentricity estimated by fitting $d\omega_{orb}/dt$ for 2.5 orbits after
+                        the relaxation time.</td>
+                </tr>
+                <tr>
+                    <th>M&omega;<sub>orb</sub></th>
+                    <td>Orbital frequency multiplied by the total Christodoulou mass at the
+                        relaxation time.</td>
+                </tr>
+                <tr>
+                    <th>Orbits</th>
+                    <td>Number of orbits from $t=0$ until the region inside the common horizon is
+                        excised.</td>
+                </tr>
+                <tr>
+                    <th>Email</th>
+                    <td>Link to e-mail the SXS Collaboration about a particular simulation.</td>
+                </tr>
+            </table>
+            Columns that can be added by the dropdown menu are described in the Metadata file.
+            <hr>
+
+            <h2>File Descriptions</h2>
+
+            <h4>rhOverM_Asymptotic_GeometricUnits.h5, rMPsi4_Asymptotic_GeometricUnits.h5</h4>
+            These two files contain spin-weighted spherical-harmonic coefficients for the
+            gravitational radiation extrapolated to infinite radius, as described in
+            <a href="http://arxiv.org/abs/0905.3177">arXiv:0905.3177</a> and
+            <a href="https://arxiv.org/abs/1302.2919">arXiv:1302.2919</a>.  The coefficients are
+            given as functions of extrapolated proper time. All quantities have been rescaled to
+            units in which the total Christodoulou mass is 1, where the mass of each black hole is
+            measured at the relaxation time as reported in metadata.txt.<br><br>
+
+            Various extrapolation orders are provided. The optimal choice depends on the
+            application. For example, the extrapolation with order $N=4$ is usually most useful for
+            data from early in the inspiral; during merger very little extrapolation is needed, so
+            $N=4$ becomes noisy.  Convergence tests are generally the best way to decide which
+            extrapolation order to use.<br><br>
+
+            For each extrapolation order, the datasets are contained in an h5-group labeled
+            "Extrapolated_Nx.dir", where "x" is the order of the extrapolating polynomial used.
+            There is also an h5-group labeled "OutermostExtraction.dir", for which no extrapolation
+            was done, though all relevant rescalings were applied. The following datasets are
+            provided in each group:
+            <table class="table table-striped">
+                <tr>
+                    <th>Dataset</th>
+                    <th>Columns</th>
+                    <th>Description</th>
+                </tr>
+                <tr>
+                    <td>Y_l[L]_m[M].dat</td>
+                    <td>$(t/M_{\text{Ch}}, \Re[R_{\text{areal}}Q_{\ell m}],
+                        \Im[R_{\text{areal}}Q_{\ell m}])$</td>
+                    <td>$Q_{\ell m}$ is the expansion coefficient in the spin-weight $s=-2$
+                        spherical-harmonic decomposition of the gravitational-wave strain
+                        ($h/M_{\text{Ch}}$) or Penrose scalar ($M_{\text{Ch}}\Psi_4$).</td>
+                </tr>
+            </table>
+
+            <h4 id="CoM">
+                rhOverM_Asymptotic_GeometricUnits_CoM.h5, rMPsi4_Asymptotic_GeometricUnits_CoM.h5
+            </h4>
+            These two files contain the same spin-weighted spherical-harmonic coefficients for the
+            gravitational radiation extrapolated to infinite radius as the files above, except that
+            they have been adjusted to correct the systems' center-of-mass motion, following the
+            method described in
+            <a href="https://arxiv.org/abs/1509.00862">arxiv:1509.00862</a>.  Briefly, each system
+            is given a translation and boost to minimize the average of the squared distance between
+            the origin and the system's center of mass.  The center of mass is measured naively,
+            using the Newtonian formula along with the coordinate trajectories of the apparent
+            horizons.  This average is taken over a range of times $(t_i, t_f)$, where $t_i$ is
+            fixed here as the relaxation time reported in metadata.txt, and $t_f$ represents 90% of
+            the total inspiral time during which the separate apparent horizons could be found.<br><br>
+
+            The groups and datasets in these files are exactly the same as in the corresponding
+            files above; the only difference is the addition of the "_CoM" suffix in the file names.<br><br>
+
+
+            <h4>rh_FiniteRadii_CodeUnits.h5, rPsi4_FiniteRadii_CodeUnits.h5</h4>
+
+            NOTE: These files contain <i>raw</i> output from SpEC simulations, which have dimensions
+            that are related to the total mass of the corresponding SpEC simulation ("code units").
+            You should prefer data from the files labeled with "GeometricUnits_CoM" unless you need
+            the raw output and are familiar with all the caveats of SpEC.<br><br>
+
+            These two files contain spin-weighted spherical harmonic coefficients for the
+            gravitational radiation (and related quantities) extracted at various finite radii as a
+            function of coordinate time $t$ in code units (<i>not</i> retarded time).  For a
+            specific extraction radius, the datasets are contained in an h5-group labeled
+            "Rxxxx.dir", where "xxxx" is the coordinate radius rounded to the nearest integer.  The
+            following datasets are provided:
+            <table class="table table-striped">
+                <tr>
+                    <th>Dataset</th>
+                    <th>Columns</th>
+                    <th>Description</th>
+                </tr>
+                <tr>
+                    <td>ArealRadius.dat</td>
+                    <td>$(t, R_{\text{areal}})$</td>
+                    <td>$R_{\text{areal}}$ is the radius computed from the proper area of the
+                        extraction sphere.</td>
+                </tr>
+                <tr>
+                    <td>AverageLapse.dat</td>
+                    <td>$(t, \bar{N})$</td>
+                    <td>$\bar{N}$ is the angular average of the lapse function across the extraction
+                        sphere. It is computed from the (L,M)=(0,0) mode of a scalar spherical
+                        harmonic decomposition of the lapse function on the extraction sphere.</td>
+                </tr>
+                <tr>
+                    <td>CoordRadius.dat</td>
+                    <td>$(t, R_{\text{coord}})$</td>
+                    <td>$R_{\text{coord}}$ is the exact coordinate radius of the extraction sphere.</td>
+                </tr>
+                <tr>
+                    <td>Y_l[L]_m[M].dat</td>
+                    <td>$(t, \Re[R_{\text{coord}}Q_{\ell m}], \Im[R_{\text{coord}}Q_{\ell m}])$</td>
+                    <td>$Q_{\ell m}$ is the expansion coefficient in the spin-weight $s=-2$
+                        spherical harmonic decomposition of the gravitational wave strain ($h$) or
+                        Penrose scalar ($\Psi_4$).</td>
+                </tr>
+            </table>
+
+            <h4>Horizons.h5</h4>
+            NOTE: This file contains raw output from SpEC simulations.  Coordinates $t,x,y,z$ and
+            dimensionful quantities in this file are in "code units", which are related to the total
+            mass of the corresponding SpEC simulation.  We use geometrized units, where $G=c=1$.<br><br>
+
+            This HDF5 file contains information about the black holes' apparent horizons as a
+            function of coordinate time $t$ in code units (<i>not</i>
+            retarded time). We call the individual apparent horizons AhA and AhB, and we call the
+            common apparent horizon AhC.  Horizons.h5 contains one h5-group for each apparent
+            horizon: AhA.dir, AhB.dir, and AhC.dir.
+
+            The following datasets are provided:
+            <table class="table table-striped">
+                <tr>
+                    <th>Dataset</th>
+                    <th>Columns</th>
+                    <th>Description</th>
+                </tr>
+                <tr>
+                    <td>CoordCenterInertial.dat</td>
+                    <td>$(t, x,y,z)$</td>
+                    <td>$x$,$y$,$z$ are the Cartesian coordinates of the center of the apparent
+                    horizon, in the "inertial frame," the asymptotically inertial frame in which the
+                    gravitational waves are measured.</td>
+                </tr>
+                <tr>
+                    <td>ArealMass.dat</td>
+                    <td>$(t, M_{\text{irr}})$</td>
+                    <td>$M_{\text{irr}}$ is the areal (irreducible) mass $\sqrt{A/16\pi}$, where $A$
+                        is the horizon surface area.</td>
+                </tr>
+                <tr>
+                    <td>DimensionfulInertialSpin.dat</td>
+                    <td>$(t, S_x, S_y, S_z)$</td>
+                    <td>$S_i$ are the Cartesian vector components of the spin angular momentum
+                    measured on the apparent horizon in the "inertial frame". The spin is measured
+                    using approximate rotational Killing vectors (see Appendix A in
+                    <a href="http://arxiv.org/abs/0805.4192">arXiv:0805.4192</a> for details of the
+                    method used to measure the spin).</td>
+                </tr>
+                <tr>
+                    <td>DimensionfulInertialSpinMag.dat</td>
+                    <td>$(t, S)$</td>
+                    <td>$S$ is the Euclidean magnitude of the black-hole spin angular momentum given
+                    in DimensionfulInertialSpin.dat, $S^2=S_x^2+S_y^2+S_z^2$.</td>
+                </tr>
+                <tr>
+                    <td>ChristodoulouMass.dat</td>
+                    <td>$(t, M)$</td>
+                    <td>Christodoulou mass $M$, where $M^2 = M_{\text{irr}}^2 +
+                        S^2/4{M_{\text{irr}}^2}$ and $S$ is the magnitude of the spin angular
+                        momentum of the black hole (as given in DimensionfulInertialSpinMag.dat).</td>
+                </tr>
+                <tr>
+                    <td>chiInertial.dat</td>
+                    <td>$(t, \chi_x, \chi_y, \chi_z)$</td>
+                    <td>$\chi_i = S_i/ M^2$, i.e., the Cartesian components of the spin angular
+                    momentum measured in the "inertial frame", made dimensionless by dividing by the
+                    square of the Christodoulou mass.</td>
+                </tr>
+                <tr>
+                    <td>chiMagInertial.dat</td>
+                    <td>$(t, \chi)$</td>
+                    <td>$\chi$ is the Euclidean magnitude of the dimensionless spin angular momentum
+                    measured on the apparent horizon, $\chi^2 = \chi_x^2+\chi_y^2+\chi_z^2$.</td>
+                </tr>
+            </table>
+
+            <h4>HorizonsDump.h5</h4>
+            Some simulations contain HorizonsDump.h5. This HDF5 file contains datasets describing
+            the apparent horizon surfaces and quantities measured on those surfaces, which (e.g.)
+            can be converted to VTK format for visualization.
+            <br><br>
+            HorizonsDump.h5 contains one h5-group for each apparent horizon: AhA.dir, AhB.dir, and
+            AhC.dir. The following datasets are provided:
+            <table class="table table-striped">
+                <tr>
+                    <th>Dataset</th>
+                    <th>Description</th>
+                </tr>
+                <tr>
+                    <td>CoordsMeasurementFrame.tdm</td>
+                    <td>Inertial Cartesian coordinates of the apparent horizon surface.</td>
+                </tr>
+                <tr>
+                    <td>RicciScalar.tdm</td>
+                    <td>The dimensionful Ricci scalar on the hypersurface, given by Eq. B3 in
+                        <a href=http://arxiv.org/abs/0805.4192>arXiv:0805.4192</a>.</td>
+                </tr>
+                <tr>
+                    <td>DimlessRicciScalar.tdm</td>
+                    <td>RicciScalar.tdm scaled by the Christodoulou mass, $M_{Ch}^2R$</td>
+                </tr>
+                <tr>
+                    <td>SpinFunction.tdm</td>
+                    <td>Curl of the angular momentum density.</td>
+                </tr>
+                <tr>
+                    <td>WeylB_NN.tdm</td>
+                    <td>Magnetic Weyl tensor normal to the hypersurface, $B_{ij}n^in^j$.  This
+                        quantity is known as the horizon vorticity. It should be negative at the
+                        north pole of a spinning black hole using the current conventions on
+                        $B_{ij}$, which are given by (2.2b) in
+                        <a href=http://arxiv.org/abs/1108.5486>arXiv:1108.5486</a>.  The horizon
+                        vorticity was first introduced in
+                        <a href=http://arxiv.org/abs/1012.4869>arXiv:1012.4869</a>, and the physical
+                        interpretation of the vorticity can be found in the cited texts. See also
+                        <a href=http://arxiv.org/abs/1208.3034>arXiv:1208.3034</a> for its
+                        connection to measures of the angular momentum of the horizon.  NOTE: The
+                        sign convention used for this quantity was switched in SpEC revision
+                        08ac47f4 (Feb. 8, 2016), so all earlier catalog entries will differ by an
+                        overall minus sign.</td>
+                </tr>
+                <tr>
+                    <td>WeylE_NN.tdm</td>
+                    <td>Electric Weyl tensor normal to the hypersurface, $E_{ij}n^in^j$.  This
+                        quantity is known as the horizon tendicity, and describes tidal stretching
+                        (negative values of WeylE_NN) and compression (positive values) normal to
+                        the horizon.  It was introduced in
+                        <a href=http://arxiv.org/abs/1012.4869>arXiv:1012.4869</a>.  Our conventions
+                        on $E_{ij}$ are given in
+                        <a href=http://arxiv.org/abs/1108.5486>arXiv:1108.5486</a>, and note that it
+                        should be negative at the horizon of a Schwarzschild black hole. See also
+                        <a href=http://arxiv.org/abs/1208.3034>arXiv:1208.3034</a>
+                        for its connection to the Ricci curvature of the horizon.
+                    </td>
+                </tr>
+            </table>
+
+            <h4>EvID</h4>
+            Files in the EvID directory contain initial data in a format that SpEC can evolve,
+            including the initial spatial metric, extrinsic curvature, lapse, and shift.
+            Astronomers should not need to look at these files, as the relevant initial data
+            parameters (masses, spins, and orbital parameters) are also included in the metadata.<br><br>
+
+            The following files are provided:
+            <table class="table table-striped">
+                <tr>
+                    <th>File</th>
+                    <th>Description</th>
+                </tr>
+                <tr>
+                    <td>ID_Ah{A,B}Coefs.dat</td>
+                    <td>Coefficients characterizing the spectral expansion of the horizon surfaces.</td>
+                </tr>
+                <tr>
+                    <td>ID_Init_FuncLambdaFactor{A,B,A0,B0}.txt</td>
+                    <td>Initial deformations of the spatial coordinates to conform to the black-hole
+                    shapes. These files also include initial velocities of the excision surfaces,
+                    which are sometimes nonzero in order to avoid incoming characteristic fields at
+                    the beginning of the evolution.</td>
+                </tr>
+                <tr>
+                    <td>Domain.input and SpatialCoordMap.input</td>
+                    <td>Specify the initial spatial computational domain.</td>
+                </tr>
+                <tr>
+                    <td>Vars*.h5</td>
+                    <td>HDF5 files containing the initial spatial metric $g$, extrinsic curvature
+                    $K$, lapse $N$, and shift $\beta_i$.</td>
+                </tr>
+            </table>
+
+        </div>
+    </body>
+</html>

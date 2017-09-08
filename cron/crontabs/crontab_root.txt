@@ -1,0 +1,13 @@
+MAILTO=server-admin@black-holes.org
+
+# Hack to make sure permissions remain valid
+#*/2 * * * * chown -R web:www-data /web/servers ; chown -R root:root /web/servers/letsencrypt/certs ; chown -R polkitd:ssh_keys /web/servers/www/joomladb ; chmod -R g=u /web/servers
+*/2 * * * * /web/servers/cron/scripts/fix_permissions.sh
+
+# Renew SSL certificates
+# Note that the certbot documentation recommends running twice per day at randomly chosen minutes.
+#42 06,18 * * * cd /web/servers/letsencrypt && docker-compose up > /dev/null && cd ../www && docker-compose exec nginx bash -c 'nginx -q -t && nginx -s reload > /dev/null' && date >> /web/servers/letsencrypt/last_run.txt
+42 06,18 * * * /web/servers/cron/scripts/update_ssl_certificates.sh >> /
+
+# Back up all the server files
+30 01 * * * /web/servers/cron/scripts/backup.sh

@@ -1,0 +1,5 @@
+bin
+document_root/waveforms/files/*
+waveforms/CatalogLinks/*
+*.json
+*~

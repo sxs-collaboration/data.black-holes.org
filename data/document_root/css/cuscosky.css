@@ -1,0 +1,204 @@
+/*
+	Cusco Sky table styles
+	written by Braulio Soncco http://www.buayacorp.com
+ */
+
+a:link {text-decoration:none;}    /* unvisited link */
+a:hover {text-decoration:underline;}   /* mouse over link */
+
+table, th, tr, td {
+  border: 1px solid #D4E0EE;
+  border-collapse: collapse;
+  color: #555;
+  white-space:nowrap;
+  margin: auto;
+}
+
+th {
+  font-weight: bold;
+  background: #E6EDF5;
+  color: #4F76A3;
+  font-size: 115% !important;
+  width:1%;
+  text-align: center;
+}
+
+td { 
+  text-align: center;
+  padding: 5px 5px;
+}
+
+.hidden { visibility: hidden; }
+.reset{ padding: 2px 2px 2px 2px; margin: auto; text-align: center; width: auto;}
+
+table.divider { border-style: hidden !important; }
+
+.invis{
+  border-style: hidden !important; }
+
+caption {
+  font-size: 150%;
+  font-weight: bold;
+  margin: 5px;
+}
+
+tr.even td  { background: #eff3fc; }
+tr.odd td   { background: #FCFDFE; }
+
+/* --------------------------------------------------------------
+
+typography.css
+ * Sets up some sensible default typography.
+
+ -------------------------------------------------------------- */
+
+/* Default font settings.
+The font-size percentage is of 16px. (0.75 * 16px = 12px) */
+html { font-size:100.01%; }
+body {
+  font-size: 75%;
+  color: #222;
+  background: #fff;
+  font-family: Verdana, Tahoma, sans-serif;
+  margin: 1em;
+}
+
+
+/* Headings
+-------------------------------------------------------------- */
+
+h1,h2,h3,h4,h5,h6 { font-weight: normal; color: #111; }
+
+h1 { font-size: 3em; line-height: 1; margin-bottom: 0.5em; text-align:center; }
+h2 { font-size: 2em; margin-bottom: 0.75em;  text-align:center;}
+h3 { font-size: 1.5em; line-height: 1; margin-bottom: 1em;  text-align:center;}
+h4 { font-size: 1.2em; line-height: 1.25; margin-bottom: 1.25em;  text-align:left;}
+h5 { font-size: 1em; font-weight: bold; margin-bottom: 1.5em;  text-align:left;}
+h6 { font-size: 1em; font-weight: bold;  text-align:left;}
+
+h1 img, h2 img, h3 img,
+h4 img, h5 img, h6 img {
+  margin: 0;
+}
+
+
+/* Text elements
+-------------------------------------------------------------- */
+
+p           { margin: 0 0 1.5em; }
+p img.left  { float: left; margin: 1.5em 1.5em 1.5em 0; padding: 0; }
+p img.right { float: right; margin: 1.5em 0 1.5em 1.5em; }
+
+a:focus,
+a:hover     { color: #000; }
+a           { color: #009; text-decoration: underline; }
+
+blockquote  { margin: 1.5em; color: #666; font-style: italic; }
+strong      { font-weight: bold; }
+em,dfn      { font-style: italic; }
+dfn         { font-weight: bold; }
+sup, sub    { line-height: 0; }
+
+abbr,
+acronym     { border-bottom: 1px dotted #666; }
+address     { margin: 0 0 1.5em; font-style: italic; }
+del         { color:#666; }
+
+pre         { margin: 1.5em 0; white-space: pre; }
+pre,code,tt { font: 1em 'andale mono', 'lucida console', monospace; line-height: 1.5; }
+
+
+/* Lists
+-------------------------------------------------------------- */
+
+li ul,
+li ol       { margin: 0; }
+ul, ol      { margin: 0 1.5em 1.5em 0; padding-left: 3.333em; }
+
+ul          { list-style-type: disc; }
+ol          { list-style-type: decimal; }
+
+dl          { margin: 0 0 1.5em 0; }
+dl dt       { font-weight: bold; }
+dd          { margin-left: 1.5em;}
+
+
+/* Misc classes
+-------------------------------------------------------------- */
+
+.small      { font-size: .8em; margin-bottom: 1.875em; line-height: 1.875em; }
+.large      { font-size: 1.2em; line-height: 2.5em; margin-bottom: 1.25em; }
+.hide       { display: none; }
+
+.quiet      { color: #666; }
+.loud       { color: #000; }
+.highlight  { background:#ff0; }
+.added      { background:#060; color: #fff; }
+.removed    { background:#900; color: #fff; }
+
+.first      { margin-left:0; padding-left:0; }
+.last       { margin-right:0; padding-right:0; }
+.top        { margin-top:0; padding-top:0; }
+.bottom     { margin-bottom:0; padding-bottom:0; }
+
+.pagination{
+}
+.page-link{
+  background-color:darkgray;
+  border:1px solid black;
+  text-align:center;
+  color:#ffffff;
+}
+.page-link a,.page-link span{
+  padding:5px 8px 5px 8px;
+  display:block;
+  color:#ffffff;
+}
+.page-link span{
+  background-color:#ffffff;
+  color:#000000;
+}
+.page-link:hover{
+  background-color:#ffffff;
+  color:#000000;
+}
+.page-link:hover a{
+  color:#000000;
+}
+.pagination{
+}
+.page-link{
+  float:left;
+  background-color:darkgray;
+  border:1px solid black;
+  text-align:center;
+  color:#ffffff;
+}
+.page-link a,.page-link span{
+  padding:5px 8px 5px 8px;
+  display:block;
+  color:#ffffff;
+}
+.page-link span{
+  background-color:#ffffff;
+  color:#000000;
+}
+.page-link:hover{
+  background-color:#ffffff;
+  color:#000000;
+}
+.page-link:hover a{
+  color:#000000;
+}
+
+div.logos {
+  text-align: center;
+}
+
+div.logos img {
+  margin: 1.75em;
+}
+
+div.floatleft {
+  float:left;
+}

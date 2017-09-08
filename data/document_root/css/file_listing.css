@@ -1,0 +1,87 @@
+.file_listing_checkbox {
+    text-align: center;
+}
+
+.file_listing:before {
+    content: "";
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    width: 24px;
+    height: 20px;
+    float: left;
+    margin-right: 5px;
+}
+.file_listing.directory:before {
+    background-image: url(/data/images/icons/folder-o.svg);
+}
+.file_listing.directory.open:before {
+    background-image: url(/data/images/icons/folder-open-o.svg);
+}
+.file_listing.txt:before {
+    background-image: url(/data/images/icons/file-text-o.svg);
+}
+.file_listing.tgz:before {
+    background-image: url(/data/images/icons/file-archive-o.svg);
+}
+.file_listing.hdf5:before {
+    background-image: url(/data/images/icons/area-chart.svg);
+}
+
+.file_listing.indent1:before{
+    margin-left: 33px;
+}
+.file_listing.indent2:before{
+    margin-left: 66px;
+}
+.file_listing.indent3:before{
+    margin-left: 99px;
+}
+.file_listing.indent4:before{
+    margin-left: 132px;
+}
+.file_listing.indent5:before{
+    margin-left: 165px;
+}
+.file_listing.indent6:before{
+    margin-left: 198px;
+}
+.file_listing.indent7:before{
+    margin-left: 231px;
+}
+.file_listing.indent8:before{
+    margin-left: 264px;
+}
+
+
+table {
+    background-color: #ffffff;
+    border: 2px solid #f4f4f4;
+    color: #555;
+    width: 100%;
+    margin: 15px 0;
+    cursor: pointer;
+    table-layout: fixed;
+}
+
+th {
+    background-color: #F9F9F9;
+    color: #4F76A3;
+    cursor: pointer;
+    padding: 5px 10px;
+}
+
+tr {
+    border: 1px solid #f4f4f4;
+}
+
+td {
+    padding: 5px 10px;
+}
+
+/* tr:nth-of-type(even) { */
+/*     background-color: #fcfcfc; */
+/* } */
+
+tr:hover td {
+    background-color:#f3f3f3;
+}

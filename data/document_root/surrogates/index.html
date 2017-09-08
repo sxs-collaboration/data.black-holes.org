@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>SXS Gravitational Waveform Database</title>
+        <link rel="stylesheet" type="text/css" href="/data/css/bootstrap.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_SVG" type="text/javascript"></script>
+        <script src="/data/js/mathjax.js"></script>
+    </head>
+    <body>
+        <div class="container">
+            <div id="header" class="page-header text-center">
+                <h1 id="title">SXS Gravitational Waveform Database</h1>
+                <h2 id="subtitle">Surrogate Waveform Catalog Information</h2>
+            </div>
+            <p>
+                This repository contains all publicly available numerical relativity surrogate
+                data for waveforms produced by the
+                <a href="http://www.black-holes.org/SpEC.html">Spectral Einstein Code</a>.  The base
+                method for building surrogate models can be found in
+                <a href="http://journals.aps.org/prx/references/10.1103/PhysRevX.4.031006">Field et al., PRX 4, 031006 (2014)</a>.
+            </p>
+            <p>
+                Several numerical relativity surrogate models are currently available here:
+                <ol>
+                    <li>
+                        <p>
+                            SpEC_q1_10_NoSpin_nu5thDegPoly_exclude_2_0.h5 &mdash; A surrogate model
+                            for binary black hole mergers with non-spinning black holes.  This is
+                            described in
+                            <a href="http://journals.aps.org/prl/abstract/10.1103/PhysRevLett.115.121102">Blackman
+                                et al., PRL 115, 121102 (2015)</a>.
+                            It is evaluated with the gwsurrogate python package, which can be found
+                            on
+                            <a href="https://pypi.python.org/pypi/gwsurrogate/">PyPI</a>.
+                            Instructions for evaluating this surrogate can be found in tutorials
+                            included with the gwsurrogate package and in this
+                            <a href="GWSurrogate_example.html">example IPython code</a>.
+                        </p>
+                    </li>
+                    <li>
+                        <p>
+                            NRSur4d2s_FDROM_grid12.h5 and NRSur4d2s_TDROM_grid12.h5 &mdash; These
+                            are fast frequency-domain and time-domain (respectively) surrogate
+                            models for binary black hole mergers where the black holes may be
+                            spinning, but the spins are restricted to a parameter subspace which
+                            includes some but not all precessing configurations.
+                            NRSur4d2s_FDROM_grid12.h5 is the NRSur4d2s_FDROM model described in
+                            <a href="https://arxiv.org/abs/1701.00550">Blackman et al., PRD, (2017)</a>,
+                            and NRSur4d2s_TDROM_grid12.h5 is built from the underlying (slower)
+                            NRSur4d2s time-domain model in the same way but without the FFTs.  These
+                            surrogates are also evaluated using gwsurrogate, and a tutorial can be
+                            found in this
+                            <a href="NRSur4d2s_tutorial.html">example IPython code</a>.
+                        </p>
+                    </li>
+                    <li>
+                        <p>
+                            NRSur7dq2.h5 &mdash; This is a surrogate model for binary black hole
+                            mergers with generic spins.  A paper describing it can be found at
+                            <a href="https://arxiv.org/abs/1705.07089">Blackman et al., 2017</a>.
+                            This surrogate is evaluated through a standalone python package
+                            contained in NRSur7dq2.tar.gz, which has simple installation
+                            instructions in its README file.  A tutorial can be found for evaluating
+                            this surrogate in this
+                            <a href="NRSur7dq2_tutorial.html">example IPython code</a>.
+                        </p>
+                    </li>
+                </ol>
+            </p>
+            <p>
+                If you find these surrogate models useful in your own research please cite the Field
+                et al., PRX (2014) paper as well as the relevant paper describing the specific
+                numerical relativity surrogate model, if available (e.g., the Blackman et al. 2015
+                paper for non-spinning binary black hole coalescences).
+            </p>
+
+            <h3>Caveats:</h3>
+            <ol>
+                <li>
+                    <p>
+                        Evaluating surrogate models outside of the ranges they were trained upon may
+                        give inaccurate results. Please use with caution when extrapolating.
+                    </p>
+                </li>
+                <li>
+                    <p>
+                        The surrogate data available here for non-spinning binary black holes
+                        produced in Blackman et al. 2015 contains the (2,0) mode. However, this mode
+                        was not used in the paper. While this surrogate can predict a (2,0) mode,
+                        current numerical relativity simulations may not yet be able to accumulate
+                        (non-oscillatory) Christodoulou memory sufficiently. The surrogate (2,0)
+                        mode is founded upon basis SpEC waveforms that have been hybridized with
+                        leading order post-Newtonian waveforms. Therefore, the (2,0) mode can be
+                        included in the mode’s output but should be used with caution. Currently,
+                        the default option to evaluate this surrogate (using GWSurrogate) is to
+                        exclude all m=0 modes.
+                    </p>
+                </li>
+            </ol>
+
+            <div class="text-center">
+                <a class="btn btn-primary btn-lg" href="data/files">Proceed to the Surrogate Models</a>
+            </div>
+
+    </body>
+</html>

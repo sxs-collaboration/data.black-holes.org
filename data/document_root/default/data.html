@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>SXS Data Server</title>
+        <link rel="stylesheet" type="text/css" href="/data/css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="/data/css/file_listing.css">
+        <style>
+         .capitalize {text-transform:capitalize;}
+        </style>
+        <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_SVG" type="text/javascript"></script>
+        <script src="/data/js/mathjax.js"></script>
+        <script src="/data/js/file_listing.js"></script>
+        <script>
+         function onSubmit(token) {
+             document.getElementById("download_form").submit();
+         }
+
+         // This runs as soon as the page is ready
+         $(function() {
+             // Write the catalog and data group id everywhere we want it
+             var path = window.location.pathname.split("/");
+             /* var catalog = path[1];*/
+             var catalog = path[2];
+             var id = path[path.length-1];
+             $(".catalog_string").text(catalog);
+             $(".id_string").text(id);
+             
+             function success(json) {
+                 // Add hidden fields to form, so that the catalog name and id get sent when the
+                 // button gets pressed
+                 $("#download_form").append($("<input>", {
+                     "type": "hidden",
+                     "name": "catalog",
+                     "value": catalog
+                 }));
+                 $("#download_form").append($("<input>", {
+                     "type": "hidden",
+                     "name": "id",
+                     "value": id
+                 }));
+
+                 // Fill out the table
+                 file_tree_table(json.children, $("#file_list"));
+             }
+
+             function error(qXHR, textStatus, errorThrown) {
+                 console.log(window.location.href, window.location.href.indexOf("?"));
+                 if(window.location.href.indexOf("?") > -1) {
+                     window.location = window.location.href + "&error=true";
+                 } else {
+                     window.location = window.location.href + "?error=true";
+                 }
+             }
+
+             $.ajax({
+                 dataType: "json",
+                 url: window.location.pathname + ".json",
+                 timeout: 5000,
+                 success: success,
+                 error: error
+             });
+         });
+        </script>
+    </head>
+    <body>
+        <div class="container">
+            <div id="header" class="page-header text-center">
+                <h1 id="title">SXS <span class="catalog_string capitalize"></span> Data Server</h1>
+                <h2 id="subtitle">Data for <span class="id_string"></span></h2>
+            </div>
+            <div style="clear:both"></div>
+            <form id="download_form" action="../download" method="post">
+                <table id="file_list">
+                    <col style="width: 9em;"> <col> <col style="width: 9em;"> <col style="width: 9em;">
+                    <thead>
+                        <tr>
+                            <th style="text-align: center">Download</th> <th>Name</th> <th>Type</th> <th>Size</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+                <button class="g-recaptcha" data-sitekey="6Le3Ah4UAAAAAJ00dnp9EXiJmDfZi3_LFe0U8b0H" data-callback="onSubmit">
+                    Download selected files
+                </button>
+            </form>
+        </div>
+    </body>
+</html>

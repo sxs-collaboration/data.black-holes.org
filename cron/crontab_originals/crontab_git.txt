@@ -1,0 +1,5 @@
+MAILTO=server-admin@black-holes.org
+
+# Update the SimulationAnnex so that it appears correctly in the public website
+35  16 * * * cd /home/git/repositories/SimulationAnnex.git && git pull -r -q
+35  16 * * * cd /home/git/repositories/SurrogateModeling.git && git pull -r -q
