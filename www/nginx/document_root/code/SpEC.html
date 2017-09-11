@@ -15,51 +15,6 @@
              },
          });
 
-         /* function format_author_list(authors) {
-          *     return authors.map(function(author) {
-          *         var name = (author.given || "") + " " + (author.family || "");
-          *         if (name === " ") {
-          *             name = author.literal;
-          *         }
-          *         if (name === undefined) {
-          *             name = "";
-          *         }
-          *         return name.replace(/ /g, '&nbsp;');
-          *     }).join(', ');
-          * }*/
-         /* function sort_by_date(publication_a, publication_b) {
-          *     // Sort by year if possible
-          *     var year_a = publication_a.issued['date-parts'][0][0];
-          *     var year_b = publication_b.issued['date-parts'][0][0];
-          *     if (year_a != year_b) { return year_a - year_b; }
-          *     // If years were equal, sort by month.
-          *     // If month isn't given, assign lucky month 13
-          *     var month_a = publication_a.issued['date-parts'][0][1] || 13;
-          *     var month_b = publication_b.issued['date-parts'][0][1] || 13;
-          *     return month_a - month_b;
-          * }
-          * function get_each_year(publications) {
-          *     return publications.map(function(publication) {
-          *         return publication.issued['date-parts'][0][0];
-          *     });
-          * }
-          * function get_sorted_years(publications) {
-          *     var years = get_each_year(publications);
-          *     return $.uniqueSort(years).reverse();
-          * }*/
-         /* function groupBy(array, key) {
-          *     return xs.reduce(function (rv, x) {
-          *         let v = key instanceof Function ? key(x) : x[key];
-          *         let el = rv.find((r) => r && r.key === v);
-          *         if (el) {
-          *             el.values.push(x);
-          *         } else {
-          *             rv.push({ key: v, values: [x] });
-          *         }
-          *         return rv;
-          *     }, []);
-          * }*/
-
          months_to_numbers = {'jan': 1, 'feb': 2, 'mar':  3, 'apr':  4, 'may':  5, 'jun':  6, 'jul': 7,
                               'aug': 8, 'sep': 9, 'oct': 10, 'nov': 11, 'dec': 12, 'end': 13};
          function sort_by_date(citation_a, citation_b) {
@@ -146,8 +101,6 @@
          
          // This function is executed once the page has loaded
          $(function() {
-             console.log(tex_accent_replacements);
-             
              if(!String.prototype.trim) { String.prototype.trim = function() { return $.trim(this); }; }
 
              $.getScript("bibtexParse.js")
@@ -179,35 +132,6 @@
                       });
                   });
               });
-             /* .then(() => {
-              *     fetch('PublicationsSpEC.bib')
-              *         .then(res => res.text())
-              *         .then(bibtex => {
-              *             bibtexParse.toJSON(bibtex)
-              *                        .forEach(function(cit) {
-              *                            console.log(cit);
-              *                        })
-              *         })
-              * });*/
-             /* .done(function(bibtexParse) {
-              *     console.log('yep');
-              *     console.log(bibtexParse);
-              *     console.log(bibtexParse.toJSON('@article{sample1,title={sample title}}'));
-              * });*/
-             /* $.getJSON("SpEC_publications.json", function(publications) {
-              *     console.log(publications);
-              *     var years = get_sorted_years(publications);
-              *     publications.sort(sort_by_date);
-
-              *     var n_publications = publications.length;
-              *     for (var i=0; i<n_publications; ++i) {
-              *         console.log(format_author_list(publications[i].author));
-              *     }
-              * });*/
-             /* console.log(publications);*/
-             /* publications.forEach(function(publication) {
-              *     format_author_list(publication.author);
-              * });*/
          });
         </script>
     </head>
