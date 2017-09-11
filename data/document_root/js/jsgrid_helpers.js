@@ -109,8 +109,20 @@ var filter_strings_ints_floatranges = function(filter) {
         for (var property in filter) {
             if (filter.hasOwnProperty(property)) {
                 if (typeof filter[property] === "string" || filter[property] instanceof String) {
-                    if (filter[property] && run[property] !== undefined && ! run[property].match(filter[property])) {
-                        return false;
+                    console.log(run[property], typeof run[property]);
+                    if (filter[property] && run[property] !== undefined) {
+                        if ($.isArray(run[property])) {
+                            for (var run_prop in run[property]) {
+                                if (run_prop.match(filter[property])) {
+                                    return true;
+                                }
+                            }
+                            return false;
+                        } else {
+                            if (! run[property].match(filter[property])) {
+                                return false;
+                            }
+                        }
                     }
                 } else {
                     if (filter[property] !== undefined) {
@@ -139,7 +151,7 @@ var filter_strings_ints_floatranges = function(filter) {
 //
 var format_email = function(value, item) {
     var img = $('<img>', {
-        src: "/data/images/icons/envelope-o.svg",
+        src: "/images/icons/envelope-o.svg",
         width: "20px",
         height: "20px",
         alt: value,
@@ -152,13 +164,13 @@ var format_email = function(value, item) {
 var format_downloads = function(value, item) {
     var span = $('<span>');
     var img = $('<img>', {
-        src: "/data/images/icons/folder-o.svg",
+        src: "/images/icons/folder-o.svg",
         width: "20px",
         height: "20px",
         alt: value,
     }).css("border-width", "0px");
     var a = $('<a>',{
-        href: "data/"+item.name,
+        href: 'data/' + item.name,
     });
     span.append(a.append(img));
     return span;

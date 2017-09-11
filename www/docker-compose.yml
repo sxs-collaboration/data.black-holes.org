@@ -30,20 +30,20 @@ services:
       options:
         max-size: "100m"
 
-  oauth2_proxy:
-    build: oauth2_proxy/build
-    restart: on-failure
-    ports:
-      - 9180:4180
-    volumes:
-      - ./oauth2_proxy/oauth.ini:/etc/oauth.ini:ro
-    logging:
-      options:
-        max-size: "100m"
-    secrets:
-      - oauth2_proxy_client_id
-      - oauth2_proxy_client_secret
-      - oauth2_proxy_cookie_secret
+  #oauth2_proxy:
+  #  build: oauth2_proxy/build
+  #  restart: on-failure
+  #  ports:
+  #    - 9180:4180
+  #  volumes:
+  #    - ./oauth2_proxy/oauth.ini:/etc/oauth.ini:ro
+  #  logging:
+  #    options:
+  #      max-size: "100m"
+  #  secrets:
+  #    - oauth2_proxy_client_id
+  #    - oauth2_proxy_client_secret
+  #    - oauth2_proxy_cookie_secret
 
   responder:
     image: nginx

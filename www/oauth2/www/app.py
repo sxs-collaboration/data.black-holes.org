@@ -113,7 +113,7 @@ def check_authorization():
     # Ensure that the crucial pieces of information are available
     if not ('github_login' in session and 'github_orgs_and_teams' in session):
         print('User info missing from session; updating now.')
-        update_info(github)
+        refresh(github)
         if not ('github_login' in session and 'github_orgs_and_teams' in session):
             print('Could not get user info.  Replying with 403.')
             return 'Forbidden', 403
@@ -129,7 +129,7 @@ def check_authorization():
     if not check_user_auth_for_path(session['github_login'], session['github_orgs_and_teams'].split(','), path):
         if seconds_since_last_github_check() > 10:
             # Try to update the information, in case team membership has changed, etc.
-            update_info(github)
+            refresh(github)
             if not check_user_auth_for_path(session['github_login'], session['github_orgs_and_teams'].split(','), path):
                 return 'Forbidden', 403
         else:
@@ -137,6 +137,7 @@ def check_authorization():
 
     response = Response('OK', 200)
     response.headers['X-Auth-Request-User'] = session.get('github_login', '')
+    response.headers['X-Auth-Request-Name'] = session.get('github_name', '')
     response.headers['X-Auth-Request-Email'] = session.get('github_email', '')
     response.headers['X-Auth-Request-Memberships'] = session.get('github_orgs_and_teams', '')
     return response
@@ -212,20 +213,22 @@ def callback():
     # authorized automatically, so as long as we're just checking membership in our own orgs and
     # teams, this won't be a problem.
     github = OAuth2Session(client_id, token=session['oauth_token'])
-    update_info(github)
+    refresh(github)
 
     # Finally, we send the user back to the page they were originally looking for.  Nginx will try
     # again at step 0, but this should succeed now, so the page will get served.
     return redirect(session.pop('redirect', '/'))
 
 
-@app.route('/oauth2/info')
-def update_info(github=None):
+@app.route('/oauth2/refresh')
+def refresh(github=None):
     """Helper function to update username, orgs, teams, last check time"""
     try:
         if github is None:
             github = OAuth2Session(client_id, token=session['oauth_token'])
-        session['github_login'] = github.get('https://api.github.com/user').json().get('login', '')
+        user = github.get('https://api.github.com/user').json()
+        session['github_login'] = user.get('login', '')
+        session['github_name'] = user.get('name', '')
         emails = github.get('https://api.github.com/user/emails').json()
         if emails:
             verified_email = [email['email'] for email in emails if 'email' in email and email.get('primary', False)]
@@ -244,10 +247,34 @@ def update_info(github=None):
              for team in teams if 'name' in team and 'organization' in team and 'login' in team['organization']]
         )
         session['github_last_check'] = time.time()
-        return 'OK', 200
+        return """<!DOCTYPE html>
+        <html>
+          <head>
+            <meta charset="UTF-8">
+            <script>(function(){window.history.go(-1); return false;}());</script>
+          </head>
+          <body>
+            OAuth information refreshed.
+          </body>
+        </html>""", 200
     except Exception as e:
         url = url_for('.authorize_github') + '?redirect=' + urllib.parse.quote_plus('/oauth2/info')
         return redirect(url)
+
+
+@app.route('/oauth2/logout')
+def logout():
+    session.clear()
+    return """<!DOCTYPE html>
+    <html>
+      <head>
+        <meta charset="UTF-8">
+        <script>(function(){window.location="https://www.black-holes.org/"; return false;}());</script>
+      </head>
+      <body>
+        Logged out.
+      </body>
+    </html>""", 200
 
 
 def seconds_since_last_github_check():

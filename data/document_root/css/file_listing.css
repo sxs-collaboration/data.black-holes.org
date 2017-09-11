@@ -12,19 +12,19 @@
     margin-right: 5px;
 }
 .file_listing.directory:before {
-    background-image: url(/data/images/icons/folder-o.svg);
+    background-image: url(/images/icons/folder-o.svg);
 }
 .file_listing.directory.open:before {
-    background-image: url(/data/images/icons/folder-open-o.svg);
+    background-image: url(/images/icons/folder-open-o.svg);
 }
 .file_listing.txt:before {
-    background-image: url(/data/images/icons/file-text-o.svg);
+    background-image: url(/images/icons/file-text-o.svg);
 }
 .file_listing.tgz:before {
-    background-image: url(/data/images/icons/file-archive-o.svg);
+    background-image: url(/images/icons/file-archive-o.svg);
 }
 .file_listing.hdf5:before {
-    background-image: url(/data/images/icons/area-chart.svg);
+    background-image: url(/images/icons/area-chart.svg);
 }
 
 .file_listing.indent1:before{

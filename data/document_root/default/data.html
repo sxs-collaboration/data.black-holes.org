@@ -3,16 +3,16 @@
     <head>
         <meta charset="utf-8">
         <title>SXS Data Server</title>
-        <link rel="stylesheet" type="text/css" href="/data/css/bootstrap.min.css">
-        <link rel="stylesheet" type="text/css" href="/data/css/file_listing.css">
+        <link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="/css/file_listing.css">
         <style>
          .capitalize {text-transform:capitalize;}
         </style>
         <script src="https://www.google.com/recaptcha/api.js" async defer></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_SVG" type="text/javascript"></script>
-        <script src="/data/js/mathjax.js"></script>
-        <script src="/data/js/file_listing.js"></script>
+        <script src="/js/mathjax.js"></script>
+        <script src="/js/file_listing.js"></script>
         <script>
          function onSubmit(token) {
              document.getElementById("download_form").submit();
@@ -23,7 +23,7 @@
              // Write the catalog and data group id everywhere we want it
              var path = window.location.pathname.split("/");
              /* var catalog = path[1];*/
-             var catalog = path[2];
+             var catalog = path[1];
              var id = path[path.length-1];
              $(".catalog_string").text(catalog);
              $(".id_string").text(id);

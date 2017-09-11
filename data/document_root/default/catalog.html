@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <title>SXS Data Server</title>
-        <link rel="stylesheet" type="text/css" href="/data/css/cuscosky.css">
+        <link rel="stylesheet" type="text/css" href="/css/cuscosky.css">
         <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid.min.css" />
         <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid-theme.min.css" />
         <style>
@@ -29,9 +29,9 @@
         </style>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_SVG" type="text/javascript"></script>
-        <script src="/data/js/mathjax.js"></script>
+        <script src="/js/mathjax.js"></script>
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid.min.js"></script>
-        <script src="/data/js/jsgrid_helpers.js"></script>
+        <script src="/js/jsgrid_helpers.js"></script>
         <script>
          // This function will always be called by jquery (represented by $ here) once the DOM is loaded.
          $(function() {
@@ -121,9 +121,21 @@
                      // specifically, the wiki), the browser will automatically send the `Authorization` header and
                      // wiki cookies along with this request.  If detected, nginx will rewrite the request to one for
                      // a JSON file stored on the wiki, thus going through the usual authentication process.
-                     $.getJSON("/wiki/waveforms/private_catalog.json", function(private_catalog) {
-                         //console.log('Successfully got private data');
-                         catalog = catalog.concat(private_catalog);
+                     /* $.getJSON("https://www.black-holes.org/wiki/waveforms/private_catalog.json", function(private_catalog) {
+                      *     //console.log('Successfully got private data');
+                      *     catalog = catalog.concat(private_catalog);
+                      * })*/
+                     $.ajax({
+                         type: 'GET',
+                         dataType: 'json',
+                         url: "https://www.black-holes.org/wiki/waveforms/private_catalog.json",
+                         success: function(private_catalog) {
+                             //console.log('Successfully got private data');
+                             catalog = catalog.concat(private_catalog);
+                         },
+                         xhrFields: {
+                             withCredentials: true
+                         }
                      })
                       .fail(function() {
                           // If the private data could not be retrieved, it will show a 403 in the console.
