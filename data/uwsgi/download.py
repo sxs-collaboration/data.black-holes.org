@@ -98,16 +98,16 @@ def application(environ, start_response):
 
         # Validate the requested paths
         if success:
-            print('json_data:', json_data)
-            print('permitted_files:', permitted_files)
+            # print('json_data:', json_data)
+            # print('permitted_files:', permitted_files)
             def recurse(json_dict, permitted_files):
                 file_type = json_dict.get('type', 'illegal_type')
                 current_file = json_dict.get('path', '')
-                print("file_type", file_type)
-                print("current_file:", current_file, file_type in file_extension_whitelist, current_file in requested_files)
+                # print("file_type", file_type)
+                # print("current_file:", current_file, file_type in file_extension_whitelist, current_file in requested_files)
                 if file_type in file_extension_whitelist and current_file in requested_files:
                     current_path = os.path.join(catalog_root, 'files', current_file)
-                    print("current_path:", current_path, os.path.isfile(current_path))
+                    # print("current_path:", current_path, os.path.isfile(current_path))
                     if os.path.isfile(current_path):
                         permitted_files.append(current_file)
                 children = json_dict.get('children', [])

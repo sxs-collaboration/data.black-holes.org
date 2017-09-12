@@ -79,11 +79,9 @@ jsGrid.sortStrategies.limit_or_float = function(value1, value2) {
                 if (value2.charAt(0) === "<") {
                     return 1;
                 } else {
-                    console.log(0, value1, value2, typeof(value1), typeof(value2));
                     return 0;
                 }
             } else {
-                console.log(1, value1, value2, typeof(value1), typeof(value2));
                 return 1;
             }
         }
@@ -92,7 +90,6 @@ jsGrid.sortStrategies.limit_or_float = function(value1, value2) {
         if (value2.charAt(0) === "<") {
             value2 = parseFloat(value2.substr(1));
         } else {
-            console.log(-1, value1, value2, typeof(value1), typeof(value2));
             return -1;
         }
     }
@@ -109,7 +106,6 @@ var filter_strings_ints_floatranges = function(filter) {
         for (var property in filter) {
             if (filter.hasOwnProperty(property)) {
                 if (typeof filter[property] === "string" || filter[property] instanceof String) {
-                    console.log(run[property], typeof run[property]);
                     if (filter[property] && run[property] !== undefined) {
                         if ($.isArray(run[property])) {
                             for (var run_prop in run[property]) {
