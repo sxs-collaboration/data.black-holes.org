@@ -20,6 +20,7 @@ ln -sf /proc/$$/fd/1 /var/log/mail.log
 ln -sf /proc/$$/fd/1 /var/log/letsencrypt/letsencrypt.log
 
 # For some reason, we have to start postfix and rsyslog ourselves
+echo "127.0.0.1 black-holes.org $(hostname)" >> /etc/hosts
 service postfix start
 service rsyslog start
 
