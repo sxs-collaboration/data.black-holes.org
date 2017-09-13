@@ -139,7 +139,7 @@ def check_authorization():
     response.headers['X-Auth-Request-User'] = session.get('github_login', '')
     response.headers['X-Auth-Request-Name'] = session.get('github_name', '')
     response.headers['X-Auth-Request-Email'] = session.get('github_email', '')
-    response.headers['X-Auth-Request-Memberships'] = session.get('github_orgs_and_teams', '')
+    response.headers['X-Auth-Request-Groups'] = session.get('github_orgs_and_teams', '')
     return response
 
 
@@ -240,7 +240,7 @@ def refresh(github=None):
             session['github_email'] = ''
         orgs = github.get('https://api.github.com/user/orgs').json()
         teams = github.get('https://api.github.com/user/teams').json()
-        session['github_orgs_and_teams'] = ','.join(
+        session['github_orgs_and_teams'] = '|'.join(
             [org['login'] for org in orgs if 'login' in org]
             +
             ['{0}:{1}'.format(team['organization']['login'], team['name'])

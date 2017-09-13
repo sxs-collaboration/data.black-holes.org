@@ -87,6 +87,15 @@ services:
       options:
         max-size: "10m"
 
+  wiki2:
+    image: php:7-fpm
+    restart: on-failure
+    volumes:
+      - ./wiki/document_root:/var/www/html/wiki
+    logging:
+      options:
+        max-size: "10m"
+
   doxygen:
     image: php:apache
     restart: on-failure
