@@ -63,19 +63,27 @@ def check_user_auth_for_path(user, orgs_and_teams, path):
 
     """
 
-    # # Allow anyone in the github organization 'sxs-collaboration' to see anything
-    # if 'sxs-collaboration' in orgs_and_teams:
+    # DEBUG: find the result with `docker-compose logs oauth2`
+    # print(user, orgs_and_teams, path)
+
+    # # Allow these users to see anything
+    # users = ['moble', 'nilsdeppe']
+    # if user in users:
     #     return True
 
-    # # Allow anyone in the 'SpEC' team (which belongs to 'sxs-collaboration') to see any URL starting
-    # # with /SpEC
-    # if 'sxs-collaboration:SpEC' in orgs_and_teams and path.startswith('/SpEC'):
-    #     return True
-
-    # Allow Mike and Nils to see anything
-    users = ['moble', 'nilsdeppe']
-    if user in users:
+    # Allow anyone in the github organization 'sxs-collaboration' to see anything
+    if 'sxs-collaboration' in orgs_and_teams:
         return True
+
+    if 'sxs-collaboration:SpEC' in orgs_and_teams:
+        return True
+
+    if 'sxs-collaboration:spectre' in orgs_and_teams:
+        return True
+
+    for ot in orgs_and_teams:
+        if ot.startswith('sxs-collaboration:wiki'):
+            return True
 
     return False
 
@@ -126,11 +134,11 @@ def check_authorization():
         path = '/'
 
     # Run our function for allowing access to a given URL for a given user
-    if not check_user_auth_for_path(session['github_login'], session['github_orgs_and_teams'].split(','), path):
+    if not check_user_auth_for_path(session['github_login'], session['github_orgs_and_teams'].split('|'), path):
         if seconds_since_last_github_check() > 10:
             # Try to update the information, in case team membership has changed, etc.
             refresh(github)
-            if not check_user_auth_for_path(session['github_login'], session['github_orgs_and_teams'].split(','), path):
+            if not check_user_auth_for_path(session['github_login'], session['github_orgs_and_teams'].split('|'), path):
                 return 'Forbidden', 403
         else:
             return 'Forbidden', 403
