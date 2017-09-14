@@ -28,15 +28,6 @@ services:
         max-size: "100m"
     # command: [nginx-debug, '-g', 'daemon off;']  # add `error_log /var/log/nginx/error.log debug;` to see details
 
-  responder:
-    image: nginx
-    restart: on-failure
-    volumes:
-      - ./responder_nginx.conf:/etc/nginx/nginx.conf:ro
-    logging:
-      options:
-        max-size: "1m"
-
   oauth2:
     build: oauth2/build
     restart: on-failure
@@ -82,15 +73,6 @@ services:
 
   wiki:
     build: wiki/build
-    restart: on-failure
-    volumes:
-      - ./wiki/document_root:/var/www/html/wiki
-    logging:
-      options:
-        max-size: "10m"
-
-  wiki2:
-    build: wiki2/build
     restart: on-failure
     volumes:
       - ./wiki/document_root:/var/www/html/wiki

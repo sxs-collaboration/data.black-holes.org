@@ -1,14 +1,6 @@
-FROM php:apache
+FROM php:7-fpm
 
-# Install sendmail and ImageMagick convert
-RUN apt-get update \
-    && apt-get install -y sendmail imagemagick --no-install-recommends \
-    && rm -rf /var/lib/apt/lists/*
+# RUN groupadd -g 1002 web
+# RUN useradd -u 503 -g 1002 -s /bin/bash -G 33 web
 
-RUN groupadd -g 1002 web
-RUN useradd -u 503 -g 1002 -s /bin/bash -G 33 web
-
-COPY ./docker-entrypoint.sh /
-ENTRYPOINT ["/docker-entrypoint.sh"]
-
-CMD ["apache2-foreground"]
+# RUN sed -i 's/user = www-data/user = web/; s/group = www-data/group = web/' /usr/local/etc/php-fpm.d/www.conf
