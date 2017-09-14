@@ -10,6 +10,7 @@
 find /web/servers \
     \( -type f -o -type d \) \
     -not -path "/web/servers/www/joomladb" \
+    -not -path "/web/servers/www/wiki" \
     -not -path "/web/servers/cron/scripts/git" \
     -not -path "/web/servers/home_directories/git" \
     -not -path "/web/servers/secrets/git" \
@@ -17,6 +18,7 @@ find /web/servers \
     -not -path "/web/servers/cron/cron.d" \
     -exec chown 503:33 {} \;
 #chown -R 503:33 /web/servers  # web:www-data
+chown -R 33:33 /web/servers  # www-data:www-data
 chown -R 999:999 /web/servers/www/joomladb  # mysql:mysql (on joomladb container)
 chown -R 522:1003 /web/servers/cron/scripts/git  # git:git
 chown -R 522:1003 /web/servers/home_directories/git  # git:git

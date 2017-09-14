@@ -87,7 +87,7 @@ def check_user_auth_for_path(user, orgs_and_teams, path):
 
     return False
 
-@app.route("/oauth2/check_authorization", methods=["GET"])
+@app.route("/oauth2/check_authorization", methods=["GET", "POST"])
 def check_authorization():
     """Step 0: Check for authorization
 
@@ -103,7 +103,7 @@ def check_authorization():
     """
     # Make sure we've stored everything we need.  If not, nginx will redirect to /oauth2/authorize_github.
     if not 'oauth_token' in session:
-        print('No oauth_token in session.  Replying with 403.')
+        print('No oauth_token in session.  Replying with 403.  ' + repr(session))
         return 'Forbidden', 403
 
     # Now check with github to make sure we're authorized
