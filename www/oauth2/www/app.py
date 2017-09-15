@@ -63,13 +63,8 @@ def check_user_auth_for_path(user, orgs_and_teams, path):
 
     """
 
-    # DEBUG: find the result with `docker-compose logs oauth2`
+    # # DEBUG: find the result with `docker-compose logs oauth2`
     # print(user, orgs_and_teams, path)
-
-    # # Allow these users to see anything
-    # users = ['moble', 'nilsdeppe']
-    # if user in users:
-    #     return True
 
     # Allow anyone in the github organization 'sxs-collaboration' to see anything
     if 'sxs-collaboration' in orgs_and_teams:
