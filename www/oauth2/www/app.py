@@ -210,7 +210,7 @@ def login():
     else:
         message = "An unknown error occurred while trying to log in.  Please try again."
 
-    return render_template('login.html', message=message)
+    return render_template('login.html', message=message), 403
 
 
 @app.route('/auth/github')
