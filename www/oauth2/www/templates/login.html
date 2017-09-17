@@ -30,20 +30,18 @@
                 <br/>
 	        <h2>This section of the site is for members only.</h2>
                 <p>
-                    {{ message }}
+                    {{ message|safe }}
                 </p>
 
                 <hr style="height:3px; background: #999">
 
                 <div class="container">
-                    <a href="https://www.black-holes.org/wiki">
-                        <button type="button" class="readon"
-                                style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;font-size: 18px;font-weight: normal;">
-                            Sign in with a password
-                        </button>
+                    <a href="https://wiki.black-holes.org/" class="github_button"
+                       style="padding-left: 16px; text-align: center; background-color:rgb(213, 91, 47)">
+                        Sign in with a password
                     </a>
 
-                    <a href="https://wiki.black-holes.org" class="github_button">
+                    <a href="https://wiki.black-holes.org/auth/github" class="github_button">
                         <span class="octocat"></span>
                         Sign in with GitHub
                     </a>

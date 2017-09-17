@@ -19,7 +19,7 @@ from base64 import b64encode
 import urllib.parse
 import json
 from requests_oauthlib import OAuth2Session
-from flask import Flask, request, redirect, session, url_for, Response
+from flask import Flask, request, redirect, session, url_for, Response, render_template, escape
 from flask.json import jsonify
 
 os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
@@ -35,6 +35,7 @@ with open('/run/secrets/client_secret', 'r') as f:
     client_secret = f.read().strip()
 with open('/run/secrets/cookie_secret', 'r') as f:
     app.secret_key = f.read().strip()
+
 authorization_base_url = 'https://github.com/login/oauth/authorize'
 token_url = 'https://github.com/login/oauth/access_token'
 
@@ -63,7 +64,7 @@ def check_user_auth_for_path(user, orgs_and_teams, path):
 
     """
 
-    # # DEBUG: find the result with `docker-compose logs oauth2`
+    # # DEBUG; see the result of this statement with `docker-compose logs oauth2`
     # print(user, orgs_and_teams, path)
 
     # Allow anyone in the github organization 'sxs-collaboration' to see anything
@@ -82,8 +83,9 @@ def check_user_auth_for_path(user, orgs_and_teams, path):
 
     return False
 
-@app.route("/oauth2/check_authorization", methods=["GET", "POST"])
-def check_authorization():
+
+@app.route("/auth/check")
+def check():
     """Step 0: Check for authorization
 
     This route is called from nginx to check if the user is authorized to access the requested page.
@@ -96,10 +98,13 @@ def check_authorization():
     immediately on response.
 
     """
-    # Make sure we've stored everything we need.  If not, nginx will redirect to /oauth2/authorize_github.
+    response = Response('Forbidden', 403)
+
+    # Make sure we've stored everything we need.  If not, nginx will redirect to /auth/github.
     if not 'oauth_token' in session:
         print('No oauth_token in session.  Replying with 403.  ' + repr(session))
-        return 'Forbidden', 403
+        response.headers['X-Auth-Failure'] = 'no_oauth_token'
+        return response
 
     # Now check with github to make sure we're authorized
     github = OAuth2Session(client_id, token=session['oauth_token'])
@@ -109,7 +114,8 @@ def check_authorization():
         if not github.get('https://api.github.com/user').ok:
             # The `get` call makes a request to github, which has come back as not OK, which means
             # that the token we provided with that call was not accepted.
-            return 'Forbidden', 403
+            response.headers['X-Auth-Failure'] = 'github_rejected_user'
+            return response
         session['github_last_check'] = time.time()
         print('Oauth token checked out valid on {0}.'.format(session['github_last_check']))
 
@@ -119,7 +125,8 @@ def check_authorization():
         refresh(github)
         if not ('github_login' in session and 'github_orgs_and_teams' in session):
             print('Could not get user info.  Replying with 403.')
-            return 'Forbidden', 403
+            response.headers['X-Auth-Failure'] = 'github_rejected_details'
+            return response
 
     # Get the requested URL
     redirects = request.headers.getlist('X-Auth-Request-Redirect')
@@ -134,9 +141,11 @@ def check_authorization():
             # Try to update the information, in case team membership has changed, etc.
             refresh(github)
             if not check_user_auth_for_path(session['github_login'], session['github_orgs_and_teams'].split('|'), path):
-                return 'Forbidden', 403
+                response.headers['X-Auth-Failure'] = 'unauthorized_' + session['github_login']
+                return response
         else:
-            return 'Forbidden', 403
+            response.headers['X-Auth-Failure'] = 'unauthorized_' + session['github_login']
+            return response
 
     response = Response('OK', 200)
     response.headers['X-Auth-Request-User'] = session.get('github_login', '')
@@ -146,8 +155,66 @@ def check_authorization():
     return response
 
 
-@app.route('/oauth2/authorize_github')
-def authorize_github():
+@app.route("/auth/login")
+def login():
+    """Step 0.5: Explain what has to happen now, if the authorization failed.
+
+    If /auth/check failed, it will set a header X-Auth-Failure.  (We can't just pass this
+    information via the session cookie, because failure to set the cookie is one reason the check
+    might have failed.)  This function examines that header and constructs a message to explain what
+    is needed for the login to proceed.
+
+    1) Session cookie has no 'test' field, so cookies need to be enabled
+    2) Github callback returned with an error
+    3) session['oauth_state'] was not present, so either /auth/github got called directly, or it could not be set
+    4) session['oauth_token'] was not present, so either /auth/check got called before login, or it could not be set
+    5) could not get user from github, so the oauth token supplied was not accepted (maybe the app was disabled by the user)
+    6) could not get user login and orgs and team from github, so user may have de-scoped the token
+    7) the user simply is not authorized
+
+    """
+    failure_reason = request.headers.getlist('X-Auth-Failure')
+    if len(failure_reason) > 0:
+        failure_reason = failure_reason[0]
+    else:
+        failure_reason = ''
+
+    if failure_reason == 'no_session':
+        message = "Unable to set session cookie.  Please ensure that cookies can be set by this site and by github.com."
+    elif failure_reason == 'github_error':
+        message = ("Github OAuth returned an error.  Please ensure that cookies can be set by this site and by github.com.  "
+                   + "Also ensure that the black-holes.org OAuth app is authorized on "
+                   + "<a href='https://github.com/settings/connections/applications/ee6f483db600575707ad'>your user page</a> "
+                   + "and is allowed to read org and team membership and user email addresses.")
+    elif failure_reason == 'no_oauth_state':
+        message = "Unable to set OAuth state in session cookie.  Please ensure that cookies can be set by this site and by github.com."
+    elif failure_reason == 'no_oauth_token':
+        message = "No OAuth token in session cookie.  Please ensure that cookies can be set by this site and by github.com."
+    elif failure_reason == 'github_rejected_user':
+        message = ("Could not get user information from github.  "
+                   + "Please ensure that the black-holes.org OAuth app is authorized on "
+                   + "<a href='https://github.com/settings/connections/applications/ee6f483db600575707ad'>your user page</a> "
+                   + "and is allowed to read org and team membership and user email addresses.")
+    elif failure_reason == 'github_rejected_details':
+        message = ("Could not get user information, organizations, and teams from github.  "
+                   + "Please ensure that the black-holes.org OAuth app is authorized on "
+                   + "<a href='https://github.com/settings/connections/applications/ee6f483db600575707ad'>your user page</a> "
+                   + "and is allowed to read org and team membership and user email addresses.")
+    elif failure_reason.startswith('unauthorized_'):
+        user_id = escape(failure_reason[13:])
+        message = ("You are authenticated via github as user '{0}', but do not have sufficient permissions ".format(user_id)
+                   + "to access this page.  If you feel that this is an error, please email the sxs-collaboration admins with the "
+                   + "URL of the page you were trying to access and a list of "
+                   + "<a href='https://github.com/settings/organizations'>the oganizations and teams you belong to</a> on github.  "
+                   + "Alternatively, if you have a password, feel free to try that instead.")
+    else:
+        message = "An unknown error occurred while trying to log in.  Please try again."
+
+    return render_template('login.html', message=message)
+
+
+@app.route('/auth/github')
+def github():
     """Step 1: Redirect to github user authorization
 
     Redirect the user/resource owner to the OAuth provider (Github) using a URL with a few key OAuth
@@ -171,17 +238,19 @@ def authorize_github():
         redirects = request.headers.getlist('X-Auth-Request-Redirect')
         if redirects:
             url = redirects[0]
-            if url != '/oauth2/authorize_github':
+            if url != '/auth/github':
                 session['redirect'] = url
 
     # But for now, we send them off to github
     return redirect(authorization_url)
 
+
 #
 # Step 2: User authorization, this happens on github
 #
 
-@app.route('/oauth2/callback')
+
+@app.route('/auth/callback')
 def callback():
     """Step 3: Retrieving an access token from github
 
@@ -196,12 +265,16 @@ def callback():
         print('Github oauth responded with an error:\n'
               + '\t{0}: {1}\n'.format(request.args.get('error', 'error'), request.args.get('error_description', ''))
               + '\tSee <{0}> for details.\n'.format(request.args.get('error_uri', troubleshooting)))
-        return 'Forbidden', 403
+        response = Response('Forbidden', 403)
+        response.headers['X-Auth-Failure'] = 'github_error'
+        return response
 
     # Now, make sure we have the state saved in step 1.
     if 'oauth_state' not in session:
         print('Failed to save oauth state in `session`.  Replying with 403.')
-        return 'Forbidden', 403
+        response = Response('Forbidden', 403)
+        response.headers['X-Auth-Failure'] = 'no_oauth_state'
+        return response
 
     # We now send our own request to github, along with our secret.  If this succeeds, we will get
     # back an access token that will allow us to access the user's data on github (within the scope
@@ -223,7 +296,7 @@ def callback():
     return redirect(session.pop('redirect', '/'))
 
 
-@app.route('/oauth2/refresh')
+@app.route('/auth/refresh')
 def refresh(github=None):
     """Helper function to update username, orgs, teams, last check time"""
     try:
@@ -261,11 +334,11 @@ def refresh(github=None):
           </body>
         </html>""", 200
     except Exception as e:
-        url = url_for('.authorize_github') + '?redirect=' + urllib.parse.quote_plus('/oauth2/info')
+        url = url_for('.github') + '?redirect=' + urllib.parse.quote_plus('/auth/info')
         return redirect(url)
 
 
-@app.route('/oauth2/logout')
+@app.route('/auth/logout')
 def logout():
     session.clear()
     return """<!DOCTYPE html>
@@ -275,7 +348,7 @@ def logout():
         <script>(function(){window.location="https://www.black-holes.org/"; return false;}());</script>
       </head>
       <body>
-        Logged out.
+        You are now logged out.
       </body>
     </html>""", 200
 
