@@ -91,7 +91,7 @@ def check_user_auth_for_path(user, orgs_and_teams, path):
     return False
 
 
-@app.route("/auth/check")
+@app.route("/auth/check", methods=["GET", "POST"])
 def check():
     """Step 0: Check for authorization
 
