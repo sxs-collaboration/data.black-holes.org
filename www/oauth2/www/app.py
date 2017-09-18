@@ -13,6 +13,7 @@ some `keepalive` option to uwsgi.
 
 """
 
+
 import time
 import os
 from base64 import b64encode
@@ -35,6 +36,9 @@ with open('/run/secrets/client_secret', 'r') as f:
     client_secret = f.read().strip()
 with open('/run/secrets/cookie_secret', 'r') as f:
     app.secret_key = f.read().strip()
+
+# Change this if using an OAuth app other than black-holes.org
+app_id = 'ee6f483db600575707ad'
 
 authorization_base_url = 'https://github.com/login/oauth/authorize'
 token_url = 'https://github.com/login/oauth/access_token'
@@ -64,8 +68,11 @@ def check_user_auth_for_path(user, orgs_and_teams, path):
 
     """
 
-    # # DEBUG; see the result of this statement with `docker-compose logs oauth2`
-    # print(user, orgs_and_teams, path)
+    # # DEBUG; see the result of this statement with `docker-compose logs oauth2 | grep "User info:"`
+    # print("User info:", user, orgs_and_teams, path)
+
+    if user == 'moble':
+        return True
 
     # Allow anyone in the github organization 'sxs-collaboration' to see anything
     if 'sxs-collaboration' in orgs_and_teams:
@@ -156,7 +163,7 @@ def check():
 
 
 @app.route("/auth/login")
-def login():
+def login(failure_reason=None):
     """Step 0.5: Explain what has to happen now, if the authorization failed.
 
     If /auth/check failed, it will set a header X-Auth-Failure.  (We can't just pass this
@@ -173,32 +180,50 @@ def login():
     7) the user simply is not authorized
 
     """
-    failure_reason = request.headers.getlist('X-Auth-Failure')
-    if len(failure_reason) > 0:
-        failure_reason = failure_reason[0]
+    if failure_reason is None:
+        failure_reason = request.headers.getlist('X-Auth-Failure')
+        if len(failure_reason) > 0:
+            failure_reason = failure_reason[0]
+        else:
+            failure_reason = ''
+
+    if 'redirect' in request.args:
+        redirect = urllib.parse.unquote(request.args['redirect'])
     else:
-        failure_reason = ''
+        redirects = request.headers.getlist('X-Auth-Request-Redirect')
+        if redirects:
+            url = redirects[0]
+            if url != '/auth/github':
+                redirect = url
+            else:
+                redirect = '/'
+        else:
+            redirect = '/'
+    if redirect == '/':
+        url = url_for('.github')
+    else:
+        url = url_for('.github', redirect=redirect)
 
     if failure_reason == 'no_session':
         message = "Unable to set session cookie.  Please ensure that cookies can be set by this site and by github.com."
     elif failure_reason == 'github_error':
         message = ("Github OAuth returned an error.  Please ensure that cookies can be set by this site and by github.com.  "
                    + "Also ensure that the black-holes.org OAuth app is authorized on "
-                   + "<a href='https://github.com/settings/connections/applications/ee6f483db600575707ad'>your user page</a> "
+                   + "<a href='https://github.com/settings/connections/applications/{0}'>your user page</a> ".format(app_id)
                    + "and is allowed to read org and team membership and user email addresses.")
     elif failure_reason == 'no_oauth_state':
         message = "Unable to set OAuth state in session cookie.  Please ensure that cookies can be set by this site and by github.com."
     elif failure_reason == 'no_oauth_token':
-        message = "No OAuth token in session cookie.  Please ensure that cookies can be set by this site and by github.com."
+        message = "Please ensure that cookies can be set by this site and by github.com."
     elif failure_reason == 'github_rejected_user':
         message = ("Could not get user information from github.  "
                    + "Please ensure that the black-holes.org OAuth app is authorized on "
-                   + "<a href='https://github.com/settings/connections/applications/ee6f483db600575707ad'>your user page</a> "
+                   + "<a href='https://github.com/settings/connections/applications/{0}'>your user page</a> ".format(app_id)
                    + "and is allowed to read org and team membership and user email addresses.")
     elif failure_reason == 'github_rejected_details':
         message = ("Could not get user information, organizations, and teams from github.  "
                    + "Please ensure that the black-holes.org OAuth app is authorized on "
-                   + "<a href='https://github.com/settings/connections/applications/ee6f483db600575707ad'>your user page</a> "
+                   + "<a href='https://github.com/settings/connections/applications/{0}'>your user page</a> ".format(app_id)
                    + "and is allowed to read org and team membership and user email addresses.")
     elif failure_reason.startswith('unauthorized_'):
         user_id = escape(failure_reason[13:])
@@ -210,7 +235,7 @@ def login():
     else:
         message = "An unknown error occurred while trying to log in.  Please try again."
 
-    return render_template('login.html', message=message), 403
+    return render_template('login.html', message=message, url=url), 403
 
 
 @app.route('/auth/github')
@@ -233,7 +258,7 @@ def github():
     # returning a list of headers; if we try to just get "the" header with this name, we get None ---
     # even though there's exactly one --- so we need to get a list of that one header.
     if 'redirect' in request.args:
-        session['redirect'] = request.args['redirect']
+        session['redirect'] = urllib.parse.unquote(request.args['redirect'])
     else:
         redirects = request.headers.getlist('X-Auth-Request-Redirect')
         if redirects:
@@ -296,7 +321,6 @@ def callback():
     return redirect(session.pop('redirect', '/'))
 
 
-@app.route('/auth/refresh')
 def refresh(github=None):
     """Helper function to update username, orgs, teams, last check time"""
     try:
@@ -323,19 +347,21 @@ def refresh(github=None):
              for team in teams if 'name' in team and 'organization' in team and 'login' in team['organization']]
         )
         session['github_last_check'] = time.time()
-        return """<!DOCTYPE html>
-        <html>
-          <head>
-            <meta charset="UTF-8">
-            <script>(function(){window.history.go(-1); return false;}());</script>
-          </head>
-          <body>
-            OAuth information refreshed.
-          </body>
-        </html>""", 200
+        return True
+        # return """<!DOCTYPE html>
+        # <html>
+        #   <head>
+        #     <meta charset="UTF-8">
+        #     <script>(function(){window.history.go(-1); return false;}());</script>
+        #   </head>
+        #   <body>
+        #     OAuth information refreshed.
+        #   </body>
+        # </html>""", 200
     except Exception as e:
-        url = url_for('.github') + '?redirect=' + urllib.parse.quote_plus('/auth/info')
-        return redirect(url)
+        return False
+        # url = url_for('.github') + '?redirect=' + urllib.parse.quote_plus('/auth/login')
+        # return redirect(url)
 
 
 @app.route('/auth/logout')
