@@ -29,32 +29,6 @@ services:
         max-size: "100m"
     # command: [nginx-debug, '-g', 'daemon off;']  # add `error_log /var/log/nginx/error.log debug;` to see details
 
-  nginx-oauth2-test:
-    image: nginx
-    restart: on-failure
-    ports:
-      - 80:80
-      - 443:443
-    depends_on:
-      - oauth2
-    volumes:
-      - ./nginx/nginx-oauth2-test.conf:/etc/nginx/nginx.conf:ro
-      - ./nginx/conf.d:/etc/nginx/conf.d:ro
-      - ./nginx/document_root:/usr/share/nginx/html
-    logging:
-      options:
-        max-size: "100m"
-    command: [nginx-debug, '-g', 'daemon off;']  # add `error_log /var/log/nginx/error.log debug;` to see details
-
-  responder:
-    image: nginx
-    restart: on-failure
-    volumes:
-      - ./responder_nginx.conf:/etc/nginx/nginx.conf:ro
-    logging:
-      options:
-        max-size: "1m"
-
   oauth2:
     build: oauth2/build
     restart: on-failure
