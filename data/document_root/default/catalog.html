@@ -114,6 +114,25 @@
                      column_selectors_init(catalog_info.fields);
                  }
 
+                 function process_data(catalog) {
+                     // This creates a new link to download the raw data.  We have to make a Blob because the naive
+                     // encodeURI approach creates a URL that is simply too long for browsers to handle.
+                     var catalog_blob = new Blob([JSON.stringify(catalog, null, '    ')], {type : 'application/json'});
+                     $('<a />', {
+                         href: window.URL.createObjectURL(catalog_blob),
+                         download: "catalog.json",
+                         text: "Download all data"
+                     }).appendTo('#download_button');
+
+                     // This actually does the work of putting the grid together
+                     show_catalog(catalog);
+
+                     // Since the grid that got created dynamically in the last line involved latex, make
+                     // sure we run mathjax again on the various elements where it might have appeared.
+                     MathJax.Hub.Queue(["Typeset", MathJax.Hub, "grid"]);
+                     MathJax.Hub.Queue(["Typeset", MathJax.Hub, "column_selectors"]);
+                 }
+
                  // First, we try to retrieve the public catalog data.  As soon as that succeeds, the function is executed.
                  $.getJSON("catalog.json", function(catalog) {
                      // Next, we try to retrieve the private catalog data.  If that succeeds, the function is executed,
@@ -121,48 +140,46 @@
                      // specifically, the wiki), the browser will automatically send the `Authorization` header and
                      // wiki cookies along with this request.  If detected, nginx will rewrite the request to one for
                      // a JSON file stored on the wiki, thus going through the usual authentication process.
-                     /* $.getJSON("https://www.black-holes.org/wiki/waveforms/private_catalog.json", function(private_catalog) {
-                      *     //console.log('Successfully got private data');
-                      *     catalog = catalog.concat(private_catalog);
-                      * })*/
                      $.ajax({
                          type: 'GET',
                          dataType: 'json',
                          url: "https://www.black-holes.org/wiki/waveforms/private_catalog.json",
                          success: function(private_catalog) {
-                             //console.log('Successfully got private data');
+                             console.log('Successfully got private data from wiki via basic auth.');
                              catalog = catalog.concat(private_catalog);
+                             process_data(catalog);
                          },
                          xhrFields: {
+                             // We specifically need this field so that any basic auth header gets sent.
+                             // This is why we can't just use getJSON.
                              withCredentials: true
                          }
                      })
                       .fail(function() {
                           // If the private data could not be retrieved, it will show a 403 in the console.
                           // Here, we add a note to explain why that probably happened.
-                          console.log('Failed to get private data.  This is expected unless you are logged in to the wiki.');
-                      })
-                      .always(function() {
-                          // Regardless of whether or not we could get the private data (but still only if
-                          // we could get the public data), this function gets executed.
-
-                          // This creates a new link to download the raw data.  We have to make a Blob because the naive
-                          // encodeURI approach creates a URL that is simply too long for browsers to handle.
-                          var catalog_blob = new Blob([JSON.stringify(catalog, null, '    ')], {type : 'application/json'});
-                          $('<a />', {
-                              href: window.URL.createObjectURL(catalog_blob),
-                              download: "catalog.json",
-                              text: "Download all data"
-                          }).appendTo('#download_button');
-
-                          // This actually does the work of putting the grid together
-                          show_catalog(catalog);
-
-                          // Since the grid that got created dynamically in the last line involved latex, make
-                          // sure we run mathjax again on the various elements where it might have appeared.
-                          MathJax.Hub.Queue(["Typeset", MathJax.Hub, "grid"]);
-                          MathJax.Hub.Queue(["Typeset", MathJax.Hub, "column_selectors"]);
+                          console.log('Failed to get private data from wiki via basic auth.  Trying again with OAuth.');
+                          $.ajax({
+                              type: 'GET',
+                              dataType: 'json',
+                              url: "https://wiki.black-holes.org/waveforms/private_catalog.json",
+                              success: function(private_catalog) {
+                                  console.log('Successfully got private data from wiki via OAuth.');
+                                  catalog = catalog.concat(private_catalog);
+                                  process_data(catalog);
+                              },
+                              xhrFields: {
+                                  // We specifically need this field so that any basic auth header gets sent.
+                                  // This is why we can't just use getJSON.
+                                  withCredentials: true
+                              }
+                          })
+                           .fail(function() {
+                               console.log('Failed to get private data from wiki.  This is expected unless you are logged in.');
+                               process_data(catalog);
+                           });
                       });
+                     // NOTE: We can't use .always here because it would not wait for the ajax request in .fail to complete.
                  });
              });
          });
