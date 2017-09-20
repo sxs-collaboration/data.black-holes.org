@@ -18,8 +18,8 @@ find /web/servers \
     -not -path "/web/servers/cron/cron.d" \
     -exec chown 503:33 {} \;
 #chown -R 503:33 /web/servers  # web:www-data
-chown -R 33:33 /web/servers  # www-data:www-data
 chown -R 999:999 /web/servers/www/joomladb  # mysql:mysql (on joomladb container)
+chown -R 33:33 /web/servers/www/wiki/document_root # www-data:www-data
 chown -R 522:1003 /web/servers/cron/scripts/git  # git:git
 chown -R 522:1003 /web/servers/home_directories/git  # git:git
 chown -R 522:1003 /web/servers/secrets/git  # git:git
