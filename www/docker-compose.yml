@@ -27,7 +27,7 @@ services:
     logging:
       options:
         max-size: "100m"
-    # command: [nginx-debug, '-g', 'daemon off;']  # add `error_log /var/log/nginx/error.log debug;` to see details
+    #command: [nginx-debug, '-g', 'daemon off;']  # add `error_log /var/log/nginx/error.log debug;` to see details
 
   oauth2:
     build: oauth2/build
