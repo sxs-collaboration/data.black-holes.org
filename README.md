@@ -40,6 +40,10 @@ Most of the files relevant to the website are located on `black-holes.tapir` in 
 Certain very large directories (such as the SimulationAnnex) are located in `/sxs-annex` and
 `/sxs-annex8`.
 
+There are also three "secrets" files that are assumed to exist in the `../secrets` directory
+(relative to the directory this file is in), which are used by the `oauth2` container.  For details,
+see the [`oauth2` container README](https://github.com/sxs-collaboration/black-holes.org/tree/master/www/oauth2#readme).
+
 
 # Cron jobs
 
