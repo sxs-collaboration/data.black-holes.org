@@ -33,21 +33,6 @@
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid.min.js"></script>
         <script src="/js/jsgrid_helpers.js"></script>
         <script>
-         // This function can be used to get the parameters or specific parameters from the URL.
-         // <https://stackoverflow.com/questions/901115/how-can-i-get-query-string-values-in-javascript#answer-3855394>
-         (function($) {
-             $.QueryString = (function(paramsArray) {
-                 let params = {};
-                 for(let i = 0; i < paramsArray.length; ++i) {
-                     let param = paramsArray[i].split('=', 2);
-                     if (param.length !== 2) continue;
-                     params[param[0]] = decodeURIComponent(param[1].replace(/\+/g, " "));
-                 }
-                 return params;
-             })(window.location.search.substr(1).split('&'))
-         })(jQuery);
-        </script>
-        <script>
          function refreshHash() {
              var object_types = window.location.hash;
              var invisible = ['initial_mass_ratio',
