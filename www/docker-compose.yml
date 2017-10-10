@@ -119,7 +119,8 @@ services:
         max-size: "10m"
 
   # ### NOTE: Running this at the same time as `joomla` seems to be very dangerous.
-  # ### Also, you probably want to allow access to `/administrator` and remove `client_max_body_size` in nginx.conf
+  # ### Also, you probably want to allow access to `/administrator` and remove `client_max_body_size` in nginx.conf,
+  # ### as well as adjusting the `file_uploads` and `upload_max_filesize` variables in ./joomla/php.ini
   # joomla:
   #   image: joomla
   #   restart: "no"
