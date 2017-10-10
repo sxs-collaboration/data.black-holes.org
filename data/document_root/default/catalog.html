@@ -33,9 +33,59 @@
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid.min.js"></script>
         <script src="/js/jsgrid_helpers.js"></script>
         <script>
+         // This function can be used to get the parameters or specific parameters from the URL.
+         // <https://stackoverflow.com/questions/901115/how-can-i-get-query-string-values-in-javascript#answer-3855394>
+         (function($) {
+             $.QueryString = (function(paramsArray) {
+                 let params = {};
+                 for(let i = 0; i < paramsArray.length; ++i) {
+                     let param = paramsArray[i].split('=', 2);
+                     if (param.length !== 2) continue;
+                     params[param[0]] = decodeURIComponent(param[1].replace(/\+/g, " "));
+                 }
+                 return params;
+             })(window.location.search.substr(1).split('&'))
+         })(jQuery);
+        </script>
+        <script>
+         function refreshHash() {
+             var object_types = window.location.hash;
+             var invisible = ['initial_mass_ratio',
+                              'initial_dimensionless_spin1_mag', 'initial_dimensionless_spin1_x',
+                              'initial_dimensionless_spin1_y', 'initial_dimensionless_spin1_z',
+                              'initial_dimensionless_spin1_mag', 'initial_dimensionless_spin1_x',
+                              'initial_dimensionless_spin1_y', 'initial_dimensionless_spin1_z'];
+             var visible = ['initial_mass1', 'initial_mass2', 'remnant_mass', 'disk_mass', 'ejecta_mass'];
+             var inputs = $("#column_selectors :input");
+             if(object_types.indexOf('NS') !== -1) {
+                 // A NS is at least one of the requested objects, so switch default columns to be more informative for matter.
+                 $.each(inputs, function(indexInArray, value) {
+                     var name = value.name || undefined;
+                     if($.inArray(name, invisible) !== -1) {
+                         // console.log("Hiding ", name);
+                         value.checked = false;
+                     } else if($.inArray(name, visible) !== -1) {
+                         // console.log("Unhiding ", name);
+                         value.checked = true;
+                     }
+                 });
+             } else {
+                 $.each(inputs, function(indexInArray, value) {
+                     var name = value.name || undefined;
+                     if($.inArray(name, invisible) !== -1) {
+                         value.checked = true;
+                     } else if($.inArray(name, visible) !== -1) {
+                         value.checked = false;
+                     }
+                 });
+             }
+             column_selectors_read($('#grid'));
+             $("#grid").jsGrid("search", { 'object_types': object_types.slice(1) });
+             $('#grid').jsGrid('sort', 'name', 'asc');
+         };
+
          // This function will always be called by jquery (represented by $ here) once the DOM is loaded.
          $(function() {
-
              // Start things off by looking for catalog_info.json.  If it is found, run the function.
              $.getJSON("catalog_info.json", function(catalog_info) {
                  // This helper function allows us to store strings naming a couple functions in catalog_info.json,
@@ -112,6 +162,11 @@
 
                      // Fill the box below the grid with checkboxes indicating which values to include
                      column_selectors_init(catalog_info.fields);
+
+                     // If there is a nontrivial hash in the URL, update the column selectors
+                     if(window.location.hash) {
+                         refreshHash();
+                     }
                  }
 
                  function process_data(catalog) {
@@ -182,6 +237,7 @@
                      // NOTE: We can't use .always here because it would not wait for the ajax request in .fail to complete.
                  });
              });
+             window.onhashchange = refreshHash;
          });
         </script>
     </head>
@@ -229,6 +285,13 @@
         </div>
 
         <div style="clear: both"></div>
+
+        <div align="center" style="padding:10px">
+            <input type="submit" value="Show all" onclick="location.hash=''"/>
+            <input type="submit" value="BH-BH" onclick="location.hash='BHBH'"/>
+            <input type="submit" value="BH-NS" onclick="location.hash='BHNS'"/>
+            <input type="submit" value="NS-NS" onclick="location.hash='NSNS'"/>
+        </div>
 
         <div>
             <fieldset class="autocolumns">
