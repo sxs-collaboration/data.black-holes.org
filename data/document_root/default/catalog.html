@@ -35,12 +35,12 @@
         <script>
          function refreshHash() {
              var object_types = window.location.hash;
-             var invisible = ['initial_mass_ratio',
+             var invisible = ['initial_orbital_frequency', 'initial_mass_ratio', 
                               'initial_dimensionless_spin1_mag', 'initial_dimensionless_spin1_x',
                               'initial_dimensionless_spin1_y', 'initial_dimensionless_spin1_z',
-                              'initial_dimensionless_spin1_mag', 'initial_dimensionless_spin1_x',
-                              'initial_dimensionless_spin1_y', 'initial_dimensionless_spin1_z'];
-             var visible = ['initial_mass1', 'initial_mass2', 'remnant_mass', 'disk_mass', 'ejecta_mass'];
+                              'initial_dimensionless_spin2_mag', 'initial_dimensionless_spin2_x',
+                              'initial_dimensionless_spin2_y', 'initial_dimensionless_spin2_z'];
+             var visible = ['initial_separation', 'initial_mass1', 'initial_mass2', 'remnant_mass', 'disk_mass', 'ejecta_mass'];
              var inputs = $("#column_selectors :input");
              if(object_types.indexOf('NS') !== -1) {
                  // A NS is at least one of the requested objects, so switch default columns to be more informative for matter.
