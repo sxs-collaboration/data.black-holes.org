@@ -9,6 +9,8 @@ google_recaptcha_secret = os.environ['GOOGLE_RECAPTCHA_SECRET']
 
 file_extension_whitelist = ['.h5', '.txt', '.out', '.perl', '.tgz']
 
+max_tar_file_size = 1024**3
+
 
 def check_recaptcha_success(secret, response, remote_ip):
     conn = http.client.HTTPSConnection("www.google.com")
@@ -21,9 +23,10 @@ def check_recaptcha_success(secret, response, remote_ip):
 
 
 def application(environ, start_response):
+    permitted_files = []
+    permitted_file_sizes = []
     try:
         document_root = '/var/www/html'  # *NOT* environ['DOCUMENT_ROOT'] because that's on a different container
-        permitted_files = []
         success = True
 
         # Get the scheme, netloc, and path parts of the URI, dropping any parameters, query, or fragment
@@ -100,9 +103,10 @@ def application(environ, start_response):
         if success:
             # print('json_data:', json_data)
             # print('permitted_files:', permitted_files)
-            def recurse(json_dict, permitted_files):
+            def recurse(json_dict, permitted_files, permitted_file_sizes):
                 file_type = json_dict.get('type', 'illegal_type')
                 current_file = json_dict.get('path', '')
+                current_file_size = int(json_dict.get('size', 10000000000))
                 # print("file_type", file_type)
                 # print("current_file:", current_file, file_type in file_extension_whitelist, current_file in requested_files)
                 if file_type in file_extension_whitelist and current_file in requested_files:
@@ -110,14 +114,20 @@ def application(environ, start_response):
                     # print("current_path:", current_path, os.path.isfile(current_path))
                     if os.path.isfile(current_path):
                         permitted_files.append(current_file)
+                        permitted_file_sizes.append(current_file_size)
                 children = json_dict.get('children', [])
                 for child in children:
-                    recurse(child, permitted_files)
-            recurse(json_data, permitted_files)
+                    recurse(child, permitted_files, permitted_file_sizes)
+            recurse(json_data, permitted_files, permitted_file_sizes)
+            # print(permitted_files, permitted_file_sizes)
 
             if not permitted_files:
                 success = False
                 error_redirect += '&reason=no-permitted-files'
+
+            if len(permitted_files)>1 and sum(permitted_file_sizes) > max_tar_file_size:
+                success = False
+                error_redirect += '&reason=file_size_{0}'.format(sum(permitted_file_sizes))
 
     except Exception as e:
         print("Unkown exception:  " + str(e))
@@ -131,13 +141,21 @@ def application(environ, start_response):
         start_response('307 Temporary Redirect', [('Location', error_redirect)])
         return [1]
 
+    if len(permitted_files) == 1:
+        uri = '/direct_download/{0}/files/{1}'.format(catalog, permitted_files[0])
+        print('Redirecting request for {0} ({1}B) to X-Accel: {2}'.format(permitted_files[0], permitted_file_sizes[0], uri))
+        start_response('200 OK',
+                       [('X-Accel-Redirect', uri),
+                        ('Content-Disposition', 'attachment; filename="{0}"'.format(permitted_files[0]))])
+        return [1]
+
     # If everything went right, tar the files up together and respond
     start_response('200 OK',
                    [('Content-Type', 'application/gzip'),
                     ('Content-Encoding', 'gzip'),
-                    ('Content-Disposition', 'attachment; filename="{}.tar.gz"'.format(group_id))])
+                    ('Content-Disposition', 'attachment; filename="{0}.tar.gz"'.format(group_id))])
     command = ['tar', '--directory={}'.format(os.path.join(catalog_root, 'files')), '--create', '--dereference', '--gzip']
-    proc = subprocess.Popen(command + permitted_files, stdout=subprocess.PIPE)
+    proc = subprocess.Popen(command + permitted_files, stdout=subprocess.PIPE, bufsize=-1)
     return proc.stdout
 
     # # NOTE: proc.communicate() waits for the process to end before it returns.  This means that

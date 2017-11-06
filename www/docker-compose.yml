@@ -24,6 +24,7 @@ services:
       - ./wiki/document_root:/var/www/html/wiki:ro
       - ./wiki/document_root/conf/users.auth.php:/etc/nginx/.htpasswd:ro
       - ../data/document_root:/usr/share/nginx/html/data:ro
+      - /nfs-data/Annex/SurrogateModeling.git:/usr/share/nginx/html/surrogate_data:ro
     logging:
       options:
         max-size: "100m"
