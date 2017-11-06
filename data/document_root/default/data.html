@@ -18,6 +18,9 @@
              document.getElementById("download_form").submit();
          }
 
+         window.total_downloads = 0;
+         window.total_download_size = 0;
+
          // This runs as soon as the page is ready
          $(function() {
              // Write the catalog and data group id everywhere we want it
@@ -83,7 +86,10 @@
                     <tbody>
                     </tbody>
                 </table>
-                <button class="g-recaptcha" data-sitekey="6Le3Ah4UAAAAAJ00dnp9EXiJmDfZi3_LFe0U8b0H" data-callback="onSubmit">
+                <button id="form_submission_button"
+                        class="g-recaptcha"
+                        data-sitekey="6Le3Ah4UAAAAAJ00dnp9EXiJmDfZi3_LFe0U8b0H"
+                        data-callback="onSubmit">
                     Download selected files
                 </button>
             </form>

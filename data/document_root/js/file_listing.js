@@ -93,9 +93,27 @@ function file_tree_table(tree, root, directory) {
             var check = $("<input>", {
                 "name": "path",
                 "value": value.path,
-                "type": "checkbox"
+                "type": "checkbox",
+                "data-filesize": value.size
             });
-            check.click(function (e) { e.stopPropagation(); });
+            check.click(function (e) {
+                var sign = (this.checked ? +1 : -1);
+                var filesize = parseInt(this.dataset.filesize);
+                console.log('input data-filesize =', filesize, window.total_download_size);
+                window.total_downloads += sign;
+                window.total_download_size += sign*filesize;
+                console.log('\t\t', window.total_download_size, sign, this.checked);
+                if(window.total_downloads > 1
+                   && window.total_download_size > 1000000000) {
+                    sign = -1;
+                    alert('Total file size ' + window.total_download_size + ' too big for group download!\n'
+                          + 'Select just one file at a time.');
+                    window.total_downloads += sign;
+                    window.total_download_size += sign*filesize;
+                    return false;
+                }
+                e.stopPropagation();
+            });
             tr.append($("<td>", {
                 "class": "file_listing_checkbox",
             }).append(check));
