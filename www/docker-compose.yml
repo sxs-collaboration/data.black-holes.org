@@ -24,6 +24,7 @@ services:
       - ./wiki/document_root:/var/www/html/wiki:ro
       - ./wiki/document_root/conf/users.auth.php:/etc/nginx/.htpasswd:ro
       - ../data/document_root:/usr/share/nginx/html/data:ro
+      - /sxs-annex/SimulationAnnex.git:/usr/share/nginx/html/waveforms_data/SimulationAnnex.git:ro
       - /nfs-data/Annex/SurrogateModeling.git:/usr/share/nginx/html/surrogate_data:ro
     logging:
       options:
@@ -73,6 +74,27 @@ services:
       - source: joomla_mysqli_default_pw
         target: mdp
 
+  # ### NOTE: Running this at the same time as `joomla` (above) seems to be very dangerous.  This is the read-write
+  # ### version of joomla, and should not be left running unless changes need to be made to the website.  Also, you
+  # ### probably want to allow access to `/administrator` and remove `client_max_body_size` in nginx.conf, as well as
+  # ### adjusting the `file_uploads` and `upload_max_filesize` variables in ./joomla/php.ini
+  # joomla:
+  #   image: joomla
+  #   restart: "no"
+  #   command: bash -c "echo 'ServerName www.black-holes.org' >> /etc/apache2/apache2.conf && mdp=$$(cat /run/secrets/mdp) apache2-foreground"
+  #   depends_on:
+  #     - joomladb
+  #   volumes:
+  #     - ./joomla/php.ini:/usr/local/etc/php/conf.d/custom_php.ini:ro
+  #     - ./joomla/document_root:/var/www/html
+  #     - /var/www/sessions
+  #   logging:
+  #     options:
+  #       max-size: "10m"
+  #   secrets:
+  #     - source: joomla_readwrite_mysqli_default_pw
+  #       target: mdp
+
   wiki:
     image: php:7-fpm
     restart: on-failure
@@ -119,25 +141,6 @@ services:
       options:
         max-size: "10m"
 
-  # ### NOTE: Running this at the same time as `joomla` seems to be very dangerous.
-  # ### Also, you probably want to allow access to `/administrator` and remove `client_max_body_size` in nginx.conf,
-  # ### as well as adjusting the `file_uploads` and `upload_max_filesize` variables in ./joomla/php.ini
-  # joomla:
-  #   image: joomla
-  #   restart: "no"
-  #   command: bash -c "echo 'ServerName www.black-holes.org' >> /etc/apache2/apache2.conf && mdp=$$(cat /run/secrets/mdp) apache2-foreground"
-  #   depends_on:
-  #     - joomladb
-  #   volumes:
-  #     - ./joomla/php.ini:/usr/local/etc/php/conf.d/custom_php.ini:ro
-  #     - ./joomla/document_root:/var/www/html
-  #     - /var/www/sessions
-  #   logging:
-  #     options:
-  #       max-size: "10m"
-  #   secrets:
-  #     - source: joomla_readwrite_mysqli_default_pw
-  #       target: mdp
 
 
 secrets:
