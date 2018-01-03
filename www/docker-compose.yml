@@ -10,9 +10,7 @@ services:
     depends_on:
       - joomla
       - wiki
-      # - doxygen
       - oauth2
-      # - spec-bugs
       - uwsgi
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
@@ -103,28 +101,6 @@ services:
     logging:
       options:
         max-size: "10m"
-
-  # doxygen:
-  #   image: php:apache
-  #   restart: on-failure
-  #   command: bash -c "a2enmod rewrite && apache2-foreground"
-  #   volumes:
-  #     - ./doxygen/document_root:/var/www/html/doxygen:ro
-  #     - /web/repos/spec_doxygen:/var/www/html/doxygen/data:ro
-  #     # - /web/spec-doxygen-html/search/search.idx:/var/www/html/doxygen/search/search.idx:ro
-  #   logging:
-  #     options:
-  #       max-size: "10m"
-
-  # spec-bugs:
-  #   build: spec-bugs/build
-  #   restart: on-failure
-  #   volumes:
-  #     - ./spec-bugs/document_root:/var/www/spec-bugs
-  #     - ./wiki/document_root/conf/users.auth.php:/var/www/htpasswd:ro
-  #   logging:
-  #     options:
-  #       max-size: "10m"
 
   uwsgi:  # Used for serving download requests for data files
     build: ../data/uwsgi/build

@@ -2,15 +2,17 @@ This repo contains the basic infrastructure for the `black-holes.org` site.  The
 components that are too big for or simply not appropriate for git hosting.  Those other components
 include:
 
-  * Joomla (which serves most of the public site)
+  * Joomla and its database (which serves most of the public site)
   * Dokuwiki
-  * Trac (for /spec-bugs)
-  * Doxygen
   * SimulationAnnex.git (for /data/waveforms)
   * SurrogateModeling.git (for /data/surrogates)
 
 While those components are backed up and/or updated using scripts in this repo, they are not parts
 of this repo directly.
+
+We (mostly Nils) have been making every effort to move as much as possible off of this server and
+into standard solutions like github.  In particular, the spec-bugs (trac) and doxygen components
+have moved to github issues and sxs-test, respectively.
 
 
 # Brief overview
@@ -51,15 +53,19 @@ There are several external data sources that are updated routinely (and backups 
 cron jobs.  Many of these sources are also served directly through the web interface.
 
   * The SSL certificate provided by letsencrypt.org
+  * The waveform catalog's index
+  * SimulationAnnex and SurrogateModeling git repos
+  * Permissions are corrected frequently
+  * Incremental backups are taken nightly (see below)
 
 
 ## Backups
 
-The entire `/web/servers` directory is backed up every day.  Backups are performed using `rsync`'s
-`--link-dest` option.  This means that the first backup is a complete copy (which will be quite
-large), but subsequent backups consist primarily of hard links to a previous backup — the one at
-which a given file changed.  This reduces the size of backups drastically, while still allowing the
-backup directory to look and act like a full copy.
+The entire `/web/servers` directory is backed up every night to `/sxs-annex/web_server_backup`.
+Backups are performed using `rsync`'s `--link-dest` option.  This means that the first backup is a
+complete copy (which will be quite large), but subsequent backups consist primarily of hard links to
+a previous backup — the one at which a given file changed.  This reduces the size of backups
+drastically, while still allowing the backup directory to look and act like a full copy.
 
 To find files that are *not* hard links in the backup directory, use a command like
 
