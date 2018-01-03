@@ -28,9 +28,6 @@ MAILFROM=cron@black-holes.org
 ## web ##
 #########
 
-# Update doxygen files hourly (coordinates with cronjob on sxs-test)
-15 * * * * web rsync -crz --delete --delay-updates spectest@sxs-test.tapir.caltech.edu:~/spec-doxygen/Doc/Doxygen/html/ /web/repos/spec_doxygen/
-
 # A little while after the git cron job below, make sure all the JSON files are up to date
 10 2 * * * web python /web/servers/cron/scripts/web/refresh_waveform_catalog_json.py
 
