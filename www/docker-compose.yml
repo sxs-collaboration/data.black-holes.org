@@ -12,7 +12,7 @@ services:
       - wiki
       - doxygen
       - oauth2
-      - spec-bugs
+      # - spec-bugs
       - uwsgi
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
@@ -116,15 +116,15 @@ services:
       options:
         max-size: "10m"
 
-  spec-bugs:
-    build: spec-bugs/build
-    restart: on-failure
-    volumes:
-      - ./spec-bugs/document_root:/var/www/spec-bugs
-      - ./wiki/document_root/conf/users.auth.php:/var/www/htpasswd:ro
-    logging:
-      options:
-        max-size: "10m"
+  # spec-bugs:
+  #   build: spec-bugs/build
+  #   restart: on-failure
+  #   volumes:
+  #     - ./spec-bugs/document_root:/var/www/spec-bugs
+  #     - ./wiki/document_root/conf/users.auth.php:/var/www/htpasswd:ro
+  #   logging:
+  #     options:
+  #       max-size: "10m"
 
   uwsgi:  # Used for serving download requests for data files
     build: ../data/uwsgi/build
