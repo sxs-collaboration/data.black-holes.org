@@ -20,9 +20,6 @@ RUN apt-get update \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Install the SXS python module
-RUN pip install --no-cache-dir --upgrade sxs
-
 # Add web and git users and groups
 RUN groupadd -g 1003 git
 RUN groupadd -g 1002 web
@@ -35,6 +32,9 @@ RUN echo "cron.* /var/log/cron.log" >> /etc/rsyslog.conf
 # Get the timezone right
 ENV TZ=America/Los_Angeles
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
+# Install the SXS python module (Do this late in the build because this is the part most likely to need changing)
+RUN pip install --no-cache-dir --upgrade sxs
 
 # The entrypoint is the script that will run at startup
 COPY ./entrypoint.sh /
