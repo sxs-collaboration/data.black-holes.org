@@ -57,8 +57,8 @@ def check_user_auth_for_path(user, orgs_and_teams, path):
     orgs_and_teams: list of strings
         A list of the 'login' strings for each github organization the user belongs to (and
         authorizes this app), as well as 'login:name' strings for each team named 'name' within an
-        organization with login 'login'.  For example, if the user is on the `SpEC` team inside the
-        `sxs-collaboration`, this list will contain `sxs-collaboration:SpEC`.
+        organization with login 'login'.  For example, if the user is on the `spec` team inside the
+        `sxs-collaboration`, this list will contain `sxs-collaboration:spec`.
     path: string
         The requested URL component, specifically the part after the scheme (e.g., https) and the
         host (e.g., www.black-holes.org), and including the initial '/'.  For example, a request to
@@ -78,7 +78,7 @@ def check_user_auth_for_path(user, orgs_and_teams, path):
     if 'sxs-collaboration' in orgs_and_teams:
         return True
 
-    if 'sxs-collaboration:SpEC' in orgs_and_teams:
+    if 'sxs-collaboration:spec' in orgs_and_teams:
         return True
 
     if 'sxs-collaboration:spectre' in orgs_and_teams:
