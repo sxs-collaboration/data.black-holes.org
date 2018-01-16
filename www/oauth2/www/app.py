@@ -358,28 +358,6 @@ def refresh(github=None):
         orgs = github.get('https://api.github.com/user/orgs').json()
         teams = github.get('https://api.github.com/user/teams').json()
 
-        # ## This section is just for testing
-        # # github = OAuth2Session(client_id, token=session['oauth_token'], client_secret=client_secret)
-        # # print('Outside collaborators: ', github.get('https://api.github.com/orgs/sxs-collaboration/outside_collaborators').json())
-        # # print('Org teams: ', github.get('https://api.github.com/orgs/sxs-collaboration/teams').json())
-        # spec = github.get('https://api.github.com/repos/sxs-collaboration/spec/collaborators/{0}'.format(session['github_login']),
-        #                   headers={'Accept': 'application/vnd.github.hellcat-preview+json'})
-        # print('SpEC headers:', spec.request.headers)
-        # print('SpEC collaborator: ', spec.json())
-        # permtest = github.get('https://api.github.com/repos/sxs-collaboration/permissions_test/collaborators/{0}'.format(session['github_login']),
-        #                       headers={'Accept': 'application/vnd.github.hellcat-preview+json'})
-        # print('permissions_test collaborator: ', permtest.request.headers, '\n', permtest.json())
-        # hellcat_orgs = github.get('https://api.github.com/user/orgs',
-        #                           headers={'Accept': 'application/vnd.github.hellcat-preview+json'})
-        # print('Hellcat Orgs: ', hellcat_orgs.request.headers, '\n', hellcat_orgs.json())
-        # nohellcat_orgs = github.get('https://api.github.com/user/orgs')
-        # print('No-Hellcat Orgs: ', nohellcat_orgs.request.headers, '\n', nohellcat_orgs.json())
-        # hellcat_teams = github.get('https://api.github.com/user/teams',
-        #                            headers={'Accept': 'application/vnd.github.hellcat-preview+json'})
-        # print('Hellcat Teams: ', hellcat_teams.request.headers, '\n', hellcat_teams.json())
-        # nohellcat_teams = github.get('https://api.github.com/user/teams')
-        # print('No-Hellcat Teams: ', nohellcat_teams.request.headers, '\n', nohellcat_teams.json())
-
         outside_collaborator = (session['github_login'] in get_outside_collaborators())
 
         session['github_orgs_and_teams'] = '|'.join(
@@ -388,25 +366,12 @@ def refresh(github=None):
             ['{0}:{1}'.format(team['organization']['login'], team['name'])
              for team in teams if 'name' in team and 'organization' in team and 'login' in team['organization']]
             +
-            ['sxs-collaboration:outside_collaborators' for _ in [1]
-             if outside_collaborator]
+            ['sxs-collaboration:outside_collaborators' for _ in [1] if outside_collaborator]
         )
         session['github_last_check'] = time.time()
         return True
-        # return """<!DOCTYPE html>
-        # <html>
-        #   <head>
-        #     <meta charset="UTF-8">
-        #     <script>(function(){window.history.go(-1); return false;}());</script>
-        #   </head>
-        #   <body>
-        #     OAuth information refreshed.
-        #   </body>
-        # </html>""", 200
     except Exception as e:
         return False
-        # url = url_for('.github') + '?redirect=' + urllib.parse.quote_plus('/auth/login')
-        # return redirect(url)
 
 
 @app.route('/auth/logout')
