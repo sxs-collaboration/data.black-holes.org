@@ -19,9 +19,13 @@ import os
 from base64 import b64encode
 import urllib.parse
 import json
+import requests
 from requests_oauthlib import OAuth2Session
 from flask import Flask, request, redirect, session, url_for, Response, render_template, escape
 from flask.json import jsonify
+import jwt
+import pprint
+
 
 os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
 
@@ -36,6 +40,20 @@ with open('/run/secrets/client_secret', 'r') as f:
     client_secret = f.read().strip()
 with open('/run/secrets/cookie_secret', 'r') as f:
     app.secret_key = f.read().strip()
+
+# This key is obtained from the GitHub app:
+with open('/run/secrets/github_app_private_key.pem', 'r') as f:
+    github_app_private_key = f.read()
+    github_app_private_key_bytes = github_app_private_key.encode()
+with open('/run/secrets/github_app_id', 'r') as f:
+    github_app_id = f.read().strip()
+# This number is specific to the "installation" of our app in our collaboration.  The number can be
+# found by clicking `Configure` next to the relevant app on this page:
+# <https://github.com/organizations/sxs-collaboration/settings/installations>, then looking at the
+# number at the end of that URL.
+github_app_installation_id = '80728'
+outside_collaborators = []
+last_collaboration_check = time.time() - 1000000
 
 # Change this if using an OAuth app other than black-holes.org
 app_id = 'ee6f483db600575707ad'
@@ -78,15 +96,13 @@ def check_user_auth_for_path(user, orgs_and_teams, path):
     if 'sxs-collaboration' in orgs_and_teams:
         return True
 
-    if 'sxs-collaboration:spec' in orgs_and_teams:
+    # Allow outside collaborators, with possible limitations by the wiki's ACL
+    if 'sxs-collaboration:outside_collaborators' in orgs_and_teams:
         return True
 
-    if 'sxs-collaboration:spectre' in orgs_and_teams:
-        return True
-
-    for ot in orgs_and_teams:
-        if ot.startswith('sxs-collaboration:wiki'):
-            return True
+    # for ot in orgs_and_teams:
+    #     if ot.startswith('sxs-collaboration:wiki'):
+    #         return True
 
     return False
 
@@ -151,6 +167,7 @@ def check():
                 response.headers['X-Auth-Failure'] = 'unauthorized_' + session['github_login']
                 return response
         else:
+            print('Auth failure.  Here is the session:\n', pprint.pformat(session))
             response.headers['X-Auth-Failure'] = 'unauthorized_' + session['github_login']
             return response
 
@@ -340,11 +357,39 @@ def refresh(github=None):
             session['github_email'] = ''
         orgs = github.get('https://api.github.com/user/orgs').json()
         teams = github.get('https://api.github.com/user/teams').json()
+
+        # ## This section is just for testing
+        # # github = OAuth2Session(client_id, token=session['oauth_token'], client_secret=client_secret)
+        # # print('Outside collaborators: ', github.get('https://api.github.com/orgs/sxs-collaboration/outside_collaborators').json())
+        # # print('Org teams: ', github.get('https://api.github.com/orgs/sxs-collaboration/teams').json())
+        # spec = github.get('https://api.github.com/repos/sxs-collaboration/spec/collaborators/{0}'.format(session['github_login']),
+        #                   headers={'Accept': 'application/vnd.github.hellcat-preview+json'})
+        # print('SpEC headers:', spec.request.headers)
+        # print('SpEC collaborator: ', spec.json())
+        # permtest = github.get('https://api.github.com/repos/sxs-collaboration/permissions_test/collaborators/{0}'.format(session['github_login']),
+        #                       headers={'Accept': 'application/vnd.github.hellcat-preview+json'})
+        # print('permissions_test collaborator: ', permtest.request.headers, '\n', permtest.json())
+        # hellcat_orgs = github.get('https://api.github.com/user/orgs',
+        #                           headers={'Accept': 'application/vnd.github.hellcat-preview+json'})
+        # print('Hellcat Orgs: ', hellcat_orgs.request.headers, '\n', hellcat_orgs.json())
+        # nohellcat_orgs = github.get('https://api.github.com/user/orgs')
+        # print('No-Hellcat Orgs: ', nohellcat_orgs.request.headers, '\n', nohellcat_orgs.json())
+        # hellcat_teams = github.get('https://api.github.com/user/teams',
+        #                            headers={'Accept': 'application/vnd.github.hellcat-preview+json'})
+        # print('Hellcat Teams: ', hellcat_teams.request.headers, '\n', hellcat_teams.json())
+        # nohellcat_teams = github.get('https://api.github.com/user/teams')
+        # print('No-Hellcat Teams: ', nohellcat_teams.request.headers, '\n', nohellcat_teams.json())
+
+        outside_collaborator = (session['github_login'] in get_outside_collaborators())
+
         session['github_orgs_and_teams'] = '|'.join(
             [org['login'] for org in orgs if 'login' in org]
             +
             ['{0}:{1}'.format(team['organization']['login'], team['name'])
              for team in teams if 'name' in team and 'organization' in team and 'login' in team['organization']]
+            +
+            ['sxs-collaboration:outside_collaborators' for _ in [1]
+             if outside_collaborator]
         )
         session['github_last_check'] = time.time()
         return True
@@ -382,6 +427,50 @@ def logout():
 def seconds_since_last_github_check():
     last_check = session.get('github_last_check', 0.0)
     return time.time() - last_check
+
+
+def github_app_get_installation_access():
+    # Expires after one hour.  Needed for accessing the API via this app.
+    # https://developer.github.com/apps/building-github-apps/authentication-options-for-github-apps/#authenticating-as-an-installation
+    def get_jwt():
+        # This is an annoying first step.  I don't understand why there have to be two, but that's how it is.
+        # https://developer.github.com/apps/building-github-apps/authentication-options-for-github-apps/#authenticating-as-a-github-app
+        time_since_epoch_in_seconds = int(time.time())
+        payload = {
+            # issued at time
+            'iat': time_since_epoch_in_seconds,
+            # JWT expiration time (10 minute maximum)
+            'exp': time_since_epoch_in_seconds + (10 * 60),
+            # This GitHub App's identifier
+            'iss': github_app_id
+        }
+        new_jwt = jwt.encode(payload, github_app_private_key, algorithm='RS256').decode()
+        return new_jwt
+    headers = {"Authorization": "Bearer {}".format(get_jwt()),
+               "Accept": "application/vnd.github.machine-man-preview+json"}
+    response = requests.post('https://api.github.com/installations/{}/access_tokens'.format(github_app_installation_id),
+                             headers=headers)
+    return response.json()
+
+
+def refresh_outside_collaborators():
+    access = github_app_get_installation_access()
+    headers = {"Authorization": "token {}".format(access['token']),
+               "Accept": "application/vnd.github.machine-man-preview+json"}
+    response = requests.get('https://api.github.com/orgs/sxs-collaboration/outside_collaborators', headers=headers)
+    outside_collaborators = [oc['login'] for oc in response.json()]
+    last_collaboration_check = time.time()
+    return outside_collaborators, last_collaboration_check
+
+
+def get_outside_collaborators():
+    global outside_collaborators
+    global last_collaboration_check
+    refresh_every = 60*60  # seconds
+    if (time.time() - last_collaboration_check) > refresh_every:
+        outside_collaborators, last_collaboration_check = refresh_outside_collaborators()
+    return outside_collaborators
+
 
 
 if __name__ == '__main__':

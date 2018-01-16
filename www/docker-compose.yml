@@ -44,6 +44,10 @@ services:
         target: client_secret
       - source: oauth2_proxy_cookie_secret
         target: cookie_secret
+      - source: github_app_private_key.pem
+        target: github_app_private_key.pem
+      - source: github_app_id
+        target: github_app_id
 
   joomladb:
     image: mysql
@@ -130,3 +134,7 @@ secrets:
     file: ../secrets/oauth2_proxy_client_secret
   oauth2_proxy_cookie_secret:
     file: ../secrets/oauth2_proxy_cookie_secret
+  github_app_private_key.pem:
+    file: ../secrets/github_app_private_key.pem
+  github_app_id:
+    file: ../secrets/github_app_id
