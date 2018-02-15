@@ -14,6 +14,7 @@ services:
       - /web/servers/cron/cron.d:/etc/cron.d
       - /web/servers/letsencrypt/certs:/etc/letsencrypt
       - /web/servers/letsencrypt/www:/var/www/letsencrypt
+      - /sxs-annex/SimulationAnnex.git:/usr/share/nginx/html/waveforms_data/SimulationAnnex.git
       - /sxs-annex:/sxs-annex
       - /sxs-annex8:/sxs-annex8
       - /nfs-data/Annex/SurrogateModeling.git:/nfs-data/Annex/SurrogateModeling.git

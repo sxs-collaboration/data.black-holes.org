@@ -34,7 +34,7 @@ ENV TZ=America/Los_Angeles
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 # Install the SXS python module (Do this late in the build because this is the part most likely to need changing)
-RUN pip install --no-cache-dir --upgrade sxs
+RUN pip install --no-cache-dir --upgrade sxs  # 2018-02-15-11-49
 
 # The entrypoint is the script that will run at startup
 COPY ./entrypoint.sh /
