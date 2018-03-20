@@ -59,7 +59,7 @@ services:
         max-size: "10m"
 
   joomla:
-    image: joomla
+    image: joomla:3.8.2
     restart: on-failure
     command: bash -c "echo 'ServerName www.black-holes.org' >> /etc/apache2/apache2.conf && mdp=$$(cat /run/secrets/mdp) apache2-foreground"
     depends_on:
