@@ -32,3 +32,9 @@ find /web/servers \
     -not -path "/web/servers/cron/cron.d" \
     -exec chmod g=u {} \;
 chmod -R go-rwx /web/servers/cron/cron.d
+
+# Some times, people commit with bad permissions; this is easier than correcting the repo
+find /sxs-annex/SimulationAnnex.git \
+    \( -type f -o -type d \) \
+    -path "/sxs-annex/SimulationAnnex.git/.git" -prune \
+    -o -not -perm -664 -exec chmod u+rw,g+rw,o+r {} +
