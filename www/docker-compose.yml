@@ -50,7 +50,7 @@ services:
         target: github_app_id
 
   joomladb:
-    image: mysql
+    image: mysql:5
     restart: on-failure
     volumes:
       - ./joomladb:/var/lib/mysql
