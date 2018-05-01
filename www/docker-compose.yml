@@ -81,7 +81,7 @@ services:
   # ### probably want to allow access to `/administrator` and remove `client_max_body_size` in nginx.conf, as well as
   # ### adjusting the `file_uploads` and `upload_max_filesize` variables in ./joomla/php.ini
   # joomla:
-  #   image: joomla
+  #   image: joomla:3.8.2
   #   restart: "no"
   #   command: bash -c "echo 'ServerName www.black-holes.org' >> /etc/apache2/apache2.conf && mdp=$$(cat /run/secrets/mdp) apache2-foreground"
   #   depends_on:
