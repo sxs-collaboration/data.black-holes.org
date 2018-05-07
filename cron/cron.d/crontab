@@ -37,6 +37,6 @@ MAILFROM=cron@black-holes.org
 #########
 
 # Just try to update and get all the annex data; don't allow the `find` process to run all day
-1 2 * * * git cd /sxs-annex/SimulationAnnex.git && timeout --kill-after=1m 59m /web/servers/cron/scripts/git/git_annex_get_all_data.sh
+#1 2 * * * git cd /sxs-annex/SimulationAnnex.git && timeout --kill-after=1m 59m /web/servers/cron/scripts/git/git_annex_get_all_data.sh
 1 1 * * * git cd /nfs-data/Annex/SurrogateModeling.git && timeout --kill-after=1m 59m /web/servers/cron/scripts/git/git_annex_get_all_data.sh
 
