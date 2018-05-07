@@ -117,7 +117,10 @@
                          sorting: true,
                          inserting: false,
                          editing: false,
-                         paging: false,
+
+                         paging: true,
+                         pageSize: 30,
+                         
                          autoload: true,
                          controller: db,
                          loadIndication: true,
@@ -142,8 +145,8 @@
                      // Make sure to refresh the grid at this point to sort out any drawing problems
                      $("#grid").jsGrid("refresh");
 
-                     // Start with the filters hidden
-                     $(".jsgrid-filter-row").toggle();
+                     // // Start with the filters hidden
+                     // $(".jsgrid-filter-row").toggle();
 
                      // Fill the box below the grid with checkboxes indicating which values to include
                      column_selectors_init(catalog_info.fields);
@@ -268,7 +271,8 @@
                 Loading data...
             </div>
         </div>
-
+        <div class="jsgrid-pager-container">
+        </div>
         <div style="clear: both"></div>
 
         <div align="center" style="padding:10px">
