@@ -121,6 +121,19 @@ services:
       options:
         max-size: "10m"
 
+  jupyter:
+    image: jupyter/scipy-notebook
+    user: root
+    restart: on-failure
+    volumes:
+      # - /home/boyle:/home/boyle
+      - /sxs-annex/SimulationAnnex.git:/sxs-annex/SimulationAnnex.git
+    environment:
+      - NB_USER=boyle
+      - NB_UID=1004
+      - NB_GID=1006
+      - JUPYTER_ENABLE_LAB=yes
+    command: ["start-notebook.sh", "--NotebookApp.base_url=/jupyter"]
 
 
 secrets:
