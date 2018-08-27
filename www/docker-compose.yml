@@ -27,6 +27,9 @@ services:
     logging:
       options:
         max-size: "100m"
+    networks:
+      - jupyter
+      - default
     #command: [nginx-debug, '-g', 'daemon off;']  # add `error_log /var/log/nginx/error.log debug;` to see details
 
   oauth2:
@@ -121,20 +124,10 @@ services:
       options:
         max-size: "10m"
 
+networks:
   jupyter:
-    image: jupyter/scipy-notebook
-    user: root
-    restart: on-failure
-    volumes:
-      # - /home/boyle:/home/boyle
-      - /sxs-annex/SimulationAnnex.git:/sxs-annex/SimulationAnnex.git
-    environment:
-      - NB_USER=boyle
-      - NB_UID=1004
-      - NB_GID=1006
-      - JUPYTER_ENABLE_LAB=yes
-    command: ["start-notebook.sh", "--NotebookApp.base_url=/jupyter"]
-
+    external:
+      name: jupyter_default
 
 secrets:
   joomla_mysqli_default_pw:
