@@ -15,4 +15,7 @@ with open('/run/secrets/client_secret', 'r') as f:
 
 c.JupyterHub.base_url = '/jupyter'
 
-c.Spawner.cmd = ['/opt/conda/bin/jupyterhub-singleuser']
+# c.Spawner.cmd = ['/opt/conda/bin/jupyterhub-singleuser']
+
+c.JupyterHub.spawner_class='sudospawner.SudoSpawner'
+c.Spawner.cmd = '/opt/conda/bin/sudospawner'
