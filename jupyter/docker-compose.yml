@@ -5,17 +5,12 @@ services:
   jupyter:
     build: build
     restart: on-failure
-    user: root
     volumes:
+      - ../secrets/jupyter_notebook_config.py:/home/jovyan/.jupyter/jupyter_notebook_config.py
       - /home/boyle/work:/home/jovyan/work
       - /sxs-annex/SimulationAnnex.git:/sxs-annex/SimulationAnnex.git
-      - ../secrets/jupyter_notebook_config.py:/home/jovyan/.jupyter/jupyter_notebook_config.py
     environment:
       - NB_UID=1004
       - NB_GID=1006
       - JUPYTER_ENABLE_LAB=yes
-      - GRANT_SUDO=yes
-    group_add:
-      - 1002
-      - 1003
-    command: ["start-notebook.sh"]
+    # command: ["start-notebook.sh"]
