@@ -8,12 +8,25 @@ services:
     user: root
     restart: on-failure
     volumes:
-      # - /home/boyle:/home/boyle
+      # - ./jupyterhub_config.py:/jupyterhub_config.py
+      # - /home/boyle/work:/home/boyle/work
       - /sxs-annex/SimulationAnnex.git:/sxs-annex/SimulationAnnex.git
     environment:
-      - NB_USER=boyle
-      - NB_UID=1004
-      - NB_GID=1006
+      # - NB_USER=boyle
+      # - NB_UID=1004
+      # - NB_GID=1006
       - JUPYTER_ENABLE_LAB=yes
-    command: ["start-notebook.sh", "--NotebookApp.base_url=/jupyter"]
+    command: ["start.sh", "jupyterhub", "--config=/jupyterhub_config.py"]
+    #command: ["start-notebook.sh", "--NotebookApp.base_url=/jupyter"]
+    secrets:
+      - source: jupyterhub_client_id
+        target: client_id
+      - source: jupyterhub_client_secret
+        target: client_secret
 
+
+secrets:
+  jupyterhub_client_id:
+    file: ../secrets/jupyterhub_client_id
+  jupyterhub_client_secret:
+    file: ../secrets/jupyterhub_client_secret
