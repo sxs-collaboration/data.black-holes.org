@@ -5,13 +5,8 @@ RUN groupadd -g 1003 git && \
     groupadd -g 1002 web && \
     useradd -l -u 522 -g 1003 -s /bin/bash -G 1002 git && \
     useradd -l -u 503 -g 1002 -s /bin/bash -G 1003 web
+# && \
 #     usermod -a -G git,web boyle
-# RUN groupadd -g 1003 git && \
-#     groupadd -g 1002 web && \
-#     groupadd -g 1006 boyle && \
-#     useradd -l -u 522 -g 1003 -s /bin/bash -G 1002 git && \
-#     useradd -l -u 503 -g 1002 -s /bin/bash -G 1003 web && \
-#     useradd -l -u 1004 -g 1006 -s /bin/bash -G 1002,1003 boyle
 USER $NB_UID
 
 RUN pip install --upgrade pip && \

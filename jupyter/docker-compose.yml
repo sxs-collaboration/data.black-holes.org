@@ -15,18 +15,4 @@ services:
       - NB_GID=1006
       - JUPYTER_ENABLE_LAB=yes
       - GRANT_SUDO=yes
-    # command: ["start.sh", "jupyterhub", "--config=/jupyterhub_config2.py"]
-    # entrypoint: ["/entrypoint.sh"]
     command: ["start-notebook.sh", "--NotebookApp.base_url=/jupyter"]
-    secrets:
-      - source: jupyterhub_client_id
-        target: client_id
-      - source: jupyterhub_client_secret
-        target: client_secret
-
-
-secrets:
-  jupyterhub_client_id:
-    file: ../secrets/jupyterhub_client_id
-  jupyterhub_client_secret:
-    file: ../secrets/jupyterhub_client_secret
