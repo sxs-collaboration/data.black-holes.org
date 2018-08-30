@@ -5,6 +5,7 @@ services:
   jupyter:
     build: build
     restart: on-failure
+    user: root
     volumes:
       - ../secrets/jupyter_notebook_config.py:/home/jovyan/.jupyter/jupyter_notebook_config.py
       - /home/boyle/work:/home/jovyan/work
