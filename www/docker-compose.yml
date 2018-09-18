@@ -101,13 +101,15 @@ services:
   #       target: mdp
 
   wiki:
-    image: php:7-fpm
+    build: wiki/build
+    # image: php:7-fpm
     restart: on-failure
     volumes:
       - ./wiki/document_root:/var/www/html/wiki
     logging:
       options:
         max-size: "10m"
+    command: bash -c "touch /etc/mailname && service postfix start && php-fpm"
 
   uwsgi:  # Used for serving download requests for data files
     build: ../data/uwsgi/build
