@@ -102,7 +102,6 @@ services:
 
   wiki:
     build: wiki/build
-    # image: php:7-fpm
     restart: on-failure
     volumes:
       - ./wiki/document_root:/var/www/html/wiki
