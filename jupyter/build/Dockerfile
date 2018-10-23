@@ -10,7 +10,10 @@ USER $NB_UID
 
 RUN pip install --upgrade pip && \
     conda update --yes --name base conda && \
-    conda install --yes --channel moble scri && \
+    conda update --yes --name base --all && \
+    conda install --yes --channel conda-forge --channel moble scri && \
+    conda uninstall --yes scri && \
+    pip install scri && \
     pip install sxs && \
     /bin/rm -rf /home/$NB_USER/.cache && \
     fix-permissions $CONDA_DIR && \
