@@ -81,8 +81,7 @@ services:
 
   # ### NOTE: Running this at the same time as `joomla` (above) seems to be very dangerous.  This is the read-write
   # ### version of joomla, and should not be left running unless changes need to be made to the website.  Also, you
-  # ### probably want to allow access to `/administrator` and remove `client_max_body_size` in nginx.conf, as well as
-  # ### adjusting the `file_uploads` and `upload_max_filesize` variables in ./joomla/php.ini
+  # ### probably want to allow access to `/administrator` and remove `client_max_body_size` in nginx.conf.
   # joomla:
   #   image: joomla:3.8.2
   #   restart: "no"
@@ -90,7 +89,7 @@ services:
   #   depends_on:
   #     - joomladb
   #   volumes:
-  #     - ./joomla/php.ini:/usr/local/etc/php/conf.d/custom_php.ini:ro
+  #     - ./joomla/php_readwrite.ini:/usr/local/etc/php/conf.d/custom_php.ini:ro
   #     - ./joomla/document_root:/var/www/html
   #     - /var/www/sessions
   #   logging:
