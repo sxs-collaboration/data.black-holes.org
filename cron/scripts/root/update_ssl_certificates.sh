@@ -1,7 +1,7 @@
 #! /bin/bash
 
 email_address="web-admin@black-holes.org"  # Email address for important account notifications
-fqdn="black-holes.org,www.black-holes.org,data.black-holes.org,wiki.black-holes.org"  # Fully qualified domain name(s)
+fqdn="black-holes.org,www.black-holes.org,data.black-holes.org,wiki.black-holes.org,jekyll.black-holes.org"  # Fully qualified domain name(s)
 
 # Note: If changing fqdn to include more subdomains, run the second command below manually once with an additional --expand flag.
 
