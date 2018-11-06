@@ -22,6 +22,7 @@ services:
       - ./wiki/document_root:/var/www/html/wiki:ro
       - ./wiki/document_root/conf/users.auth.php:/etc/nginx/.htpasswd:ro
       - ../data/document_root:/usr/share/nginx/html/data:ro
+      - ./jekyll/document_root:/var/www/html/jekyll:ro
       - /sxs-annex/SimulationAnnex.git:/usr/share/nginx/html/waveforms_data/SimulationAnnex.git:ro
       - /nfs-data/Annex/SurrogateModeling.git:/usr/share/nginx/html/surrogate_data:ro
     logging:
