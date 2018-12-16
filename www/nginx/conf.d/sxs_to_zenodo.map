@@ -1380,8 +1380,17 @@ map $uri $zenodo_identifier {
     /waveforms/data/SXS:BBH:1379 record/1236693;
     /waveforms/data/SXS:BBH:1380 record/1236687;
     /waveforms/data/SXS:BBH:1381 record/1236707;
+    /waveforms/data/BHNS:0001 record/1215691;
+    /waveforms/data/BHNS:0002 record/1215695;
     /waveforms/data/SXS:BHNS:0001 record/1215691;
     /waveforms/data/SXS:BHNS:0002 record/1215695;
+    /waveforms/data/SXS:BHNS:0003 record/2318273;
+    /waveforms/data/SXS:BHNS:0004 record/2317399;
+    /waveforms/data/SXS:BHNS:0005 record/2317405;
+    /waveforms/data/SXS:BHNS:0006 record/2317433;
+    /waveforms/data/SXS:BHNS:0007 record/2317427;
+    /waveforms/data/SXS:NSNS:0001 record/2318211;
+    /waveforms/data/SXS:NSNS:0002 record/2317096;
     ~/waveforms/data/SXS:BBH:0001/(.*) record/1215773/files/SXS:BBH:0001/$1;
     ~/waveforms/data/SXS:BBH:0002/(.*) record/1215776/files/SXS:BBH:0002/$1;
     ~/waveforms/data/SXS:BBH:0003/(.*) record/1212573/files/SXS:BBH:0003/$1;
@@ -2761,6 +2770,15 @@ map $uri $zenodo_identifier {
     ~/waveforms/data/SXS:BBH:1379/(.*) record/1236693/files/$1;
     ~/waveforms/data/SXS:BBH:1380/(.*) record/1236687/files/$1;
     ~/waveforms/data/SXS:BBH:1381/(.*) record/1236707/files/$1;
+    ~/waveforms/data/BHNS:0001/(.*) record/1215691/files/$1;
+    ~/waveforms/data/BHNS:0002/(.*) record/1215695/files/$1;
     ~/waveforms/data/SXS:BHNS:0001/(.*) record/1215691/files/$1;
     ~/waveforms/data/SXS:BHNS:0002/(.*) record/1215695/files/$1;
+    ~/waveforms/data/SXS:BHNS:0003/(.*) record/2318273/files/$1;
+    ~/waveforms/data/SXS:BHNS:0004/(.*) record/2317399/files/$1;
+    ~/waveforms/data/SXS:BHNS:0005/(.*) record/2317405/files/$1;
+    ~/waveforms/data/SXS:BHNS:0006/(.*) record/2317433/files/$1;
+    ~/waveforms/data/SXS:BHNS:0007/(.*) record/2317427/files/$1;
+    ~/waveforms/data/SXS:NSNS:0001/(.*) record/2318211/files/$1;
+    ~/waveforms/data/SXS:NSNS:0002/(.*) record/2317096/files/$1;
 }
