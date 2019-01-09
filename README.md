@@ -15,6 +15,19 @@ into standard solutions like github.  In particular, the spec-bugs (trac) and do
 have moved to github issues and sxs-test, respectively.
 
 
+# Updating this repo and making changes live
+
+Please make Pull Requests for any changes you make so that Mike can review them, unless the changes
+are minor (e.g., wording changes on static pages, or additions to the `references.bib` file).  Before
+starting any less minor changes, at least read the rest of this page so that you understand how this
+repo works, and feel free to ping Mike to let him know what you're going to try so that he can give
+you feedback about how well that will work.
+
+After changes have been merged to the master branch, the repo needs to be updated on the web server
+(see below), and depending on what has changed the docker containers may need to be restarted (see
+below).  Please do not try to do this yourself unless Mike has been hit by a bus; just ask him.
+
+
 # Brief overview
 
 The website works through docker containers.  To understand the containers themselves, look at
