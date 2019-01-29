@@ -10,20 +10,22 @@ writable by `group` or `other`.
 
 As a reminder, the time and date specification is given by this:
 
-> Times at which the commands should be run are specified by the first six fields.  An asterisk
-> means that the command should run for any value of that field.  Fields can be lists of times,
-> separated by commas.  If the field ends in `/n` for some integer `n`, the command is executed
-> every `n` of the times indicated by the first part of that field.  The units are:  
->  
->   ┌───────────── minute (0 - 59)  
->   │ ┌───────────── hour (0 - 23)  
->   │ │ ┌───────────── day of month (1 - 31)  
->   │ │ │ ┌───────────── month (1 - 12)  
->   │ │ │ │ ┌───────────── day of week (0 - 6) (Sunday to Saturday;  
->   │ │ │ │ │                                   7 is also Sunday on some systems)  
->   │ │ │ │ │  
->   │ │ │ │ │  
->   \* * * * * username command to execute  
+```
+Times at which the commands should be run are specified by the first six fields.  An asterisk
+means that the command should run for any value of that field.  Fields can be lists of times,
+separated by commas.  If the field ends in `/n` for some integer `n`, the command is executed
+every `n` of the times indicated by the first part of that field.  The units are:  
+ 
+  ┌───────────── minute (0 - 59)  
+  │ ┌───────────── hour (0 - 23)  
+  │ │ ┌───────────── day of month (1 - 31)  
+  │ │ │ ┌───────────── month (1 - 12)  
+  │ │ │ │ ┌───────────── day of week (0 - 6) (Sunday to Saturday;  
+  │ │ │ │ │                                   7 is also Sunday on some systems)  
+  │ │ │ │ │  
+  │ │ │ │ │  
+  * * * * * username command to execute  
+```
 
 So, to run `echo "hello"` as user `root` every 3 minutes, the input would look like this:
 
