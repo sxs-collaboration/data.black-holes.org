@@ -1,0 +1,22 @@
+version: '3.7'
+
+services:
+
+  joomladb:
+    image: mysql:5
+    volumes:
+      - ./joomladb:/var/lib/mysql
+
+  ruby:
+    build: ruby/build
+    #command: tail -f /dev/null
+    command: ruby convert.rb
+    volumes:
+      - ./ruby/app:/usr/src/app
+    secrets:
+      - source: joomla_mysqli_default_pw
+        target: mdp
+
+secrets:
+  joomla_mysqli_default_pw:
+    file: joomla_mysqli_default_pw

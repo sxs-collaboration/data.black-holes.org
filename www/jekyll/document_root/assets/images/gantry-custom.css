@@ -1,0 +1,66 @@
+@charset "utf-8";
+/* CSS Document added by Yvonne Tang http://siliconian.com 2012-2013 */
+
+/* Universal */
+body {font-family:"Open Sans", "Helvetica Neue", sans-serif;}
+address {line-height:24px;}
+ul, ol {margin:0;}
+h3 + h4 {margin-top:20px;}
+
+/* Header */
+.menu-block {margin:35px 0 0 16px;}
+.finder {float:right;}
+#rt-top-surround {background:url(../images/patterns/header_bg.png) repeat 0 0;}
+#rt-logo {margin:20px auto 0;}
+
+/* Main Menu */
+#rt-header{background:#c4663e;}
+.gf-menu {margin:10px auto 8px;}
+.gf-menu .item {font-family:Oswald,Impact,sans-serif; text-transform:uppercase; letter-spacing:1px; font-weight:bold;}
+.gf-menu.l1 > li > .item {font-size:16px;}
+.gf-menu .item.subtext > em {font-size:10px; line-height:11px; text-align:left;}
+.gf-menu .dropdown ul li .item {padding:5px 8px;} /* add padding between submenu items */
+
+/* Sidebar */
+#rt-sidebar-a .title {font-size:22px;}
+
+/* Articles */
+.component-content ul.actions {float:none; text-align:right;}
+.component-content .item-page h2 {font-size:36px;}
+.bio h3 {margin:0;}
+.bio h4 {font-style:italic; margin:0 0 10px 0;}
+.biopic {padding:8px; background-color:#fff; border:#ccc solid 1px; margin:5px 0 10px 10px; box-shadow:0 0 8px #ccc;}
+.blog h1 {margin-bottom:35px;}
+#rt-mainbody .item-page ul li, #rt-mainbody .item-page ol li {line-height:22px; margin-bottom:10px;}
+#rt-mainbody ul, #rt-mainbody ol {margin-bottom:20px;}
+#rt-mainbody .actions {margin-bottom:5px;}
+
+/* Equations */
+div.equation {text-align:center;}
+
+/* SXS Papers */
+.paper {border:#eee solid 1px; background:#fff; border-radius:10px; padding:25px; margin-bottom:30px;}
+.paper h4 {margin:0 0 15px; font-size:20px; line-height:23px;}
+.paper p {margin: 0 0 8px;}
+
+/* Thumbnails */
+a.thumbnail, a.thumbnail:hover {border:none; box-shadow:none; transition:none; padding:0;}
+.tnr, .tnl {background-color:#fff; padding:7px; border:#ddd solid 1px!important;}
+.tnr {margin:7px 0 10px 10px!important;}
+.tnl {margin:7px 10px 10px 0!important;}
+div.img_caption {max-width:100%; font-size:13px; line-height:16px;}
+.img_caption.right {margin:0 0 0 20px;}
+.img_caption.right p {margin:0; position:relative; top:-5px; left:-10px;}
+.img_caption.left {margin:0 30px 0 0;}
+.img_caption.left p {margin:0; position:relative; top:-5px; left:10px;}
+
+/* FAQ */
+#right-list ul li a {font-weight:normal; margin-bottom:3px;}
+#left-list ul li a {font-size:15px; padding:9px 29px 8px 14px;}
+#right-list h3, #one-list h3 {margin: 0 0 20px !important;}
+
+/* Videos */
+.avPlayerWrapper .avPlayerContainer {margin:0;}
+
+/* Tooltip */
+h3 .smoothness .ui-state-default, h4 .smoothness .ui-state-default {border:none; font-weight:bold; background:none; color:inherit; padding:0; border-bottom:#ccc dashed 1px; border-radius:0;}
