@@ -9,6 +9,8 @@ services:
     volumes:
       - ../secrets/jupyter_notebook_config.py:/home/jovyan/.jupyter/jupyter_notebook_config.py
       - /home/boyle/work:/home/jovyan/work
+      - ./fonts:/home/jovyan/.fonts
+      - /home/boyle/.config/matplotlib:/home/jovyan/.config/matplotlib
       - /sxs-annex/SimulationAnnex.git:/sxs-annex/SimulationAnnex.git
     environment:
       - NB_UID=1004

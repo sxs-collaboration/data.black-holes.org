@@ -11,10 +11,9 @@ USER $NB_UID
 RUN pip install --upgrade pip && \
     conda update --yes --name base conda && \
     conda update --yes --name base --all && \
-    conda install --yes --channel conda-forge --channel moble scri && \
-    conda uninstall --yes scri && \
-    pip install scri && \
+    conda install --yes --channel defaults --channel conda-forge scri && \
     pip install sxs && \
+    jupyter labextension install @jupyterlab/toc && \
     /bin/rm -rf /home/$NB_USER/.cache && \
     fix-permissions $CONDA_DIR && \
     fix-permissions /home/$NB_USER
