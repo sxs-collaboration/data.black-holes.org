@@ -23,13 +23,13 @@ function FloatNumberField(config) {
 FloatNumberField.prototype = new jsGrid.NumberField({
     filterTemplate: function() {
         var a = this._grid;
-        this._lower_label = $("<label>").attr("for", this.name+"_lower").text("From:")
+        this._lower_label = $("<label>").attr("for", this.name+"_"+this.type+"_lower").text("From:")
             .css("display", "block").css("text-align", "left").css("font-size", "50%");
-        this._lower = $("<input>").attr("type", "number").attr("id", this.name+"_lower")
+        this._lower = $("<input>").attr("type", "number").attr("id", this.name+"_"+this.type+"_lower")
             .keypress(function(b){13===b.which&&(a.search(),b.preventDefault())});
-        this._upper_label = $("<label>").attr("for", this.name+"_upper").text("To:")
+        this._upper_label = $("<label>").attr("for", this.name+"_"+this.type+"_upper").text("To:")
             .css("display", "block").css("text-align", "left").css("font-size", "50%");
-        this._upper = $("<input>").attr("type", "number").attr("id", this.name+"_upper")
+        this._upper = $("<input>").attr("type", "number").attr("id", this.name+"_"+this.type+"_upper")
             .keypress(function(b){13===b.which&&(a.search(),b.preventDefault())});
         return $("<div>").append(this._lower_label).append(this._lower)
             .append('<br>')
@@ -38,7 +38,8 @@ FloatNumberField.prototype = new jsGrid.NumberField({
     filterValue: function() {
         return {
             lower: parseFloat(this._lower.val()),
-            upper: parseFloat(this._upper.val())
+            upper: parseFloat(this._upper.val()),
+            type: this.type
         };
     },
     headerTemplate: tooltipHeader,
@@ -68,6 +69,7 @@ FloatNumberField.prototype = new jsGrid.NumberField({
     },
 });
 jsGrid.fields.float = FloatNumberField;
+
 
 jsGrid.sortStrategies.limit_or_float = function(value1, value2) {
     // Treat "[unknown]" as infinite; treat "<x" as "x".
@@ -103,6 +105,8 @@ jsGrid.sortStrategies.limit_or_float = function(value1, value2) {
 // this function, which handles strings and ranges of numbers.
 var filter_strings_ints_floatranges = function(filter) {
     return function(run) {
+        console.log('filter:', filter);
+        console.log('run:', run);
         for (var property in filter) {
             if (filter.hasOwnProperty(property)) {
                 if (typeof filter[property] === "string" || filter[property] instanceof String) {
@@ -140,6 +144,80 @@ var filter_strings_ints_floatranges = function(filter) {
         return true;
     };
 };
+
+
+//
+// Add some vector-related fields
+//
+function VectorX(config) {
+    FloatNumberField.call(this, config);
+};
+VectorX.prototype = new FloatNumberField({
+    index: 0,
+    readOnly: true,
+    sorter: function(value1, value2) {
+        return jsGrid.sortStrategies.limit_or_float(value1[this.index], value2[this.index]);
+    },
+    itemTemplate: function(value, item) {
+        if (value === undefined) { return ''; }
+        return jsGrid.fields.float.prototype.itemTemplate(value[this.index]);
+    },
+});
+jsGrid.fields.vectorx = VectorX;
+
+function VectorY(config) {
+    FloatNumberField.call(this, config);
+};
+VectorY.prototype = new FloatNumberField({
+    index: 1,
+    readOnly: true,
+    sorter: function(value1, value2) {
+        return jsGrid.sortStrategies.limit_or_float(value1[this.index], value2[this.index]);
+    },
+    itemTemplate: function(value, item) {
+        if (value === undefined) { return ''; }
+        return jsGrid.fields.float.prototype.itemTemplate(value[this.index]);
+    },
+});
+jsGrid.fields.vectory = VectorY;
+
+function VectorZ(config) {
+    FloatNumberField.call(this, config);
+};
+VectorZ.prototype = new FloatNumberField({
+    index: 2,
+    readOnly: true,
+    sorter: function(value1, value2) {
+        return jsGrid.sortStrategies.limit_or_float(value1[this.index], value2[this.index]);
+    },
+    itemTemplate: function(value, item) {
+        if (value === undefined) { return ''; }
+        return jsGrid.fields.float.prototype.itemTemplate(value[this.index]);
+    },
+});
+jsGrid.fields.vectorz = VectorZ;
+
+function VectorMag(config) {
+    FloatNumberField.call(this, config);
+};
+VectorMag.prototype = new FloatNumberField({
+    readOnly: true,
+    sorter: function(value1, value2) {
+        // console.log('VectorMag.sorter');
+        return jsGrid.sortStrategies.limit_or_float(
+            value1[0]*value1[0]+value1[1]*value1[1]+value1[2]*value1[2],
+            value2[0]*value2[0]+value2[1]*value2[1]+value2[2]*value2[2]
+        );
+    },
+    itemTemplate: function(value, item) {
+        // console.log('VectorMag.itemTemplate');
+        if (value === undefined) { return ''; }
+        return jsGrid.fields.float.prototype.itemTemplate(
+            Math.sqrt(value[0]*value[0]+value[1]*value[1]+value[2]*value[2])
+        );
+    },
+});
+jsGrid.fields.vectormag = VectorMag;
 
 
 //
@@ -196,18 +274,19 @@ var column_selectors_init = function(columns) {
         var title = value.title;
         var tooltip = value.tooltip;
         var visible = value.visible;
+        var type = value.type;
         if (title === undefined) { title = name; }
         if (visible === undefined) { visible = false; }
         var checkbox = $("<div>").append(
             $("<input>", {
                 type: "checkbox",
-                name: name,
-                id: "column_selector_" + name,
+                name: name + "_" + type,
+                id: "column_selector_" + name + "_" + type,
                 checked: value.visible
             })
         ).append(
             $("<label>", {
-                for: "column_selector_" + name,
+                for: "column_selector_" + name + "_" + type,
                 style: "font-family: Times",
                 title: tooltip,
                 html: title,
@@ -220,13 +299,15 @@ var column_selectors_read = function(grid) {
     var inputs = $("#column_selectors :input");
     var d = {};
     $.each(inputs, function(indexInArray, value) {
+        // console.log('input:', value);
         d[value.name] = value.checked;
     });
     var fields = $("#grid").jsGrid("option", "fields");
     $.each(fields, function(indexInArray, value) {
-        var name = value.name;
+        // console.log('field:', value);
+        var name = value.name + "_" + value.type;
         if(name !== undefined) {
-            value.visible = d[value.name];
+            value.visible = d[name];
         }
     });
     $("#grid").jsGrid("render");

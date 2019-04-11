@@ -72,68 +72,60 @@
             "type": "float"
         }, 
         {
-            "name": "initial_ADM_linear_momentum_mag", 
+            "name": "initial_ADM_linear_momentum", 
             "title": "$\\|\\vec{P}^{\\mathrm{ADM}}\\|$", 
             "tooltip": "ADM linear momentum measured in the initial data", 
-            "sorter": "limit_or_float", 
             "visible": false, 
-            "type": "float"
+            "type": "vectormag"
         }, 
         {
-            "name": "initial_ADM_linear_momentum_x", 
+            "name": "initial_ADM_linear_momentum", 
             "title": "${P}^{\\mathrm{ADM}}_x$", 
             "tooltip": "x component of ADM linear momentum measured in the initial data", 
-            "sorter": "limit_or_float", 
             "visible": false, 
-            "type": "float"
+            "type": "vectorx"
         }, 
         {
-            "name": "initial_ADM_linear_momentum_y", 
+            "name": "initial_ADM_linear_momentum", 
             "title": "${P}^{\\mathrm{ADM}}_y$", 
             "tooltip": "y component of ADM linear momentum measured in the initial data", 
-            "sorter": "limit_or_float", 
             "visible": false, 
-            "type": "float"
+            "type": "vectory"
         }, 
         {
-            "name": "initial_ADM_linear_momentum_z", 
+            "name": "initial_ADM_linear_momentum", 
             "title": "${P}^{\\mathrm{ADM}}_z$", 
             "tooltip": "z component of ADM linear momentum measured in the initial data", 
-            "sorter": "limit_or_float", 
             "visible": false, 
-            "type": "float"
+            "type": "vectorz"
         }, 
         {
-            "name": "initial_ADM_angular_momentum_mag", 
+            "name": "initial_ADM_angular_momentum", 
             "title": "$\\|\\vec{L}^{\\mathrm{ADM}}\\|$", 
             "tooltip": "ADM angular momentum measured in the initial data", 
-            "sorter": "limit_or_float", 
             "visible": false, 
-            "type": "float"
+            "type": "vectormag"
         }, 
         {
-            "name": "initial_ADM_angular_momentum_x", 
+            "name": "initial_ADM_angular_momentum", 
             "title": "${L}^{\\mathrm{ADM}}_x$", 
             "tooltip": "x component of ADM angular momentum measured in the initial data", 
-            "sorter": "limit_or_float", 
             "visible": false, 
-            "type": "float"
+            "type": "vectorx"
         }, 
         {
-            "name": "initial_ADM_angular_momentum_y", 
+            "name": "initial_ADM_angular_momentum", 
             "title": "${L}^{\\mathrm{ADM}}_y$", 
             "tooltip": "y component of ADM angular momentum measured in the initial data", 
-            "sorter": "limit_or_float", 
             "visible": false, 
-            "type": "float"
+            "type": "vectory"
         }, 
         {
-            "name": "initial_ADM_angular_momentum_z", 
+            "name": "initial_ADM_angular_momentum", 
             "title": "${L}^{\\mathrm{ADM}}_z$", 
             "tooltip": "z component of ADM angular momentum measured in the initial data", 
-            "sorter": "limit_or_float", 
             "visible": false, 
-            "type": "float"
+            "type": "vectorz"
         }, 
         {
             "name": "initial_mass_ratio", 
@@ -160,132 +152,116 @@
             "type": "float"
         }, 
         {
-            "name": "initial_dimensionless_spin1_mag", 
+            "name": "initial_dimensionless_spin1", 
             "title": "$\\|\\vec{\\chi}^{\\mathrm{ini}, 1}\\|$", 
             "tooltip": "Initial dimensionless spin of object 1", 
-            "sorter": "limit_or_float", 
             "visible": false, 
-            "type": "float"
+            "type": "vectormag"
         }, 
         {
-            "name": "initial_dimensionless_spin1_x", 
+            "name": "initial_dimensionless_spin1", 
             "title": "${\\chi}^{\\mathrm{ini}, 1}_x$", 
             "tooltip": "x component of Initial dimensionless spin of object 1", 
-            "sorter": "limit_or_float", 
             "visible": false, 
-            "type": "float"
+            "type": "vectorx"
         }, 
         {
-            "name": "initial_dimensionless_spin1_y", 
+            "name": "initial_dimensionless_spin1", 
             "title": "${\\chi}^{\\mathrm{ini}, 1}_y$", 
             "tooltip": "y component of Initial dimensionless spin of object 1", 
-            "sorter": "limit_or_float", 
             "visible": false, 
-            "type": "float"
+            "type": "vectory"
         }, 
         {
-            "name": "initial_dimensionless_spin1_z", 
+            "name": "initial_dimensionless_spin1", 
             "title": "${\\chi}^{\\mathrm{ini}, 1}_z$", 
             "tooltip": "z component of Initial dimensionless spin of object 1", 
-            "sorter": "limit_or_float", 
             "visible": false, 
-            "type": "float"
+            "type": "vectorz"
         }, 
         {
-            "name": "initial_dimensionless_spin2_mag", 
+            "name": "initial_dimensionless_spin2", 
             "title": "$\\|\\vec{\\chi}^{\\mathrm{ini}, 2}\\|$", 
             "tooltip": "Initial dimensionless spin of object 2", 
-            "sorter": "limit_or_float", 
             "visible": false, 
-            "type": "float"
+            "type": "vectormag"
         }, 
         {
-            "name": "initial_dimensionless_spin2_x", 
+            "name": "initial_dimensionless_spin2", 
             "title": "${\\chi}^{\\mathrm{ini}, 2}_x$", 
             "tooltip": "x component of Initial dimensionless spin of object 2", 
-            "sorter": "limit_or_float", 
             "visible": false, 
-            "type": "float"
+            "type": "vectorx"
         }, 
         {
-            "name": "initial_dimensionless_spin2_y", 
+            "name": "initial_dimensionless_spin2", 
             "title": "${\\chi}^{\\mathrm{ini}, 2}_y$", 
             "tooltip": "y component of Initial dimensionless spin of object 2", 
-            "sorter": "limit_or_float", 
             "visible": false, 
-            "type": "float"
+            "type": "vectory"
         }, 
         {
-            "name": "initial_dimensionless_spin2_z", 
+            "name": "initial_dimensionless_spin2", 
             "title": "${\\chi}^{\\mathrm{ini}, 2}_z$", 
             "tooltip": "z component of Initial dimensionless spin of object 2", 
-            "sorter": "limit_or_float", 
             "visible": false, 
-            "type": "float"
+            "type": "vectorz"
         }, 
         {
-            "name": "initial_position1_mag", 
+            "name": "initial_position1", 
             "title": "$\\|\\vec{x}^{\\mathrm{ini}, 1}\\|$", 
             "tooltip": "Initial position of object 1", 
-            "sorter": "limit_or_float", 
             "visible": false, 
-            "type": "float"
+            "type": "vectormag"
         }, 
         {
-            "name": "initial_position1_x", 
+            "name": "initial_position1", 
             "title": "${x}^{\\mathrm{ini}, 1}_x$", 
             "tooltip": "x component of Initial position of object 1", 
-            "sorter": "limit_or_float", 
             "visible": false, 
-            "type": "float"
+            "type": "vectorx"
         }, 
         {
-            "name": "initial_position1_y", 
+            "name": "initial_position1", 
             "title": "${x}^{\\mathrm{ini}, 1}_y$", 
             "tooltip": "y component of Initial position of object 1", 
-            "sorter": "limit_or_float", 
             "visible": false, 
-            "type": "float"
+            "type": "vectory"
         }, 
         {
-            "name": "initial_position1_z", 
+            "name": "initial_position1", 
             "title": "${x}^{\\mathrm{ini}, 1}_z$", 
             "tooltip": "z component of Initial position of object 1", 
-            "sorter": "limit_or_float", 
             "visible": false, 
-            "type": "float"
+            "type": "vectorz"
         }, 
         {
-            "name": "initial_position2_mag", 
+            "name": "initial_position2", 
             "title": "$\\|\\vec{x}^{\\mathrm{ini}, 2}\\|$", 
             "tooltip": "Initial position of object 2", 
-            "sorter": "limit_or_float", 
             "visible": false, 
-            "type": "float"
+            "type": "vectormag"
         }, 
         {
-            "name": "initial_position2_x", 
+            "name": "initial_position2", 
             "title": "${x}^{\\mathrm{ini}, 2}_x$", 
             "tooltip": "x component of Initial position of object 2", 
-            "sorter": "limit_or_float", 
             "visible": false, 
-            "type": "float"
+            "type": "vectorx"
         }, 
         {
-            "name": "initial_position2_y", 
+            "name": "initial_position2", 
             "title": "${x}^{\\mathrm{ini}, 2}_y$", 
             "tooltip": "y component of Initial position of object 2", 
-            "sorter": "limit_or_float", 
             "visible": false, 
-            "type": "float"
+            "type": "vectory"
         }, 
         {
-            "name": "initial_position2_z", 
+            "name": "initial_position2", 
             "title": "${x}^{\\mathrm{ini}, 2}_z$", 
             "tooltip": "z component of Initial position of object 2", 
-            "sorter": "limit_or_float", 
             "visible": false, 
-            "type": "float"
+            "type": "vectorz"
         }, 
         {
             "name": "relaxed_measurement_time", 
@@ -344,164 +320,144 @@
             "type": "float"
         }, 
         {
-            "name": "relaxed_dimensionless_spin1_mag", 
+            "name": "relaxed_dimensionless_spin1", 
             "title": "$\\|\\vec{\\chi}^{\\mathrm{rel}, 1}\\|$", 
             "tooltip": "Dimensionless spin of object 1 after relaxation", 
-            "sorter": "limit_or_float", 
             "visible": false, 
-            "type": "float"
+            "type": "vectormag"
         }, 
         {
-            "name": "relaxed_dimensionless_spin1_x", 
+            "name": "relaxed_dimensionless_spin1", 
             "title": "${\\chi}^{\\mathrm{rel}, 1}_x$", 
             "tooltip": "x component of Dimensionless spin of object 1 after relaxation", 
-            "sorter": "limit_or_float", 
             "visible": false, 
-            "type": "float"
+            "type": "vectorx"
         }, 
         {
-            "name": "relaxed_dimensionless_spin1_y", 
+            "name": "relaxed_dimensionless_spin1", 
             "title": "${\\chi}^{\\mathrm{rel}, 1}_y$", 
             "tooltip": "y component of Dimensionless spin of object 1 after relaxation", 
-            "sorter": "limit_or_float", 
             "visible": false, 
-            "type": "float"
+            "type": "vectory"
         }, 
         {
-            "name": "relaxed_dimensionless_spin1_z", 
+            "name": "relaxed_dimensionless_spin1", 
             "title": "${\\chi}^{\\mathrm{rel}, 1}_z$", 
             "tooltip": "z component of Dimensionless spin of object 1 after relaxation", 
-            "sorter": "limit_or_float", 
             "visible": false, 
-            "type": "float"
+            "type": "vectorz"
         }, 
         {
-            "name": "relaxed_dimensionless_spin2_mag", 
+            "name": "relaxed_dimensionless_spin2", 
             "title": "$\\|\\vec{\\chi}^{\\mathrm{rel}, 2}\\|$", 
             "tooltip": "Dimensionless spin of object 2 after relaxation", 
-            "sorter": "limit_or_float", 
             "visible": false, 
-            "type": "float"
+            "type": "vectormag"
         }, 
         {
-            "name": "relaxed_dimensionless_spin2_x", 
+            "name": "relaxed_dimensionless_spin2", 
             "title": "${\\chi}^{\\mathrm{rel}, 2}_x$", 
             "tooltip": "x component of Dimensionless spin of object 2 after relaxation", 
-            "sorter": "limit_or_float", 
             "visible": false, 
-            "type": "float"
+            "type": "vectorx"
         }, 
         {
-            "name": "relaxed_dimensionless_spin2_y", 
+            "name": "relaxed_dimensionless_spin2", 
             "title": "${\\chi}^{\\mathrm{rel}, 2}_y$", 
             "tooltip": "y component of Dimensionless spin of object 2 after relaxation", 
-            "sorter": "limit_or_float", 
             "visible": false, 
-            "type": "float"
+            "type": "vectory"
         }, 
         {
-            "name": "relaxed_dimensionless_spin2_z", 
+            "name": "relaxed_dimensionless_spin2", 
             "title": "${\\chi}^{\\mathrm{rel}, 2}_z$", 
             "tooltip": "z component of Dimensionless spin of object 2 after relaxation", 
-            "sorter": "limit_or_float", 
             "visible": false, 
-            "type": "float"
+            "type": "vectorz"
         }, 
         {
-            "name": "relaxed_position1_mag", 
+            "name": "relaxed_position1", 
             "title": "$\\|\\vec{x}^{\\mathrm{rel}, 1}\\|$", 
             "tooltip": "Position of object 1 after relaxation", 
-            "sorter": "limit_or_float", 
             "visible": false, 
-            "type": "float"
+            "type": "vectormag"
         }, 
         {
-            "name": "relaxed_position1_x", 
+            "name": "relaxed_position1", 
             "title": "${x}^{\\mathrm{rel}, 1}_x$", 
             "tooltip": "x component of Position of object 1 after relaxation", 
-            "sorter": "limit_or_float", 
             "visible": false, 
-            "type": "float"
+            "type": "vectorx"
         }, 
         {
-            "name": "relaxed_position1_y", 
+            "name": "relaxed_position1", 
             "title": "${x}^{\\mathrm{rel}, 1}_y$", 
             "tooltip": "y component of Position of object 1 after relaxation", 
-            "sorter": "limit_or_float", 
             "visible": false, 
-            "type": "float"
+            "type": "vectory"
         }, 
         {
-            "name": "relaxed_position1_z", 
+            "name": "relaxed_position1", 
             "title": "${x}^{\\mathrm{rel}, 1}_z$", 
             "tooltip": "z component of Position of object 1 after relaxation", 
-            "sorter": "limit_or_float", 
             "visible": false, 
-            "type": "float"
+            "type": "vectorz"
         }, 
         {
-            "name": "relaxed_position2_mag", 
+            "name": "relaxed_position2", 
             "title": "$\\|\\vec{x}^{\\mathrm{rel}, 2}\\|$", 
             "tooltip": "Position of object 2 after relaxation", 
-            "sorter": "limit_or_float", 
             "visible": false, 
-            "type": "float"
+            "type": "vectormag"
         }, 
         {
-            "name": "relaxed_position2_x", 
+            "name": "relaxed_position2", 
             "title": "${x}^{\\mathrm{rel}, 2}_x$", 
             "tooltip": "x component of Position of object 2 after relaxation", 
-            "sorter": "limit_or_float", 
             "visible": false, 
-            "type": "float"
+            "type": "vectorx"
         }, 
         {
-            "name": "relaxed_position2_y", 
+            "name": "relaxed_position2", 
             "title": "${x}^{\\mathrm{rel}, 2}_y$", 
             "tooltip": "y component of Position of object 2 after relaxation", 
-            "sorter": "limit_or_float", 
             "visible": false, 
-            "type": "float"
+            "type": "vectory"
         }, 
         {
-            "name": "relaxed_position2_z", 
+            "name": "relaxed_position2", 
             "title": "${x}^{\\mathrm{rel}, 2}_z$", 
             "tooltip": "z component of Position of object 2 after relaxation", 
-            "sorter": "limit_or_float", 
             "visible": false, 
-            "type": "float"
+            "type": "vectorz"
         }, 
         {
-            "name": "relaxed_orbital_frequency_mag", 
+            "name": "relaxed_orbital_frequency", 
             "title": "$\\|\\vec{\\Omega}^{\\mathrm{orb}\\ \\mathrm{rel}}\\|$", 
             "tooltip": "Orbital frequency after relaxation", 
-            "sorter": "limit_or_float", 
             "visible": false, 
-            "type": "float"
+            "type": "vectormag"
         }, 
         {
-            "name": "relaxed_orbital_frequency_x", 
+            "name": "relaxed_orbital_frequency", 
             "title": "${\\Omega}^{\\mathrm{orb}\\ \\mathrm{rel}}_x$", 
             "tooltip": "x component of Orbital frequency after relaxation", 
-            "sorter": "limit_or_float", 
             "visible": false, 
-            "type": "float"
+            "type": "vectorx"
         }, 
         {
-            "name": "relaxed_orbital_frequency_y", 
+            "name": "relaxed_orbital_frequency", 
             "title": "${\\Omega}^{\\mathrm{orb}\\ \\mathrm{rel}}_y$", 
             "tooltip": "y component of Orbital frequency after relaxation", 
-            "sorter": "limit_or_float", 
             "visible": false, 
-            "type": "float"
+            "type": "vectory"
         }, 
         {
-            "name": "relaxed_orbital_frequency_z", 
+            "name": "relaxed_orbital_frequency", 
             "title": "${\\Omega}^{\\mathrm{orb}\\ \\mathrm{rel}}_z$", 
             "tooltip": "z component of Orbital frequency after relaxation", 
-            "sorter": "limit_or_float", 
             "visible": false, 
-            "type": "float"
+            "type": "vectorz"
         }, 
         {
             "name": "relaxed_eccentricity", 
@@ -552,68 +508,60 @@
             "type": "float"
         }, 
         {
-            "name": "remnant_dimensionless_spin_mag", 
+            "name": "remnant_dimensionless_spin", 
             "title": "$\\|\\vec{\\chi}^{\\mathrm{rem}}\\|$", 
             "tooltip": "Dimensionless spin of remnant object", 
-            "sorter": "limit_or_float", 
             "visible": false, 
-            "type": "float"
+            "type": "vectormag"
         }, 
         {
-            "name": "remnant_dimensionless_spin_x", 
+            "name": "remnant_dimensionless_spin", 
             "title": "${\\chi}^{\\mathrm{rem}}_x$", 
             "tooltip": "x component of Dimensionless spin of remnant object", 
-            "sorter": "limit_or_float", 
             "visible": false, 
-            "type": "float"
+            "type": "vectorx"
         }, 
         {
-            "name": "remnant_dimensionless_spin_y", 
+            "name": "remnant_dimensionless_spin", 
             "title": "${\\chi}^{\\mathrm{rem}}_y$", 
             "tooltip": "y component of Dimensionless spin of remnant object", 
-            "sorter": "limit_or_float", 
             "visible": false, 
-            "type": "float"
+            "type": "vectory"
         }, 
         {
-            "name": "remnant_dimensionless_spin_z", 
+            "name": "remnant_dimensionless_spin", 
             "title": "${\\chi}^{\\mathrm{rem}}_z$", 
             "tooltip": "z component of Dimensionless spin of remnant object", 
-            "sorter": "limit_or_float", 
             "visible": false, 
-            "type": "float"
+            "type": "vectorz"
         }, 
         {
-            "name": "remnant_velocity_mag", 
+            "name": "remnant_velocity", 
             "title": "$\\|\\vec{v}^{\\mathrm{rem}}\\|$", 
             "tooltip": "Velocity of remnant object", 
-            "sorter": "limit_or_float", 
             "visible": false, 
-            "type": "float"
+            "type": "vectormag"
         }, 
         {
-            "name": "remnant_velocity_x", 
+            "name": "remnant_velocity", 
             "title": "${v}^{\\mathrm{rem}}_x$", 
             "tooltip": "x component of Velocity of remnant object", 
-            "sorter": "limit_or_float", 
             "visible": false, 
-            "type": "float"
+            "type": "vectorx"
         }, 
         {
-            "name": "remnant_velocity_y", 
+            "name": "remnant_velocity", 
             "title": "${v}^{\\mathrm{rem}}_y$", 
             "tooltip": "y component of Velocity of remnant object", 
-            "sorter": "limit_or_float", 
             "visible": false, 
-            "type": "float"
+            "type": "vectory"
         }, 
         {
-            "name": "remnant_velocity_z", 
+            "name": "remnant_velocity", 
             "title": "${v}^{\\mathrm{rem}}_z$", 
             "tooltip": "z component of Velocity of remnant object", 
-            "sorter": "limit_or_float", 
             "visible": false, 
-            "type": "float"
+            "type": "vectorz"
         }, 
         {
             "name": "disk_mass", 
@@ -726,6 +674,6 @@
         }
     ], 
     "documentation": true, 
-    "last_changed": "2019-04-05 02:01:43", 
+    "last_changed": "2019-04-10 20:00:00", 
     "news": true
 }
