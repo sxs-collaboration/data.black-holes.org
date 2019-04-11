@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>SXS Data Server</title>
+        <link rel="stylesheet" type="text/css" href="/css/cuscosky.css">
+        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid.min.css" />
+        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid-theme.min.css" />
+        <style>
+         .jsgrid-header-cell {
+             font-family: Times;
+             word-wrap: break-word;
+             white-space: normal;
+         }
+         .jsgrid-cell {
+             word-wrap: break-word;
+             white-space: normal;
+         }
+         input[type=number]::-webkit-inner-spin-button, 
+         input[type=number]::-webkit-outer-spin-button { 
+             -webkit-appearance: none; 
+             margin: 0; 
+         }
+         .autocolumns {
+             -webkit-column-count: 7; /* Chrome, Safari, Opera */
+             -moz-column-count: 7; /* Firefox */
+             column-count: 7;
+         }
+        </style>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_SVG" type="text/javascript"></script>
+        <script src="/js/mathjax.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid.min.js"></script>
+        <script src="/js/jsgrid_helpers.js"></script>
+        <script>
+         function refreshHash() {
+             var object_types = window.location.hash;
+             var invisible = ['initial_mass_ratio', 'relaxed_eccentricity',
+                              'initial_dimensionless_spin1_x', 'initial_dimensionless_spin1_y', 'initial_dimensionless_spin1_z',
+                              'initial_dimensionless_spin2_x', 'initial_dimensionless_spin2_y', 'initial_dimensionless_spin2_z',
+                              'column_selector_undefined'];
+             var visible = ['number_of_orbits', 'initial_orbital_frequency', 'initial_mass1', 'initial_mass2',
+                            'eos', 'initial_dimensionless_spin1_mag', 'initial_dimensionless_spin2_mag', 'disk_mass'];
+             var inputs = $("#column_selectors :input");
+             if(object_types.indexOf('NS') !== -1) {
+                 // A NS is at least one of the requested objects, so switch default columns to be more informative for matter.
+                 $.each(inputs, function(indexInArray, value) {
+                     var name = value.name || undefined;
+                     if($.inArray(name, invisible) !== -1) {
+                         value.checked = false;
+                     } else if($.inArray(name, visible) !== -1) {
+                         value.checked = true;
+                     }
+                 });
+             } else {
+                 $.each(inputs, function(indexInArray, value) {
+                     var name = value.name || undefined;
+                     if($.inArray(name, invisible) !== -1) {
+                         value.checked = true;
+                     } else if($.inArray(name, visible) !== -1) {
+                         value.checked = false;
+                     }
+                 });
+             }
+             column_selectors_read($('#grid'));
+             $("#grid").jsGrid("search", { 'object_types': object_types.slice(1) });
+             $('#grid').jsGrid('sort', 'name', 'asc');
+         };
+
+         // This function will always be called by jquery (represented by $ here) once the DOM is loaded.
+         $(function() {
+             // Start things off by looking for catalog_info.json.  If it is found, run the function.
+             $.ajax({
+                 dataType: "json",
+                 url: "catalog_info2.json",
+                 success: function(catalog_info) {
+                     // This helper function allows us to store strings naming a couple functions in catalog_info.json,
+                     // but then have them as functions in the result.
+                     replace_formatters(catalog_info.fields);
+
+                     // Extract some nice information from the catalog info, and update the page with it
+                     if ('last_changed' in catalog_info) {
+                         $("#last_update").text("Last updated " + catalog_info.last_changed);
+                     }
+                     if ('title' in catalog_info) {
+                         $("#title").text(catalog_info.title);
+                         document.title = catalog_info.title;
+                     }
+                     if ('subtitle' in catalog_info) {
+                         $("#subtitle").text(catalog_info.subtitle);
+                     }
+                     if ('documentation' in catalog_info && catalog_info.documentation) {
+                         $("#documentation_link").append(
+                             $("<a>", {
+                                 href: "documentation.html",
+                                 text: "Help and Documentation",
+                             })
+                         );
+                     }
+                     if ('news' in catalog_info && catalog_info.news) {
+                         $("#news_link").append(
+                             $("<a>", {
+                                 href: "news.html",
+                                 text: "Latest News and Updates",
+                             })
+                         );
+                     }
+
+                     function show_catalog(catalog) {
+                         var db = {
+                             loadData: function(filter) {
+                                 return $.grep(catalog, filter_strings_ints_floatranges(filter));
+                             },
+                         };
+
+                         $("#grid").jsGrid({
+                             width: "99.99%",
+                             height: "600px",
+                             filtering: true,
+                             sorting: true,
+                             inserting: false,
+                             editing: false,
+
+                             paging: true,
+                             pageSize: 30,
+                             
+                             autoload: true,
+                             controller: db,
+                             loadIndication: true,
+                             loadIndicationDelay: 100,
+                             fields: catalog_info.fields,
+                             border: "12px",
+                             onRefreshed: function(grid) {
+                                 // Always rerun mathjax on the grid and selectors after it has changed
+                                 MathJax.Hub.Queue(["Typeset", MathJax.Hub, "grid"]);
+                                 MathJax.Hub.Queue(["Typeset", MathJax.Hub, "column_selectors"]);
+                             },
+                             onDataLoaded: function(grid, data) {
+                                 // Make sure to rerun mathjax on the grid and selectors after the data is loaded
+                                 MathJax.Hub.Queue(["Typeset", MathJax.Hub, "grid"]);
+                                 MathJax.Hub.Queue(["Typeset", MathJax.Hub, "column_selectors"]);
+                             },
+                         });
+
+                         // Initially sort the grid by the "name" column
+                         $("#grid").jsGrid("sort", "name", "asc");
+
+                         // Make sure to refresh the grid at this point to sort out any drawing problems
+                         $("#grid").jsGrid("refresh");
+
+                         // // Start with the filters hidden
+                         // $(".jsgrid-filter-row").toggle();
+
+                         // Fill the box below the grid with checkboxes indicating which values to include
+                         column_selectors_init(catalog_info.fields);
+
+                         // If there is a nontrivial hash in the URL, update the column selectors
+                         if(window.location.hash) {
+                             refreshHash();
+                         }
+                     }
+
+                     function process_data(catalog) {
+                         // This creates a new link to download the raw data.  We have to make a Blob because the naive
+                         // encodeURI approach creates a URL that is simply too long for browsers to handle.
+                         var catalog_blob = new Blob([JSON.stringify(catalog, null, '    ')], {type : 'application/json'});
+                         $('<a />', {
+                             href: window.URL.createObjectURL(catalog_blob),
+                             download: "catalog.json",
+                             text: "Download complete table data"
+                         }).appendTo('#download_button');
+
+                         // This actually does the work of putting the grid together
+                         show_catalog(catalog);
+
+                         // Since the grid that got created dynamically in the last line involved latex, make
+                         // sure we run mathjax again on the various elements where it might have appeared.
+                         MathJax.Hub.Queue(["Typeset", MathJax.Hub, "grid"]);
+                         MathJax.Hub.Queue(["Typeset", MathJax.Hub, "column_selectors"]);
+                     }
+
+                     // First, we try to retrieve the public catalog data.  As soon as that succeeds, the function is executed.
+                     $.getJSON("catalog2.json", function(catalog) {
+                         catalog_list = Array.from(Object.keys(catalog), key => Object.assign(catalog[key], {'name': key}));
+                         process_data(catalog_list);
+                         // Next, we try to retrieve the private catalog data.  If that succeeds, the function is executed,
+                         // adding that private data to the public data.  If the user is logged in to the site (and
+                         // specifically, the wiki), the browser will automatically send the `Authorization` header and
+                         // wiki cookies along with this request.  If detected, nginx will rewrite the request to one for
+                         // a JSON file stored on the wiki, thus going through the usual authentication process.
+                         /* $.ajax({
+                          *     type: 'GET',
+                          *     dataType: 'json',
+                          *     url: "https://www.black-holes.org/wiki/waveforms/private_catalog.json",
+                          *     success: function(private_catalog) {
+                          *         console.log('Successfully got private data from wiki via basic auth.');
+                          *         catalog = catalog.concat(private_catalog);
+                          *         process_data(catalog);
+                          *     },
+                          *     xhrFields: {
+                          *         // We specifically need this field so that any basic auth header gets sent.
+                          *         // This is why we can't just use getJSON.
+                          *         withCredentials: true
+                          *     }
+                          * })
+                          *  .fail(function() {
+                          *      // If the private data could not be retrieved, it will show a 403 in the console.
+                          *      // Here, we add a note to explain why that probably happened.
+                          *      console.log('Failed to get private data from wiki via basic auth.  Trying again with OAuth.');
+                          *      $.ajax({
+                          *          type: 'GET',
+                          *          dataType: 'json',
+                          *          url: "https://wiki.black-holes.org/waveforms/private_catalog.json",
+                          *          success: function(private_catalog) {
+                          *              console.log('Successfully got private data from wiki via OAuth.');
+                          *              catalog = catalog.concat(private_catalog);
+                          *              process_data(catalog);
+                          *          },
+                          *          xhrFields: {
+                          *              // We specifically need this field so that any basic auth header gets sent.
+                          *              // This is why we can't just use getJSON.
+                          *              withCredentials: true
+                          *          }
+                          *      })
+                          *       .fail(function() {
+                          *           console.log('Failed to get private data from wiki.  This is expected unless you are logged in.');
+                          *           process_data(catalog);
+                          *       });
+                          *  });
+                          * // NOTE: We can't use .always here because it would not wait for the ajax request in .fail to complete.
+                            }); */
+                     }).fail(function(jqXHR, textStatus) {
+                         console.log("Failed to load catalog.json: " + textStatus);
+                     });
+                 }}).fail(function(jqXHR, textStatus) {
+                     console.log("Failed to load catalog_info.json: " + textStatus);
+                 });
+
+             window.onhashchange = refreshHash;
+         });
+        </script>
+    </head>
+
+    <body>
+
+        <div id="header" class="page-header text-center">
+            <h1 id="title">SXS Data Server</h1>
+            <h2 id="subtitle"></h2>
+        </div>
+
+        <hr>
+
+        <div style="margin-top:10px; margin-bottom:10px">
+            <div style="display:inline-block; width:33%; text-align:left; font-size:18px">
+                <a href="index.html">Catalog Description</a>
+            </div>
+            <div id="documentation_link" style="display:inline-block; width:33%; text-align:center; font-size:18px">
+            </div>
+            <div id="news_link" style="display:inline-block; width:33%; text-align:right; font-size:18px">
+            </div>
+        </div>
+
+        <hr>
+
+        <div style="margin-bottom:10px">
+            <div style="display:inline-block; width:33%; text-align:left; font-size:14px">
+                <span id="last_update"></span>
+            </div>
+            <div id="download_button" style="display:inline-block; width:33%; text-align:center; font-size:14px">
+            </div>
+            <div style="display:inline-block; width:33%; text-align:right; font-size:14px">
+                <a onclick="$('.jsgrid-filter-row').toggle();" style="text-decoration: none; cursor: pointer">
+                    Toggle search fields
+                </a>
+            </div>
+        </div>
+
+        <div style="clear: both"></div>
+
+        <div style="margin: auto;" id="grid">
+            <div align="center" style="padding:292.5px;background-color:#eeeeee">
+                Loading data...
+            </div>
+        </div>
+        <div class="jsgrid-pager-container">
+        </div>
+        <div style="clear: both"></div>
+
+        <div align="center" style="padding:10px">
+            <input type="submit" value="Show all" onclick="location.hash=''"/>
+            <input type="submit" value="BH-BH" onclick="location.hash='BHBH'"/>
+            <input type="submit" value="BH-NS" onclick="location.hash='BHNS'"/>
+            <input type="submit" value="NS-NS" onclick="location.hash='NSNS'"/>
+        </div>
+
+        <div>
+            <fieldset class="autocolumns">
+                <legend>Data columns</legend>
+                <div id="column_selectors" class="autocolumns"></div>
+                <hr />
+                <div align="center">
+                    <input type="submit" value="Show columns"
+                           onclick="column_selectors_read($('#grid')); $('#grid').jsGrid('sort', 'name', 'asc');"/>
+                </div>
+            </fieldset>
+        </div>
+        
+    </body>
+</html>
