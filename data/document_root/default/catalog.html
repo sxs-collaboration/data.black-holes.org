@@ -109,7 +109,7 @@
                      function show_catalog(catalog) {
                          var db = {
                              loadData: function(filter) {
-                                 console.log(filter);
+                                 /* console.log(filter); */
                                  return $.grep(catalog, filter_strings_ints_floatranges(filter));
                              },
                          };
@@ -140,6 +140,28 @@
                                  // Make sure to rerun mathjax on the grid and selectors after the data is loaded
                                  MathJax.Hub.Queue(["Typeset", MathJax.Hub, "grid"]);
                                  MathJax.Hub.Queue(["Typeset", MathJax.Hub, "column_selectors"]);
+                             },
+                             _setItemFieldValue: function(item, field, value) {
+                                 // This function is called for getting a filter.  This verion is stolen from the
+                                 // jsGrid core, with the exception of the vector statements below.
+                                 var props = field.name.split('.');
+                                 var current = item;
+                                 var prop = props[0];
+                                 while(current && props.length) {
+                                     item = current;
+                                     prop = props.shift();
+                                     current = item[prop];
+                                 }
+                                 if(!current) {
+                                     while(props.length) {
+                                         item = item[prop] = {};
+                                         prop = props.shift();
+                                     }
+                                 }
+                                 if($.inArray(field.type, ["vectormag", "vectorx", "vectory", "vectorz"])) {
+                                     prop = prop + "_" + field.type;
+                                 }
+                                 item[prop] = value;
                              },
                          });
 

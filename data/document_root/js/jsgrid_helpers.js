@@ -38,8 +38,7 @@ FloatNumberField.prototype = new jsGrid.NumberField({
     filterValue: function() {
         return {
             lower: parseFloat(this._lower.val()),
-            upper: parseFloat(this._upper.val()),
-            type: this.type
+            upper: parseFloat(this._upper.val())
         };
     },
     headerTemplate: tooltipHeader,
@@ -105,8 +104,6 @@ jsGrid.sortStrategies.limit_or_float = function(value1, value2) {
 // this function, which handles strings and ranges of numbers.
 var filter_strings_ints_floatranges = function(filter) {
     return function(run) {
-        console.log('filter:', filter);
-        console.log('run:', run);
         for (var property in filter) {
             if (filter.hasOwnProperty(property)) {
                 if (typeof filter[property] === "string" || filter[property] instanceof String) {
@@ -129,8 +126,34 @@ var filter_strings_ints_floatranges = function(filter) {
                         if (filter[property].hasOwnProperty('upper') && filter[property].upper !== undefined
                             && filter[property].hasOwnProperty('lower') && filter[property].lower !== undefined
                             && !isNaN(filter[property].upper) && !isNaN(filter[property].lower)) {
-                            if (filter[property].upper < run[property] || filter[property].lower > run[property]) {
-                                return false;
+                            if (property.endsWith('_vectorx')) {
+                                var p = property.replace('_vectorx', '');
+                                var q = run[p][0];
+                                if (filter[property].upper < q || filter[property].lower > q) {
+                                    return false;
+                                }
+                            } else if (property.endsWith('_vectory')) {
+                                var p = property.replace('_vectory', '');
+                                var q = run[p][1];
+                                if (filter[property].upper < q || filter[property].lower > q) {
+                                    return false;
+                                }
+                            } else if (property.endsWith('_vectorz')) {
+                                var p = property.replace('_vectorz', '');
+                                var q = run[p][2];
+                                if (filter[property].upper < q || filter[property].lower > q) {
+                                    return false;
+                                }
+                            } else if (property.endsWith('_vectormag')) {
+                                var p = property.replace('_vectormag', '');
+                                var q = Math.sqrt(run[p][0]*run[p][0]+run[p][1]*run[p][1]+run[p][2]*run[p][2]);
+                                if (filter[property].upper < q || filter[property].lower > q) {
+                                    return false;
+                                }
+                            } else {
+                                if (filter[property].upper < run[property] || filter[property].lower > run[property]) {
+                                    return false;
+                                }
                             }
                         } else if (!isNaN(filter[property])) {
                             if (filter[property] != run[property]) {
@@ -246,6 +269,7 @@ var format_downloads = function(value, item) {
     var a = $('<a>',{
         // href: 'data/' + item.name,
         href: item.url,
+        target: '_blank',
     });
     span.append(a.append(img));
     return span;
