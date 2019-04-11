@@ -166,7 +166,8 @@ var format_downloads = function(value, item) {
         alt: value,
     }).css("border-width", "0px");
     var a = $('<a>',{
-        href: 'data/' + item.name,
+        // href: 'data/' + item.name,
+        href: item.url,
     });
     span.append(a.append(img));
     return span;
