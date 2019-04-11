@@ -164,7 +164,7 @@
             "title": "$\\|\\vec{\\chi}^{\\mathrm{ini}, 1}\\|$", 
             "tooltip": "Initial dimensionless spin of object 1", 
             "sorter": "limit_or_float", 
-            "visible": true, 
+            "visible": false, 
             "type": "float"
         }, 
         {
@@ -172,7 +172,7 @@
             "title": "${\\chi}^{\\mathrm{ini}, 1}_x$", 
             "tooltip": "x component of Initial dimensionless spin of object 1", 
             "sorter": "limit_or_float", 
-            "visible": true, 
+            "visible": false, 
             "type": "float"
         }, 
         {
@@ -180,7 +180,7 @@
             "title": "${\\chi}^{\\mathrm{ini}, 1}_y$", 
             "tooltip": "y component of Initial dimensionless spin of object 1", 
             "sorter": "limit_or_float", 
-            "visible": true, 
+            "visible": false, 
             "type": "float"
         }, 
         {
@@ -188,7 +188,7 @@
             "title": "${\\chi}^{\\mathrm{ini}, 1}_z$", 
             "tooltip": "z component of Initial dimensionless spin of object 1", 
             "sorter": "limit_or_float", 
-            "visible": true, 
+            "visible": false, 
             "type": "float"
         }, 
         {
@@ -196,7 +196,7 @@
             "title": "$\\|\\vec{\\chi}^{\\mathrm{ini}, 2}\\|$", 
             "tooltip": "Initial dimensionless spin of object 2", 
             "sorter": "limit_or_float", 
-            "visible": true, 
+            "visible": false, 
             "type": "float"
         }, 
         {
@@ -204,7 +204,7 @@
             "title": "${\\chi}^{\\mathrm{ini}, 2}_x$", 
             "tooltip": "x component of Initial dimensionless spin of object 2", 
             "sorter": "limit_or_float", 
-            "visible": true, 
+            "visible": false, 
             "type": "float"
         }, 
         {
@@ -212,7 +212,7 @@
             "title": "${\\chi}^{\\mathrm{ini}, 2}_y$", 
             "tooltip": "y component of Initial dimensionless spin of object 2", 
             "sorter": "limit_or_float", 
-            "visible": true, 
+            "visible": false, 
             "type": "float"
         }, 
         {
@@ -220,7 +220,7 @@
             "title": "${\\chi}^{\\mathrm{ini}, 2}_z$", 
             "tooltip": "z component of Initial dimensionless spin of object 2", 
             "sorter": "limit_or_float", 
-            "visible": true, 
+            "visible": false, 
             "type": "float"
         }, 
         {
@@ -317,6 +317,30 @@
             "tooltip": "Mass of object 2 after relaxation", 
             "sorter": "limit_or_float", 
             "visible": false, 
+            "type": "float"
+        }, 
+        {
+            "name": "relaxed_chi_eff", 
+            "title": "$\\chi_{\\mathrm{eff}}$", 
+            "tooltip": "Effective spin after relaxation", 
+            "sorter": "limit_or_float", 
+            "visible": true, 
+            "type": "float"
+        }, 
+        {
+            "name": "relaxed_chi1_perp", 
+            "title": "$\\chi^{\\mathrm{rel},1}_{\\perp}$", 
+            "tooltip": "Magnitude of perpendicular component of spin 1 after relaxation", 
+            "sorter": "limit_or_float", 
+            "visible": true, 
+            "type": "float"
+        }, 
+        {
+            "name": "relaxed_chi2_perp", 
+            "title": "$\\chi^{\\mathrm{rel},2}_{\\perp}$", 
+            "tooltip": "Magnitude of perpendicular component of spin 2 after relaxation", 
+            "sorter": "limit_or_float", 
+            "visible": true, 
             "type": "float"
         }, 
         {
@@ -693,6 +717,7 @@
             "type": "text"
         }, 
         {
+            "name": "url",
             "visible": true, 
             "filtering": false, 
             "type": "text", 
