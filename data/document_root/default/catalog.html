@@ -34,36 +34,49 @@
         <script src="/js/jsgrid_helpers.js"></script>
         <script>
          function refreshHash() {
+             // Update displayed fields when the URL's hash changes (e.g., to '#BHNS' or '#NSNS')
              var object_types = window.location.hash;
-             var invisible = ['initial_mass_ratio', 'relaxed_eccentricity',
-                              'initial_dimensionless_spin1_x', 'initial_dimensionless_spin1_y', 'initial_dimensionless_spin1_z',
-                              'initial_dimensionless_spin2_x', 'initial_dimensionless_spin2_y', 'initial_dimensionless_spin2_z',
-                              'column_selector_undefined'];
-             var visible = ['number_of_orbits', 'initial_orbital_frequency', 'initial_mass1', 'initial_mass2',
-                            'eos', 'initial_dimensionless_spin1_mag', 'initial_dimensionless_spin2_mag', 'disk_mass'];
-             var inputs = $("#column_selectors :input");
-             if(object_types.indexOf('NS') !== -1) {
-                 // A NS is at least one of the requested objects, so switch default columns to be more informative for matter.
+             var inputs = $("#column_selectors :input"); // This grabs the checkboxes to be updated
+             // Go through and update the checkboxes as needed
+             if(object_types === "#BHBH") {
+                 var bhbh = ['name_text', 'initial_orbital_frequency_float', 'initial_mass_ratio_float',
+                             'relaxed_chi_eff_float', 'relaxed_chi1_perp_float', 'relaxed_chi2_perp_float',
+                             'relaxed_eccentricity_float', 'number_of_orbits_float', 'url_text'];
                  $.each(inputs, function(indexInArray, value) {
                      var name = value.name || undefined;
-                     if($.inArray(name, invisible) !== -1) {
-                         value.checked = false;
-                     } else if($.inArray(name, visible) !== -1) {
+                     if($.inArray(name, bhbh) !== -1) {
                          value.checked = true;
+                     } else {
+                         value.checked = false;
                      }
-                 });
-             } else {
+                 })
+             } else if(object_types === "#BHNS") {
+                 var bhns = ['name_text', 'initial_orbital_frequency_float', 'eos_text', 'initial_mass1_float', 'initial_mass2_float',
+                             'initial_dimensionless_spin1_vectormag', 'initial_dimensionless_spin2_vectormag',
+                             'number_of_orbits_float', 'disk_mass_float', 'url_text'];
                  $.each(inputs, function(indexInArray, value) {
                      var name = value.name || undefined;
-                     if($.inArray(name, invisible) !== -1) {
+                     if($.inArray(name, bhns) !== -1) {
                          value.checked = true;
-                     } else if($.inArray(name, visible) !== -1) {
+                     } else {
                          value.checked = false;
                      }
-                 });
+                 })
+             } else if(object_types === "#NSNS") {
+                 var nsns = ['name_text', 'initial_orbital_frequency_float', 'eos_text', 'initial_mass1_float', 'initial_mass2_float',
+                             'initial_dimensionless_spin1_vectormag', 'initial_dimensionless_spin2_vectormag',
+                             'number_of_orbits_float', 'disk_mass_float', 'url_text'];
+                 $.each(inputs, function(indexInArray, value) {
+                     var name = value.name || undefined;
+                     if($.inArray(name, nsns) !== -1) {
+                         value.checked = true;
+                     } else {
+                         value.checked = false;
+                     }
+                 })
              }
              column_selectors_read($('#grid'));
-             $("#grid").jsGrid("search", { 'object_types': object_types.slice(1) });
+             $("#grid").jsGrid("search", { 'object_types': object_types.slice(1) }); // Only show rows of the desired type
              $('#grid').jsGrid('sort', 'name', 'asc');
          };
 
@@ -142,7 +155,7 @@
                                  MathJax.Hub.Queue(["Typeset", MathJax.Hub, "column_selectors"]);
                              },
                              _setItemFieldValue: function(item, field, value) {
-                                 // This function is called for getting a filter.  This verion is stolen from the
+                                 // This function is called for getting a filter.  This version is stolen from the
                                  // jsGrid core, with the exception of the vector statements below.
                                  var props = field.name.split('.');
                                  var current = item;
