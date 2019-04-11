@@ -713,7 +713,7 @@
             "name": "point_of_contact_email", 
             "title": "Contact", 
             "tooltip": "Point-of-contact email for this waveform.  Usually the person having placed the waveform into the repository.", 
-            "visible": true, 
+            "visible": false, 
             "type": "text"
         }, 
         {
