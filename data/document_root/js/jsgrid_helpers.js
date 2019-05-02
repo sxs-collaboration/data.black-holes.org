@@ -36,10 +36,14 @@ FloatNumberField.prototype = new jsGrid.NumberField({
             .append(this._upper_label).append(this._upper);
     },
     filterValue: function() {
+        if ((this._lower.val() === undefined || isNaN(this._lower.val()))
+            && (this._upper.val() === undefined || isNaN(this._upper.val()))) {
+            return undefined;
+        }
         return {
             lower: parseFloat(this._lower.val()),
             upper: parseFloat(this._upper.val())
-        };
+        }
     },
     headerTemplate: tooltipHeader,
     itemTemplate: function(value, item) {
@@ -105,27 +109,28 @@ jsGrid.sortStrategies.limit_or_float = function(value1, value2) {
 var filter_strings_ints_floatranges = function(filter) {
     return function(run) {
         for (var property in filter) {
-            if (filter.hasOwnProperty(property)) {
+            if (filter.hasOwnProperty(property) && filter[property] !== undefined) {
                 if (typeof filter[property] === "string" || filter[property] instanceof String) {
-                    if (filter[property] && run[property] !== undefined) {
-                        if ($.isArray(run[property])) {
-                            for (var run_prop in run[property]) {
+                    var p = property.replace('_float', '').replace('_text', '');
+                    if (filter[property] && run[p] !== undefined) {
+                        if ($.isArray(run[p])) {
+                            for (var run_prop in run[p]) {
                                 if (run_prop.match(filter[property])) {
                                     return true;
                                 }
                             }
                             return false;
                         } else {
-                            if (! run[property].match(filter[property])) {
+                            if (! run[p].match(filter[property])) {
                                 return false;
                             }
                         }
                     }
                 } else {
                     if (filter[property] !== undefined) {
-                        if (filter[property].hasOwnProperty('upper') && filter[property].upper !== undefined
-                            && filter[property].hasOwnProperty('lower') && filter[property].lower !== undefined
-                            && !isNaN(filter[property].upper) && !isNaN(filter[property].lower)) {
+                        if (filter[property].hasOwnProperty('upper') && filter[property].hasOwnProperty('lower')
+                            && (filter[property].upper !== undefined || filter[property].lower !== undefined)
+                            && (!isNaN(filter[property].upper) || !isNaN(filter[property].lower))) {
                             if (property.endsWith('_vectorx')) {
                                 var p = property.replace('_vectorx', '');
                                 var q = run[p][0];
@@ -151,12 +156,14 @@ var filter_strings_ints_floatranges = function(filter) {
                                     return false;
                                 }
                             } else {
-                                if (filter[property].upper < run[property] || filter[property].lower > run[property]) {
+                                var p = property.replace('_float', '').replace('_text', '');
+                                if (filter[property].upper < run[p] || filter[property].lower > run[p]) {
                                     return false;
                                 }
                             }
                         } else if (!isNaN(filter[property])) {
-                            if (filter[property] != run[property]) {
+                            var p = property.replace('_float', '').replace('_text', '');
+                            if (filter[property] != run[p]) {
                                 return false;
                             }
                         }
