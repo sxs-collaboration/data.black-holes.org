@@ -28,15 +28,10 @@ MAILFROM=cron@black-holes.org
 ## web ##
 #########
 
-# A little while after the git cron job below, make sure all the JSON files are up to date
-10 2 * * * web python /web/servers/cron/scripts/web/refresh_waveform_catalog_json.py
+## A little while after the git cron job below, make sure all the JSON files are up to date
+#10 2 * * * web python /web/servers/cron/scripts/web/refresh_waveform_catalog_json.py
 
 
 #########
 ## git ##
 #########
-
-# Just try to update and get all the annex data; don't allow the `find` process to run all day
-1 2 * * * git cd /sxs-annex/SimulationAnnex.git && timeout --kill-after=1m 59m /web/servers/cron/scripts/git/git_annex_get_all_data.sh
-1 1 * * * git cd /nfs-data/Annex/SurrogateModeling.git && timeout --kill-after=1m 59m /web/servers/cron/scripts/git/git_annex_get_all_data.sh
-
