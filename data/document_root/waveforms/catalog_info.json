@@ -264,213 +264,221 @@
             "type": "vectorz"
         }, 
         {
-            "name": "relaxed_measurement_time", 
+            "name": "relaxation_time", 
             "title": "$t^{\\mathrm{rel}}$", 
-            "tooltip": "Time at which \"relaxed\" quantities are measured", 
+            "tooltip": "Time at which system has \"relaxed\" from initial transient stage",
             "sorter": "limit_or_float", 
             "visible": false, 
             "type": "float"
         }, 
         {
-            "name": "relaxed_mass_ratio", 
-            "title": "$M^{\\mathrm{rel}, 1} / M^{\\mathrm{rel}, 2}$", 
-            "tooltip": "Ratio of masses at relaxation time", 
+            "name": "reference_time", 
+            "title": "$t^{\\mathrm{ref}}$", 
+            "tooltip": "Time at which \"reference\" quantities are measured", 
             "sorter": "limit_or_float", 
             "visible": false, 
             "type": "float"
         }, 
         {
-            "name": "relaxed_mass1", 
-            "title": "$M^{\\mathrm{rel}, 1}$", 
-            "tooltip": "Mass of object 1 after relaxation", 
+            "name": "reference_mass_ratio", 
+            "title": "$M^{\\mathrm{ref}, 1} / M^{\\mathrm{ref}, 2}$", 
+            "tooltip": "Ratio of masses at reference time", 
             "sorter": "limit_or_float", 
             "visible": false, 
             "type": "float"
         }, 
         {
-            "name": "relaxed_mass2", 
-            "title": "$M^{\\mathrm{rel}, 2}$", 
-            "tooltip": "Mass of object 2 after relaxation", 
+            "name": "reference_mass1", 
+            "title": "$M^{\\mathrm{ref}, 1}$", 
+            "tooltip": "Mass of object 1 after reference time", 
             "sorter": "limit_or_float", 
             "visible": false, 
             "type": "float"
         }, 
         {
-            "name": "relaxed_chi_eff", 
+            "name": "reference_mass2", 
+            "title": "$M^{\\mathrm{ref}, 2}$", 
+            "tooltip": "Mass of object 2 after reference time", 
+            "sorter": "limit_or_float", 
+            "visible": false, 
+            "type": "float"
+        }, 
+        {
+            "name": "reference_chi_eff", 
             "title": "$\\chi_{\\mathrm{eff}}$", 
-            "tooltip": "Effective spin after relaxation", 
+            "tooltip": "Effective spin after reference time", 
             "sorter": "limit_or_float", 
             "visible": true, 
             "type": "float"
         }, 
         {
-            "name": "relaxed_chi1_perp", 
-            "title": "$\\chi^{\\mathrm{rel},1}_{\\perp}$", 
-            "tooltip": "Magnitude of perpendicular component of spin 1 after relaxation", 
+            "name": "reference_chi1_perp", 
+            "title": "$\\chi^{\\mathrm{ref},1}_{\\perp}$", 
+            "tooltip": "Magnitude of perpendicular component of spin 1 after reference time", 
             "sorter": "limit_or_float", 
             "visible": true, 
             "type": "float"
         }, 
         {
-            "name": "relaxed_chi2_perp", 
-            "title": "$\\chi^{\\mathrm{rel},2}_{\\perp}$", 
-            "tooltip": "Magnitude of perpendicular component of spin 2 after relaxation", 
+            "name": "reference_chi2_perp", 
+            "title": "$\\chi^{\\mathrm{ref},2}_{\\perp}$", 
+            "tooltip": "Magnitude of perpendicular component of spin 2 after reference time", 
             "sorter": "limit_or_float", 
             "visible": true, 
             "type": "float"
         }, 
         {
-            "name": "relaxed_dimensionless_spin1", 
-            "title": "$\\|\\vec{\\chi}^{\\mathrm{rel}, 1}\\|$", 
-            "tooltip": "Dimensionless spin of object 1 after relaxation", 
+            "name": "reference_dimensionless_spin1", 
+            "title": "$\\|\\vec{\\chi}^{\\mathrm{ref}, 1}\\|$", 
+            "tooltip": "Dimensionless spin of object 1 after reference time", 
             "visible": false, 
             "type": "vectormag"
         }, 
         {
-            "name": "relaxed_dimensionless_spin1", 
-            "title": "${\\chi}^{\\mathrm{rel}, 1}_x$", 
-            "tooltip": "x component of Dimensionless spin of object 1 after relaxation", 
+            "name": "reference_dimensionless_spin1", 
+            "title": "${\\chi}^{\\mathrm{ref}, 1}_x$", 
+            "tooltip": "x component of Dimensionless spin of object 1 after reference time", 
             "visible": false, 
             "type": "vectorx"
         }, 
         {
-            "name": "relaxed_dimensionless_spin1", 
-            "title": "${\\chi}^{\\mathrm{rel}, 1}_y$", 
-            "tooltip": "y component of Dimensionless spin of object 1 after relaxation", 
+            "name": "reference_dimensionless_spin1", 
+            "title": "${\\chi}^{\\mathrm{ref}, 1}_y$", 
+            "tooltip": "y component of Dimensionless spin of object 1 after reference time", 
             "visible": false, 
             "type": "vectory"
         }, 
         {
-            "name": "relaxed_dimensionless_spin1", 
-            "title": "${\\chi}^{\\mathrm{rel}, 1}_z$", 
-            "tooltip": "z component of Dimensionless spin of object 1 after relaxation", 
+            "name": "reference_dimensionless_spin1", 
+            "title": "${\\chi}^{\\mathrm{ref}, 1}_z$", 
+            "tooltip": "z component of Dimensionless spin of object 1 after reference time", 
             "visible": false, 
             "type": "vectorz"
         }, 
         {
-            "name": "relaxed_dimensionless_spin2", 
-            "title": "$\\|\\vec{\\chi}^{\\mathrm{rel}, 2}\\|$", 
-            "tooltip": "Dimensionless spin of object 2 after relaxation", 
+            "name": "reference_dimensionless_spin2", 
+            "title": "$\\|\\vec{\\chi}^{\\mathrm{ref}, 2}\\|$", 
+            "tooltip": "Dimensionless spin of object 2 after reference time", 
             "visible": false, 
             "type": "vectormag"
         }, 
         {
-            "name": "relaxed_dimensionless_spin2", 
-            "title": "${\\chi}^{\\mathrm{rel}, 2}_x$", 
-            "tooltip": "x component of Dimensionless spin of object 2 after relaxation", 
+            "name": "reference_dimensionless_spin2", 
+            "title": "${\\chi}^{\\mathrm{ref}, 2}_x$", 
+            "tooltip": "x component of Dimensionless spin of object 2 after reference time", 
             "visible": false, 
             "type": "vectorx"
         }, 
         {
-            "name": "relaxed_dimensionless_spin2", 
-            "title": "${\\chi}^{\\mathrm{rel}, 2}_y$", 
-            "tooltip": "y component of Dimensionless spin of object 2 after relaxation", 
+            "name": "reference_dimensionless_spin2", 
+            "title": "${\\chi}^{\\mathrm{ref}, 2}_y$", 
+            "tooltip": "y component of Dimensionless spin of object 2 after reference time", 
             "visible": false, 
             "type": "vectory"
         }, 
         {
-            "name": "relaxed_dimensionless_spin2", 
-            "title": "${\\chi}^{\\mathrm{rel}, 2}_z$", 
-            "tooltip": "z component of Dimensionless spin of object 2 after relaxation", 
+            "name": "reference_dimensionless_spin2", 
+            "title": "${\\chi}^{\\mathrm{ref}, 2}_z$", 
+            "tooltip": "z component of Dimensionless spin of object 2 after reference time", 
             "visible": false, 
             "type": "vectorz"
         }, 
         {
-            "name": "relaxed_position1", 
-            "title": "$\\|\\vec{x}^{\\mathrm{rel}, 1}\\|$", 
-            "tooltip": "Position of object 1 after relaxation", 
+            "name": "reference_position1", 
+            "title": "$\\|\\vec{x}^{\\mathrm{ref}, 1}\\|$", 
+            "tooltip": "Position of object 1 after reference time", 
             "visible": false, 
             "type": "vectormag"
         }, 
         {
-            "name": "relaxed_position1", 
-            "title": "${x}^{\\mathrm{rel}, 1}_x$", 
-            "tooltip": "x component of Position of object 1 after relaxation", 
+            "name": "reference_position1", 
+            "title": "${x}^{\\mathrm{ref}, 1}_x$", 
+            "tooltip": "x component of Position of object 1 after reference time", 
             "visible": false, 
             "type": "vectorx"
         }, 
         {
-            "name": "relaxed_position1", 
-            "title": "${x}^{\\mathrm{rel}, 1}_y$", 
-            "tooltip": "y component of Position of object 1 after relaxation", 
+            "name": "reference_position1", 
+            "title": "${x}^{\\mathrm{ref}, 1}_y$", 
+            "tooltip": "y component of Position of object 1 after reference time", 
             "visible": false, 
             "type": "vectory"
         }, 
         {
-            "name": "relaxed_position1", 
-            "title": "${x}^{\\mathrm{rel}, 1}_z$", 
-            "tooltip": "z component of Position of object 1 after relaxation", 
+            "name": "reference_position1", 
+            "title": "${x}^{\\mathrm{ref}, 1}_z$", 
+            "tooltip": "z component of Position of object 1 after reference time", 
             "visible": false, 
             "type": "vectorz"
         }, 
         {
-            "name": "relaxed_position2", 
-            "title": "$\\|\\vec{x}^{\\mathrm{rel}, 2}\\|$", 
-            "tooltip": "Position of object 2 after relaxation", 
+            "name": "reference_position2", 
+            "title": "$\\|\\vec{x}^{\\mathrm{ref}, 2}\\|$", 
+            "tooltip": "Position of object 2 after reference time", 
             "visible": false, 
             "type": "vectormag"
         }, 
         {
-            "name": "relaxed_position2", 
-            "title": "${x}^{\\mathrm{rel}, 2}_x$", 
-            "tooltip": "x component of Position of object 2 after relaxation", 
+            "name": "reference_position2", 
+            "title": "${x}^{\\mathrm{ref}, 2}_x$", 
+            "tooltip": "x component of Position of object 2 after reference time", 
             "visible": false, 
             "type": "vectorx"
         }, 
         {
-            "name": "relaxed_position2", 
-            "title": "${x}^{\\mathrm{rel}, 2}_y$", 
-            "tooltip": "y component of Position of object 2 after relaxation", 
+            "name": "reference_position2", 
+            "title": "${x}^{\\mathrm{ref}, 2}_y$", 
+            "tooltip": "y component of Position of object 2 after reference time", 
             "visible": false, 
             "type": "vectory"
         }, 
         {
-            "name": "relaxed_position2", 
-            "title": "${x}^{\\mathrm{rel}, 2}_z$", 
-            "tooltip": "z component of Position of object 2 after relaxation", 
+            "name": "reference_position2", 
+            "title": "${x}^{\\mathrm{ref}, 2}_z$", 
+            "tooltip": "z component of Position of object 2 after reference time", 
             "visible": false, 
             "type": "vectorz"
         }, 
         {
-            "name": "relaxed_orbital_frequency", 
-            "title": "$\\|\\vec{\\Omega}^{\\mathrm{orb}\\ \\mathrm{rel}}\\|$", 
-            "tooltip": "Orbital frequency after relaxation", 
+            "name": "reference_orbital_frequency", 
+            "title": "$\\|\\vec{\\Omega}^{\\mathrm{orb}\\ \\mathrm{ref}}\\|$", 
+            "tooltip": "Orbital frequency after reference time", 
             "visible": false, 
             "type": "vectormag"
         }, 
         {
-            "name": "relaxed_orbital_frequency", 
-            "title": "${\\Omega}^{\\mathrm{orb}\\ \\mathrm{rel}}_x$", 
-            "tooltip": "x component of Orbital frequency after relaxation", 
+            "name": "reference_orbital_frequency", 
+            "title": "${\\Omega}^{\\mathrm{orb}\\ \\mathrm{ref}}_x$", 
+            "tooltip": "x component of Orbital frequency after reference time", 
             "visible": false, 
             "type": "vectorx"
         }, 
         {
-            "name": "relaxed_orbital_frequency", 
-            "title": "${\\Omega}^{\\mathrm{orb}\\ \\mathrm{rel}}_y$", 
-            "tooltip": "y component of Orbital frequency after relaxation", 
+            "name": "reference_orbital_frequency", 
+            "title": "${\\Omega}^{\\mathrm{orb}\\ \\mathrm{ref}}_y$", 
+            "tooltip": "y component of Orbital frequency after reference time", 
             "visible": false, 
             "type": "vectory"
         }, 
         {
-            "name": "relaxed_orbital_frequency", 
-            "title": "${\\Omega}^{\\mathrm{orb}\\ \\mathrm{rel}}_z$", 
-            "tooltip": "z component of Orbital frequency after relaxation", 
+            "name": "reference_orbital_frequency", 
+            "title": "${\\Omega}^{\\mathrm{orb}\\ \\mathrm{ref}}_z$", 
+            "tooltip": "z component of Orbital frequency after reference time", 
             "visible": false, 
             "type": "vectorz"
         }, 
         {
-            "name": "relaxed_eccentricity", 
-            "title": "$e^{\\mathrm{rel}}$", 
-            "tooltip": "Eccentricity after relaxation", 
+            "name": "reference_eccentricity", 
+            "title": "$e^{\\mathrm{ref}}$", 
+            "tooltip": "Eccentricity after reference time", 
             "sorter": "limit_or_float", 
             "visible": true, 
             "type": "float"
         }, 
         {
-            "name": "relaxed_mean_anomaly", 
-            "title": "$M^{\\mathrm{rel}}$ (mean anomaly)", 
-            "tooltip": "Mean anomaly after relaxation", 
+            "name": "reference_mean_anomaly", 
+            "title": "$M^{\\mathrm{ref}}$ (mean anomaly)", 
+            "tooltip": "Mean anomaly after reference time", 
             "sorter": "limit_or_float", 
             "visible": false, 
             "type": "float"
@@ -674,6 +682,6 @@
         }
     ], 
     "documentation": true, 
-    "last_changed": "2019-04-10 20:00:00", 
+    "last_changed": "2019-07-11 11:45:00", 
     "news": true
 }

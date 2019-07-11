@@ -216,7 +216,7 @@
                      }
 
                      // First, we try to retrieve the public catalog data.  As soon as that succeeds, the function is executed.
-                     $.getJSON("catalog.json", function(catalog) {
+                     $.getJSON("/public_simulations.json", function(catalog) {
                          catalog_list = Array.from(Object.keys(catalog), key => Object.assign(catalog[key], {'name': key}));
                          process_data(catalog_list);
                          // Next, we try to retrieve the private catalog data.  If that succeeds, the function is executed,
@@ -266,7 +266,7 @@
                           * // NOTE: We can't use .always here because it would not wait for the ajax request in .fail to complete.
                             }); */
                      }).fail(function(jqXHR, textStatus) {
-                         console.log("Failed to load catalog.json: " + textStatus);
+                         console.log("Failed to load public_simulations.json: " + textStatus);
                      });
                  }}).fail(function(jqXHR, textStatus) {
                      console.log("Failed to load catalog_info.json: " + textStatus);
