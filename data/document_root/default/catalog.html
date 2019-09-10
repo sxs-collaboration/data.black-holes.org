@@ -216,63 +216,62 @@
                          MathJax.Hub.Queue(["Typeset", MathJax.Hub, "column_selectors"]);
                      }
 
-                     // First, we try to retrieve the public catalog data.  As soon as that succeeds, the function is executed.
-                     $.getJSON("/public_simulations.json", function(catalog, textStatus, jqXHR) {
-                         last_changed = jqXHR.getResponseHeader("Last-Modified");
-                         if(last_changed) {
-                             $("#last_update").text("Last updated " + last_changed);
+                     // First, try to get data from the wiki via OAuth
+                     $.ajax({
+                         type: 'GET',
+                         dataType: 'json',
+                         url: "https://wiki.black-holes.org/waveforms/private_simulations.json",
+                         success: function(private_simulations, textStatus, jqXHR) {
+                             console.log('Successfully got private data from wiki via OAuth.');
+                             last_changed = jqXHR.getResponseHeader("Last-Modified");
+                             if(last_changed) {
+                                 $("#last_update").text("Last updated " + last_changed);
+                             }
+                             process_data(private_simulations);
+                         },
+                         xhrFields: {
+                             // We specifically need this field so that the OAuth header gets sent.
+                             // This is why we can't just use getJSON.
+                             withCredentials: true
                          }
-
-                         process_data(catalog);
-                         // Next, we try to retrieve the private catalog data.  If that succeeds, the function is executed,
-                         // adding that private data to the public data.  If the user is logged in to the site (and
-                         // specifically, the wiki), the browser will automatically send the `Authorization` header and
-                         // wiki cookies along with this request.  If detected, nginx will rewrite the request to one for
-                         // a JSON file stored on the wiki, thus going through the usual authentication process.
-                         /* $.ajax({
-                          *     type: 'GET',
-                          *     dataType: 'json',
-                          *     url: "https://www.black-holes.org/wiki/waveforms/private_catalog.json",
-                          *     success: function(private_catalog) {
-                          *         console.log('Successfully got private data from wiki via basic auth.');
-                          *         catalog = catalog.concat(private_catalog);
-                          *         process_data(catalog);
-                          *     },
-                          *     xhrFields: {
-                          *         // We specifically need this field so that any basic auth header gets sent.
-                          *         // This is why we can't just use getJSON.
-                          *         withCredentials: true
-                          *     }
-                          * })
-                          *  .fail(function() {
-                          *      // If the private data could not be retrieved, it will show a 403 in the console.
-                          *      // Here, we add a note to explain why that probably happened.
-                          *      console.log('Failed to get private data from wiki via basic auth.  Trying again with OAuth.');
-                          *      $.ajax({
-                          *          type: 'GET',
-                          *          dataType: 'json',
-                          *          url: "https://wiki.black-holes.org/waveforms/private_catalog.json",
-                          *          success: function(private_catalog) {
-                          *              console.log('Successfully got private data from wiki via OAuth.');
-                          *              catalog = catalog.concat(private_catalog);
-                          *              process_data(catalog);
-                          *          },
-                          *          xhrFields: {
-                          *              // We specifically need this field so that any basic auth header gets sent.
-                          *              // This is why we can't just use getJSON.
-                          *              withCredentials: true
-                          *          }
-                          *      })
-                          *       .fail(function() {
-                          *           console.log('Failed to get private data from wiki.  This is expected unless you are logged in.');
-                          *           process_data(catalog);
-                          *       });
-                          *  });
-                          * // NOTE: We can't use .always here because it would not wait for the ajax request in .fail to complete.
-                            }); */
-                     }).fail(function(jqXHR, textStatus) {
-                         console.log("Failed to load public_simulations.json: " + textStatus);
-                     });
+                     })
+                      .fail(function() {
+                          // If the private data could not be retrieved, it will show a 403 in the console.
+                          // Here, we add a note to explain why that probably happened.
+                          console.log('Failed to get private data from wiki via OAuth.  Trying again with basic auth.');
+                          $.ajax({
+                              type: 'GET',
+                              dataType: 'json',
+                              url: "https://www.black-holes.org/wiki/waveforms/private_simulations.json",
+                              success: function(private_simulations, textStatus, jqXHR) {
+                                  console.log('Successfully got private data from wiki via basic auth.');
+                                  last_changed = jqXHR.getResponseHeader("Last-Modified");
+                                  if(last_changed) {
+                                      $("#last_update").text("Last updated " + last_changed);
+                                  }
+                                  process_data(private_simulations);
+                              },
+                              xhrFields: {
+                                  // We specifically need this field so that any basic auth header gets sent.
+                                  // This is why we can't just use getJSON.
+                                  withCredentials: true
+                              }
+                          })
+                           .fail(function() {
+                               // If all else failed, try to get the public version
+                               console.log('Could not get private data from wiki, suggesting you are not logged in.  Using public data.');
+                               $.getJSON("/public_simulations.json", function(simulations, textStatus, jqXHR) {
+                                   last_changed = jqXHR.getResponseHeader("Last-Modified");
+                                   if(last_changed) {
+                                       $("#last_update").text("Last updated " + last_changed);
+                                   }
+                                   process_data(simulations);
+                               }).fail(function(jqXHR, textStatus) {
+                                   console.log("Failed to load public_simulations.json: " + textStatus);
+                               });
+                           });
+                      });
+                     // NOTE: We can't use .always here because it would not wait for the ajax request in .fail to complete.
                  }}).fail(function(jqXHR, textStatus) {
                      console.log("Failed to load catalog_info.json: " + textStatus);
                  });
