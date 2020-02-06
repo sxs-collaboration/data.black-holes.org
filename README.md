@@ -1,3 +1,6 @@
+| NOTE: If the server is unresponsive, the most likely solution is to just restart the docker containers.  To do this, ssh into black-holes, `cd /web/servers/www/`, and run `../stop && ../start`.  That resolves 95% of the problems I've had with the server.  Most of the other problems have been because `/var/log` has filled up; just delete old files from in there.  —Mike |
+| --- |
+
 This repo contains the basic infrastructure for the `black-holes.org` site.  There are still several
 components that are too big for or simply not appropriate for git hosting.  Those other components
 include:
