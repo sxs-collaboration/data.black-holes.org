@@ -39,6 +39,19 @@ services:
       - default
     #command: [nginx-debug, '-g', 'daemon off;']  # add `error_log /var/log/nginx/error.log debug;` to see details
 
+  certbot:
+    image: certbot/certbot
+    restart: on-failure
+    depends_on:
+      - nginx
+    volumes:
+      - ../letsencrypt/certs:/etc/letsencrypt
+      - ../letsencrypt/www:/var/www/certbot
+    logging:
+      options:
+        max-size: "100m"
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do date; certbot renew; sleep 12h & wait $${!}; done;'"
+
   oauth2:
     build: oauth2/build
     restart: on-failure
