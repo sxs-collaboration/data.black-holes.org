@@ -16,9 +16,15 @@ RUN apt-get update \
           ssh `# To git via ssh` \
           git `# To update other files` \
           git-annex `# When we want to ensure the web server has all annexed files` \
-          python-pip `# To install the sxs module` \
+          python3-pip `# To install the sxs module` \
+          locales `# For locale-gen (below)` \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
+
+# Set locale
+RUN locale-gen en_US.UTF-8
+ENV LANG en_US.UTF-8
+ENV LANGUAGE en_US:en
 
 # Add web and git users and groups
 RUN groupadd -g 1003 git
@@ -34,7 +40,7 @@ ENV TZ=America/Los_Angeles
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 # Install the SXS python module (Do this late in the build because this is the part most likely to need changing)
-RUN pip install --no-cache-dir --upgrade 'sxs>=2018.12.16'
+RUN LC_ALL=en_US.UTF-8 pip3 install --no-cache-dir --upgrade httpretty setuptools 'sxs>=2018.12.16'
 
 # The entrypoint is the script that will run at startup
 COPY ./entrypoint.sh /
