@@ -32,6 +32,41 @@ os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
 app = Flask(__name__)
 app.config['SESSION_COOKIE_SECURE'] = True
 
+
+##############
+# Github app #
+##############
+# A github app is used for accessing github while authorized as a special member of the
+# organization, able to see metadata and such.  This authorization may overlap with authorization
+# via OAuth if the user happens to have those privileges, but we need to be able to access github
+# even if the user does not have those privileges.
+
+# This number is listed on the Github app's page, which is at
+# <https://github.com/organizations/sxs-collaboration/settings/apps/black-holes-org>
+github_app_id = '8209'
+
+# This key is obtained from the GitHub app.  Github can also create a new one for you to download if
+# you need it.
+with open('/run/secrets/github_app_private_key.pem', 'r') as f:
+    github_app_private_key = f.read()
+    github_app_private_key_bytes = github_app_private_key.encode()
+
+# This number is specific to the "installation" of our app in our collaboration.  The number can be
+# found by clicking `Configure` next to the relevant app on this page:
+# <https://github.com/organizations/sxs-collaboration/settings/installations>, then looking at the
+# number at the end of that URL.
+github_app_installation_id = '80728'
+
+outside_collaborators = []
+last_collaboration_check = time.time() - 1000000
+
+
+#############
+# OAuth app #
+#############
+# An OAuth app allows this code to access github using some subset of the user's privileges.  This
+# allows us to see their github user name and their team memberships, for example.
+
 # This information is obtained upon registration of a new GitHub OAuth app:
 #   https://github.com/settings/applications/new
 with open('/run/secrets/client_id', 'r') as f:
@@ -40,23 +75,6 @@ with open('/run/secrets/client_secret', 'r') as f:
     client_secret = f.read().strip()
 with open('/run/secrets/cookie_secret', 'r') as f:
     app.secret_key = f.read().strip()
-
-# This key is obtained from the GitHub app:
-with open('/run/secrets/github_app_private_key.pem', 'r') as f:
-    github_app_private_key = f.read()
-    github_app_private_key_bytes = github_app_private_key.encode()
-with open('/run/secrets/github_app_id', 'r') as f:
-    github_app_id = f.read().strip()
-# This number is specific to the "installation" of our app in our collaboration.  The number can be
-# found by clicking `Configure` next to the relevant app on this page:
-# <https://github.com/organizations/sxs-collaboration/settings/installations>, then looking at the
-# number at the end of that URL.
-github_app_installation_id = '80728'
-outside_collaborators = []
-last_collaboration_check = time.time() - 1000000
-
-# Change this if using an OAuth app other than black-holes.org
-app_id = 'ee6f483db600575707ad'
 
 authorization_base_url = 'https://github.com/login/oauth/authorize'
 token_url = 'https://github.com/login/oauth/access_token'
@@ -76,7 +94,9 @@ def check_user_auth_for_path(user, orgs_and_teams, path):
         A list of the 'login' strings for each github organization the user belongs to (and
         authorizes this app), as well as 'login:name' strings for each team named 'name' within an
         organization with login 'login'.  For example, if the user is on the `spec` team inside the
-        `sxs-collaboration`, this list will contain `sxs-collaboration:spec`.
+        `sxs-collaboration`, this list includes 'sxs-collaboration' and 'sxs-collaboration:spec'.
+        If the user is an outside collaborator on *any* repo owned by sxs-collaboration, the list
+        will include 'sxs-collaboration:outside_collaborators', but nothing more specific.
     path: string
         The requested URL component, specifically the part after the scheme (e.g., https) and the
         host (e.g., www.black-holes.org), and including the initial '/'.  For example, a request to
@@ -226,7 +246,7 @@ def login(failure_reason=None):
     elif failure_reason == 'github_error':
         message = ("Github OAuth returned an error.  Please ensure that cookies can be set by this site and by github.com.  "
                    + "Also ensure that the black-holes.org OAuth app is authorized on "
-                   + "<a href='https://github.com/settings/connections/applications/{0}'>your user page</a> ".format(app_id)
+                   + "<a href='https://github.com/settings/applications'>your user page</a> "
                    + "and is allowed to read org and team membership and user email addresses.")
     elif failure_reason == 'no_oauth_state':
         message = "Unable to set OAuth state in session cookie.  Please ensure that cookies can be set by this site and by github.com."
@@ -235,12 +255,12 @@ def login(failure_reason=None):
     elif failure_reason == 'github_rejected_user':
         message = ("Could not get user information from github.  "
                    + "Please ensure that the black-holes.org OAuth app is authorized on "
-                   + "<a href='https://github.com/settings/connections/applications/{0}'>your user page</a> ".format(app_id)
+                   + "<a href='https://github.com/settings/applications'>your user page</a> "
                    + "and is allowed to read org and team membership and user email addresses.")
     elif failure_reason == 'github_rejected_details':
         message = ("Could not get user information, organizations, and teams from github.  "
                    + "Please ensure that the black-holes.org OAuth app is authorized on "
-                   + "<a href='https://github.com/settings/connections/applications/{0}'>your user page</a> ".format(app_id)
+                   + "<a href='https://github.com/settings/applications'>your user page</a> "
                    + "and is allowed to read org and team membership and user email addresses.")
     elif failure_reason.startswith('unauthorized_'):
         user_id = escape(failure_reason[13:])
