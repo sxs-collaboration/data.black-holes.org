@@ -433,7 +433,7 @@ def github_app_get_installation_access():
         return new_jwt
     headers = {"Authorization": "Bearer {}".format(get_jwt()),
                "Accept": "application/vnd.github.machine-man-preview+json"}
-    response = requests.post('https://api.github.com/installations/{}/access_tokens'.format(github_app_installation_id),
+    response = requests.post('https://api.github.com/app/installations/{}/access_tokens'.format(github_app_installation_id),
                              headers=headers)
     return response.json()
 
