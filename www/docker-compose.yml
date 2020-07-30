@@ -46,7 +46,7 @@ services:
       - nginx
     volumes:
       - ../letsencrypt/certs:/etc/letsencrypt
-      - ../letsencrypt/www:/var/www/certbot
+      - ../letsencrypt/www:/var/www/letsencrypt
     logging:
       options:
         max-size: "100m"
