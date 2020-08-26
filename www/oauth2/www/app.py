@@ -391,6 +391,11 @@ def refresh(github=None):
         session['github_last_check'] = time.time()
         return True
     except Exception as e:
+        try:
+            print("Exception:")
+            print(e.message)
+        except:
+            pass
         return False
 
 
@@ -435,6 +440,11 @@ def github_app_get_installation_access():
                "Accept": "application/vnd.github.machine-man-preview+json"}
     response = requests.post('https://api.github.com/app/installations/{}/access_tokens'.format(github_app_installation_id),
                              headers=headers)
+    if 'token' not in response:
+        print("Bad response from api.github.com/app/installations/.../access_tokens request:")
+        print(response.json())
+        print("May be related to misconfiguration of server's current time: {0}".format(time.time()))
+        raise ValueError("JWT request failed")
     return response.json()
 
 
