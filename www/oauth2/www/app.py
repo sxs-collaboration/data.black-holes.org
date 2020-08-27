@@ -440,7 +440,7 @@ def github_app_get_installation_access():
                "Accept": "application/vnd.github.machine-man-preview+json"}
     response = requests.post('https://api.github.com/app/installations/{}/access_tokens'.format(github_app_installation_id),
                              headers=headers)
-    if 'token' not in response:
+    if 'token' not in response.json():
         print("Bad response from api.github.com/app/installations/.../access_tokens request:")
         print(response.json())
         print("May be related to misconfiguration of server's current time: {0}".format(time.time()))
