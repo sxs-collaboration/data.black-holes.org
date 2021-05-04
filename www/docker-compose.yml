@@ -37,7 +37,7 @@ services:
     networks:
       - jupyter
       - default
-    #command: [nginx-debug, '-g', 'daemon off;']  # add `error_log /var/log/nginx/error.log debug;` to see details
+    # see nginx/build/entrypoint.sh for the command, including debug instructions
 
   certbot:
     image: certbot/certbot

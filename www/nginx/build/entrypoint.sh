@@ -22,7 +22,10 @@ amplify_imagename=""
 
 # Launch nginx
 echo "starting nginx ..."
+
+# Switch to debug, and add `error_log /var/log/nginx/error.log debug;` to the nginx.conf file, to see detailed traces
 nginx -g "daemon off;" &
+# nginx-debug -g "daemon off;" &
 
 nginx_pid=$!
 
