@@ -181,3 +181,23 @@ will not be there the next time the container starts up, even if you do somethin
 commit`.  To make such changes, you will have to modify the docker-compose entry, Dockerfile,
 entrypoint script, or command used to start the container.  The sole exception to this rule is when
 the changes you have made affect any of the files in volumes that also exist on the host.
+
+# DNS configuration
+
+Our domain is registered and DNS provided by aplus.net.  The DNS configuration looks like this:
+```
+Type	Name	Value	TTL	Add DNS Record
+A		131.215.193.115		
+A	www	131.215.193.115		
+A	sxs-test	131.215.193.151		
+CNAME	*	black-holes.org.		
+CNAME	data	black-holes.org.		
+CNAME	sxs-annex.cornell	132.236.6.125.		
+CNAME	sxs-annex8.cornell	132.236.6.127.		
+MX	1	ASPMX.L.GOOGLE.COM.		
+MX	5	ALT1.ASPMX.L.GOOGLE.COM.		
+MX	5	ALT2.ASPMX.L.GOOGLE.COM.		
+MX	10	ALT3.ASPMX.L.GOOGLE.COM.		
+MX	10	ALT4.ASPMX.L.GOOGLE.COM.		
+TXT	_github-challenge-sxs-collaboration.www.black-holes.org	"69eace9891"		
+```
