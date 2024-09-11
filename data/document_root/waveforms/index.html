@@ -15,11 +15,13 @@
             </div>
             <p>
                 This repository contains all publicly available SpEC waveforms.  All waveforms are
-                provided at several fixed extraction radii, as well as extrapolated to future null
-                infinity with different extrapolation orders (N=2,3,4), and corrected for extraneous
-                translations and boosts of the center of mass.  For many runs, waveforms are
-                provided at several numerical resolutions labeled, e.g., Lev1, Lev2, and so on.
-                Lev2 is higher resolution than Lev1.
+                provided at the outermost extraction radius (though adjusted to remove certain gauge
+                effects), as well as extrapolated to future null infinity with several extrapolation
+                orders (N=2,3,4).  These waveforms are also corrected for extraneous translations
+                and boosts of the center of mass, as well as adjusted by the addition of
+                gravitational-wave memory.  For many runs, waveforms are provided at several
+                numerical resolutions — labeled, e.g., Lev1, Lev2, Lev3, where  Lev2 is higher
+                resolution than Lev1, and so on.
             </p>
             <h3>Catalog papers</h3>
             <p>Our most recent catalog paper is available at
@@ -30,20 +32,18 @@
             <a href="https://arxiv.org/abs/1304.6077">arXiv:1304.6077</a>.
 
             <h3>Tools</h3>
-            <p>You can browse the catalog and download data interactively using your web browser
-            by clicking "proceed to the catalog" below. You can also use python to interact with
-            our catalog. For example jupyter notebooks that demonstrate how to download and
-            interact with our catalog's data and metadata using python, please check out the
-            tutorials in the
-            <a href="https://sxs.readthedocs.io/en/main/tutorials/00-Introduction/">documentation
-            for our <code>sxs</code> python package</a>.
+            <p>You can browse the catalog in your browser by clicking "proceed to the catalog"
+            below.  To interact with the data, you should use the <tt>sxs</tt> Python package.
+            For example jupyter notebooks that demonstrate how to download and interact with our
+            catalog's data and metadata using python, please check out the tutorials in the
+            <a href="https://sxs.readthedocs.io/en/main/tutorials/00-Introduction/">documentation.
 
             <h3>Notes</h3>
             <p>
                 Numerical accuracy can be assessed from the difference between different numerical
-                resolutions.  For runs with only a single resolution, look at a similar
-                run. (Precession does not change numerical accuracy of our runs, but different mass
-                ratios and spin magnitudes do).
+                resolutions.  For runs with only a single resolution, look at a run with similar
+                parameters.  (Precession does not change numerical accuracy of our runs, but different
+                mass ratios and spin magnitudes do).
             </p>
             <p>
                 Accuracy of extrapolation to future null infinity can be assessed by comparing
@@ -56,7 +56,8 @@
                 The initial data from many systems include large extraneous translations and boosts,
                 which cause significant mixing between modes in the waveform data&mdash;even in
                 extrapolated and CCE data.  See
-                <a href="https://arxiv.org/abs/1509.00862">arXiv:1509.00862</a> for details.
+                <a href="https://arxiv.org/abs/1509.00862">arXiv:1509.00862</a> and
+                <a href="https://arxiv.org/abs/1904.04842">arXiv:1904.04842</a> for details.
             </p>
             <p>
                 <strong>
@@ -65,6 +66,11 @@
                         "CoM"
                     </em>
                 </strong> unless direct comparisons to older data are required.
+            </p>
+            <p>
+                The current extraction method is unable to capture the important phenomenon of
+                gravitational-wave memory.  The data provided here incorporate memory indirectly.
+                See <a href="https://arxiv.org/abs/2011.01309">arXiv:2011.01309</a> for details.
             </p>
 
             <h3>Caveats</h3>
@@ -86,23 +92,6 @@
                         'Lev1' of simulation A is not necessarily comparable accuracy to 'Lev1' of
                         simulation B, if simulations A and B have very different mass ratios, spin
                         magnitudes, number of orbits, or formulation of initial data.
-                    </p>
-                </li>
-                <li>
-                    <p>
-                        Finite-radius waveforms contain near-field and gauge effects.  They are
-                        included just as a check.  Please use extrapolated waveforms instead, or the
-                        "OutermostExtraction" data, which has had some gauge effects removed and has
-                        less near-field contamination.
-                    </p>
-                </li>
-                <li>
-                    <p>
-                        Extrapolated waveforms work well for non-junk radiation and for non-memory
-                        modes (in particular modes with nonzero values of m).  If your work requires
-                        accurate junk radiation or m=0 modes, please contact us; we may be able to
-                        compute Cauchy Characteristic Extraction waveforms, which will not have
-                        these problems.
                     </p>
                 </li>
                 <li>
