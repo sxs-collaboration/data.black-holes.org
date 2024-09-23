@@ -16,9 +16,9 @@ MAILFROM=cron@black-holes.org
 # Hack to make sure permissions remain valid despite docker's best efforts
 */30 * * * * root /web/servers/cron/scripts/root/fix_permissions.sh
 
-# Renew SSL certificates
-# Note that the certbot documentation recommends running twice per day at randomly chosen minutes.
-42 06,18 * * * root /web/servers/cron/scripts/root/update_ssl_certificates.sh >> /var/log/cron.log
+# # Renew SSL certificates
+# # Note that the certbot documentation recommends running twice per day at randomly chosen minutes.
+# 42 06,18 * * * root /web/servers/cron/scripts/root/update_ssl_certificates.sh >> /var/log/cron.log
 
 # Back up all the server files
 30 01 * * * root /web/servers/cron/scripts/root/backup.sh
