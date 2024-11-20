@@ -26,7 +26,7 @@ starting any less minor changes, at least read the rest of this page so that you
 repo works, and feel free to ping Mike to let him know what you're going to try so that he can give
 you feedback about how well that will work.
 
-After changes have been merged to the master branch, the repo needs to be updated on the web server
+After changes have been merged to the main branch, the repo needs to be updated on the web server
 (see below), and depending on what has changed the docker containers may need to be restarted (see
 below).  Please do not try to do this yourself unless Mike has been hit by a bus; just ask him.
 
@@ -60,7 +60,7 @@ Certain very large directories (such as the SimulationAnnex) are located in `/sx
 
 There are also three "secrets" files that are assumed to exist in the `../secrets` directory
 (relative to the directory this file is in), which are used by the `oauth2` container.  For details,
-see the [`oauth2` container README](https://github.com/sxs-collaboration/black-holes.org/tree/master/www/oauth2#readme).
+see the [`oauth2` container README](https://github.com/sxs-collaboration/black-holes.org/tree/main/www/oauth2#readme).
 
 
 # Cron jobs
