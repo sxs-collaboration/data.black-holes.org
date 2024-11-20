@@ -4,3 +4,6 @@ www/nginx/document_root/code/PublicationsSpEC.json
 www/notes.txt
 www/notes2.txt
 secrets
+
+# The catalog file has now grown too large to host on github
+data/document_root/waveforms/catalog.json
