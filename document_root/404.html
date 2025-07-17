@@ -26,11 +26,6 @@
                 var id = path.substring(1); // remove leading slash
                 window.location.href = "https://doi.org/10.26138/" + id;
             }
-            var sxsMatch = window.location.pathname.match(/^\\/SXS:(.+)$/);
-            if (sxsMatch) {
-                var id = sxsMatch[1];
-                window.location.href = "https://doi.org/10.26138/SXS:" + id;
-            }
         });
         </script>
     </head>
