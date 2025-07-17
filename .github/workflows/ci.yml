@@ -76,11 +76,11 @@ jobs:
             echo "No changes to commit, skipping."
           fi
 
-      - name: Upload docs directory as artifact
+      - name: Upload document_root directory as artifact
         if: ${{ steps.release_check.outputs.deploy == 'true' }}
         uses: actions/upload-pages-artifact@v3
         with:
-          path: docs
+          path: document_root
 
       - name: Deploy to GitHub Pages
         # Be sure to allow this under Settings > Pages > Build and deployment > Source > Github Actions
