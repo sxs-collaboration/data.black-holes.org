@@ -8,8 +8,8 @@ version = "1.0.0"
 requires-python = ">=3.13,<3.14"
 
 # Ditto the fakery here.  This just lets marimo run
-[tool.setuptools]
-packages = ["marimo_catalog"]
+[tool.setuptools.packages.find]
+exclude = ["document_root*"]
 
 [tool.hatch.envs.marimo]
 extra-dependencies = [
