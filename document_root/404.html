@@ -19,6 +19,13 @@
             }
         
             // SXS:<id> redirect logic
+            var path = window.location.pathname;
+            // Log the path to the console for debugging
+            console.log("Current path:", path);
+            if (path.startsWith("/SXS:")) {
+                var id = path.substring(1); // remove leading slash
+                window.location.href = "https://doi.org/10.26138/" + id;
+            }
             var sxsMatch = window.location.pathname.match(/^\\/SXS:(.+)$/);
             if (sxsMatch) {
                 var id = sxsMatch[1];
