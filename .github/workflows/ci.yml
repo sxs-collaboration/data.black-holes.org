@@ -31,7 +31,6 @@ jobs:
       - name: Install uv
         uses: astral-sh/setup-uv@v6
 
-
       - name: Set up Python and install dependencies
         run: |
           uv python install  # Uses version pinned in project
@@ -76,6 +75,13 @@ jobs:
           else
             echo "No changes to commit, skipping."
           fi
+
+      - name: Debug artifact failure
+        if: ${{ steps.release_check.outputs.deploy == 'true' }}
+        run: |
+          du -sh docs
+          find docs | wc -l
+          find docs -type f | awk '{ print length, $0 }' | sort -n | tail -20
 
       - name: Upload docs directory as artifact
         if: ${{ steps.release_check.outputs.deploy == 'true' }}
