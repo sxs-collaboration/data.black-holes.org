@@ -35,7 +35,7 @@ jobs:
         run: uv python install  # Uses version pinned in project
 
       - name: Install dependencies
-        run: uv pip install --upgrade pip hatch
+        run: uv pip install --system --upgrade pip hatch
 
       - name: Check marimo
         if: "!contains(github.event.head_commit.message, '[skip marimo check]')"
