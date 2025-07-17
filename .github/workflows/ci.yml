@@ -1,0 +1,91 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+    tags: ["*"]
+  pull_request:
+
+env:
+  PYTHONUNBUFFERED: "1"
+  FORCE_COLOR: "1"
+
+jobs:
+  export-marimo-and-publish:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    permissions:
+      pages: write
+      id-token: write
+      contents: write
+    # Provide an output so the next job knows whether to release
+    outputs:
+      DEPLOY: ${{ steps.release_check.outputs.deploy }}
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+
+      - name: Set up Python
+        run: uv python install  # Uses version pinned in project
+
+      - name: Install dependencies
+        run: uv pip install --upgrade pip hatch
+
+      - name: Check marimo
+        if: "!contains(github.event.head_commit.message, '[skip marimo check]')"
+        run: hatch run marimo:check
+
+      - name: Export notebook
+        run: hatch run marimo:convert
+
+      - name: Determine if release steps should run
+        id: release_check
+        run: |
+          # Default to skipping release steps
+          echo "deploy=false" >> $GITHUB_OUTPUT
+
+          # If the ref is main, check the commit message for [skip release]
+          if [[ "${GITHUB_REF}" == "refs/heads/main" ]]; then
+            COMMIT_MSG="$(git log -1 --pretty=%B)"
+            if [[ "$COMMIT_MSG" != *"[skip release]"* ]]; then
+              echo "deploy=true" >> $GITHUB_OUTPUT
+              echo "deploy=true"
+            fi
+          fi
+
+      - name: Commit version bump
+        if: ${{ steps.release_check.outputs.deploy == 'true' }}
+        run: |
+          # Note that we need to set read and write permissions under
+          # "Settings" > "Actions" > "General" > "Workflow permissions"
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add docs/simulations
+          # only commit & push if there's something new
+          if ! git diff --cached --quiet; then
+            git commit -m "Exported marimo notebook with latest changes"
+            git status  # Just to log what has changed
+            git push
+          else
+            echo "No changes to commit, skipping."
+          fi
+
+      - name: Upload docs directory as artifact
+        if: ${{ steps.release_check.outputs.deploy == 'true' }}
+        uses: actions/upload-pages-artifact@v3
+        with:
+            path: docs
+
+      - name: Deploy to GitHub Pages
+        # Be sure to allow this under Settings > Pages > Build and deployment > Source > Github Actions
+        if: ${{ steps.release_check.outputs.deploy == 'true' }}
+        id: deployment
+        uses: actions/deploy-pages@v4
+        with:
+          artifact_name: github-pages
