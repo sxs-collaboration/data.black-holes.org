@@ -1,30 +1,7 @@
 | NOTE: If the server is unresponsive, the most likely solution is to just restart the docker containers.  To do this, ssh into black-holes, `cd /web/servers/www/`, and run `../stop && ../start`.  That resolves 95% of the problems I've had with the server.  Most of the other problems have been because `/var/log` has filled up; just delete old files from in there.  —Mike |
 | --- |
 
-This repo contains the basic infrastructure for the `black-holes.org` site.  There are still several
-components that are too big for or simply not appropriate for git hosting.  Those other components
-include:
-
-  * Joomla and its database (which serves most of the public site)
-  * Dokuwiki
-  * SimulationAnnex.git (for /data/waveforms)
-  * SurrogateModeling.git (for /data/surrogates)
-
-While those components are backed up and/or updated using scripts in this repo, they are not parts
-of this repo directly.
-
-We (mostly Nils) have been making every effort to move as much as possible off of this server and
-into standard solutions like github.  In particular, the spec-bugs (trac) and doxygen components
-have moved to github issues and sxs-test, respectively.
-
-
-# Updating this repo and making changes live
-
-Please make Pull Requests for any changes you make so that Mike can review them, unless the changes
-are minor (e.g., wording changes on static pages, or additions to the `references.bib` file).  Before
-starting any less minor changes, at least read the rest of this page so that you understand how this
-repo works, and feel free to ping Mike to let him know what you're going to try so that he can give
-you feedback about how well that will work.
+This repo contains the basic infrastructure for the `data.black-holes.org` site.
 
 After changes have been merged to the main branch, the repo needs to be updated on the web server
 (see below), and depending on what has changed the docker containers may need to be restarted (see
@@ -34,19 +11,12 @@ below).  Please do not try to do this yourself unless Mike has been hit by a bus
 # Brief overview
 
 The website works through docker containers.  To understand the containers themselves, look at
-`www/docker-compose.yml`, which specifies details of each container.  In some cases, the
-specification contains the field `build`, which points to a directory containing a `Dockerfile`, and
-possibly a few other necessary files.  In those cases, the `Dockerfile` describes how docker should
-build that container.  All of these files are simple enough to be essentially self-explanatory, or
-easily understood from the comments.
+`docker-compose.yml`, which specifies details of the container.
 
 On the other hand, if you are only interested in how web requests are handled, you probably do not
-need to understand details about the containers.  All web requests go to the `nginx` container,
-which mostly farms requests out to other containers.  So to understand how web requests are handled,
-a good first place to look is in the `www/nginx/nginx.conf` file.  That file is extensively
-commented, including an overview at the top of the file.
-
-The other main task is updating various components, which is done by the `cron` container.
+need to understand details about the containers.  All web requests go to the
+`caddy_data_black_holes` container.  So to understand how web requests are handled, a good first
+place to look is in the `Caddyfile` file.
 
 
 # File locations
@@ -54,26 +24,7 @@ The other main task is updating various components, which is done by the `cron` 
 In what follows, "the server" is the CentOS machine at `black-holes.tapir.caltech.edu` — which will
 be abbreviated to `black-holes.tapir`, as opposed to the website's domain `black-holes.org`.
 
-Most of the files relevant to the website are located on `black-holes.tapir` in `/web/servers`.
-Certain very large directories (such as the SimulationAnnex) are located in `/sxs-annex` and
-`/sxs-annex8`.
-
-There are also three "secrets" files that are assumed to exist in the `../secrets` directory
-(relative to the directory this file is in), which are used by the `oauth2` container.  For details,
-see the [`oauth2` container README](https://github.com/sxs-collaboration/black-holes.org/tree/main/www/oauth2#readme).
-
-
-# Cron jobs
-
-There are several external data sources that are updated routinely (and backups performed) using
-cron jobs.  Many of these sources are also served directly through the web interface.
-
-  * The SSL certificate provided by letsencrypt.org
-  * The waveform catalog's index
-  * SimulationAnnex and SurrogateModeling git repos
-  * Permissions are corrected frequently
-  * Incremental backups are taken nightly (see below)
-
+The files relevant to the website are located on `black-holes.tapir` in `/web/servers`.
 
 ## Backups
 
@@ -136,51 +87,6 @@ each of these, there are just a few main things to note, several of which may be
      * These may not be given in either `docker-compose.yml` or `Dockerfile`; if so, they are
        inherited from the original image on which the container was based.
 
-
-## Network connections
-
-### Between containers
-
-The docker containers can generally communicate with each other.  Essentially, they are all on their
-own network, and each container can be addressed by its name.  For example, the `nginx` container is
-simply `nginx` to every other container.  For example, if the `wiki` container wants to send it a
-web request, it can just curl `https://nginx/`.  These names are automatically found through the
-docker network's DNS resolver on 127.0.0.11.  (If the name is not present on the "local" network,
-the resolver just looks to Google's DNS resolver.)
-
-### From outside internet to containers
-
-Only one container is visible to the rest of the internet: `nginx` has ports 80 (http) and 443
-(https) open and linked to the same ports on `black-holes.tapir`.  Thus, all requests for
-`black-holes.org:80` go to the docker container `nginx:80`.  Similarly, all requests for
-`black-holes.org:443` go to the docker container `nginx:443`.  No other ports are accessible from
-the outside.  In particular, requests to `black-holes.org:22` (ssh) get handled by the server
-itself, and don't have direct access to any containers.
-
-Therefore, understanding where requests to our web server go means understanding what `nginx` does
-with those requests.  See the explanation in the comments of `www/nginx/nginx.conf`.
-
-### From containers to the internet
-
-If a container requests access to a host that is not found on the "local" docker network, the DNS
-resolver just looks up the address on Google's nameservers (8.8.8.8 and 8.8.4.4).  Thus, all
-containers can access the internet.
-
-### From a login on the server to containers
-
-[Not really a networking thing per se, but related.]  If you have SSHed onto black-holes.tapir, it
-is possible to get a shell on most of the running containers.  This can be useful for certain
-debugging tasks, or testing out changes that might be made to the containers themselves.  First,
-find the running container by issuing `docker ps`, and note the name of the container.  Then, issue
-a command like `docker exec -it <container_name> bash`, which will drop you into a `bash` shell
-running on that container.  Some containers will not have `bash` installed, and may not have any
-type of interactive program available.
-
-Note that any changes you make to the container while it is running will not be persistent; they
-will not be there the next time the container starts up, even if you do something like `docker
-commit`.  To make such changes, you will have to modify the docker-compose entry, Dockerfile,
-entrypoint script, or command used to start the container.  The sole exception to this rule is when
-the changes you have made affect any of the files in volumes that also exist on the host.
 
 # DNS configuration
 

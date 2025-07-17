@@ -1,7 +1,0 @@
-source "https://rubygems.org"
-
-gem "sequel"
-gem "mysql2"
-gem "fileutils"
-gem "safe_yaml"
-gem "jekyll-import"
