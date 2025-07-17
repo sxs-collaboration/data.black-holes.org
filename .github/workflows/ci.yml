@@ -31,18 +31,19 @@ jobs:
       - name: Install uv
         uses: astral-sh/setup-uv@v6
 
-      - name: Set up Python
-        run: uv python install  # Uses version pinned in project
 
-      - name: Install dependencies
-        run: uv pip install --system --upgrade pip hatch
+      - name: Set up Python and install dependencies
+        run: |
+          uv python install  # Uses version pinned in project
+          uv venv .venv
+          .venv/bin/uv pip install --upgrade pip hatch
 
       - name: Check marimo
         if: "!contains(github.event.head_commit.message, '[skip marimo check]')"
-        run: hatch run marimo:check
+        run: .venv/bin/hatch run marimo:check
 
       - name: Export notebook
-        run: hatch run marimo:convert
+        run: .venv/bin/hatch run marimo:convert
 
       - name: Determine if release steps should run
         id: release_check
@@ -80,7 +81,7 @@ jobs:
         if: ${{ steps.release_check.outputs.deploy == 'true' }}
         uses: actions/upload-pages-artifact@v3
         with:
-            path: docs
+          path: docs
 
       - name: Deploy to GitHub Pages
         # Be sure to allow this under Settings > Pages > Build and deployment > Source > Github Actions
