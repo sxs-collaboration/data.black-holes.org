@@ -1,0 +1,17 @@
+.
+├── SimulationAnnex.git -> /usr/share/nginx/html/waveforms_data/SimulationAnnex.git
+├── auto
+│   └── references.el
+├── catalog.json
+├── catalog_info.json
+├── docs.html
+├── documentation.html
+├── extcce_catalog.html
+├── file_tree.txt
+├── index.html
+├── news.html
+├── public_catalog.json -> catalog.json
+├── references.bib
+└── simulation-bibtex-keys.bib -> references.bib
+
+2 directories, 13 files
