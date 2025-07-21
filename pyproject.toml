@@ -20,4 +20,4 @@ extra-dependencies = [
 edit = "marimo edit --sandbox marimo_catalog/notebook.py"
 run = "marimo run --sandbox marimo_catalog/notebook.py"
 check = "uv run marimo_catalog/notebook.py"  # Just to see if the script runs successfully
-convert = "marimo export html-wasm marimo_catalog/notebook.py -f -o docs/simulations --mode run"
+convert = "marimo export html-wasm marimo_catalog/notebook.py -f -o document_root/simulations --mode run"

@@ -66,7 +66,7 @@ jobs:
           # "Settings" > "Actions" > "General" > "Workflow permissions"
           git config user.name github-actions
           git config user.email github-actions@github.com
-          git add docs/simulations
+          git add document_root/simulations
           # only commit & push if there's something new
           if ! git diff --cached --quiet; then
             git commit -m "Exported marimo notebook with latest changes"
