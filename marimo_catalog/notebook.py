@@ -4,19 +4,19 @@
 #     "altair==5.5.0",
 #     "anywidget==0.9.18",
 #     "marimo",
-#     "numpy==2.3.1",
-#     "pandas==2.3.1",
-#     "pyarrow==20.0.0",
+#     "numpy==2.3.2",
+#     "pandas==2.3.2",
+#     "pyarrow==21.0.0",
 #     "pyodide-http==0.2.2",
-#     "requests==2.32.4",
-#     "sxscatalog==3.0.15",
+#     "requests==2.32.5",
+#     "sxscatalog==3.0.17",
 #     "traitlets==5.14.3",
 # ]
 # ///
 
 import marimo
 
-__generated_with = "0.14.11"
+__generated_with = "0.15.2"
 app = marimo.App(
     width="full",
     app_title="SXS Catalog",
