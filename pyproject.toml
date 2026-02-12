@@ -17,8 +17,11 @@ extra-dependencies = [
   "uv",
 ]
 [tool.hatch.envs.marimo.scripts]
-edit = "marimo edit --sandbox marimo_catalog/notebook.py"
-run = "marimo run --sandbox marimo_catalog/notebook.py"
-check = "uv run marimo_catalog/notebook.py"  # Just to see if the script runs successfully
+edit_catalog = "marimo edit --sandbox marimo_catalog/notebook.py"
+edit_explorer = "marimo edit --sandbox waveform_explorer/notebook/SXSInteractivePlots.py"
+run_catalog = "marimo run --sandbox marimo_catalog/notebook.py"
+run_explorer = "marimo run --sandbox waveform_explorer/notebook/SXSInteractivePlots.py"
+check_catalog = "uv run marimo_catalog/notebook.py"  # Just to see if the script runs successfully
+check_explorer = "uv run waveform_explorer/notebook/SXSInteractivePlots.py"
 convert_catalog = "marimo export html-wasm marimo_catalog/notebook.py -f -o document_root/simulations --mode run"
-convert_explorer = "marimo export html-wasm waveform_explorer/notebook/SXSInteractivePlots.py -f -o output/ --mode run"
+convert_explorer = "marimo export html-wasm waveform_explorer/notebook/SXSInteractivePlots.py -f -o document_root/waveform-explorer --mode run"
