@@ -36,6 +36,9 @@ jobs:
           uv python install  # Uses version pinned in project
           uv venv .venv
           uv pip install --upgrade pip hatch
+          uv pip install marimo
+          uv pip install plotly
+          uv pip install requests
 
       - name: Check marimo
         if: "!contains(github.event.head_commit.message, '[skip marimo check]')"
