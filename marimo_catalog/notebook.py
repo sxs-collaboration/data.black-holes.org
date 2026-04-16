@@ -3,24 +3,23 @@
 # dependencies = [
 #     "altair==5.5.0",
 #     "anywidget==0.9.18",
-#     "marimo",
+#     "marimo>=0.23.0,!=0.23.1",
 #     "numpy==2.3.2",
 #     "pandas==2.3.2",
 #     "pyarrow==21.0.0",
 #     "pyodide-http==0.2.2",
 #     "requests==2.32.5",
-#     "sxscatalog==3.0.17",
+#     "sxscatalog==3.0.25",
 #     "traitlets==5.14.3",
 # ]
 # ///
 
 import marimo
 
-__generated_with = "0.15.2"
+__generated_with = "0.23.0"
 app = marimo.App(
     width="full",
     app_title="SXS Catalog",
-    css_file="custom.css",
     html_head_file="",
 )
 
@@ -102,12 +101,10 @@ def _(current_time, mo, release_published, tag_name):
 
 @app.cell(hide_code=True)
 def _(mo):
-    mo.md(
-        rf"""
+    mo.md(rf"""
     ---
     The dataframe has several useful [attributes](https://sxs.readthedocs.io/en/main/api/simulations/#simulationsdataframe-class) that allow selecting important subsets of the data.  Use the buttons below to select those subsets.
-    """
-    )
+    """)
     return
 
 
@@ -313,6 +310,7 @@ def _(
             strokeWidth=1,
             opacity=0.8,
         )
+        .properties(width="container")
         .encode(**kwargs),
         legend_selection=True,
         label="SXS Simulations"
