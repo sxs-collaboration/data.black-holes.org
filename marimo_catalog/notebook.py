@@ -237,25 +237,29 @@ def _(table):
 
 @app.cell(hide_code=True)
 def _(df, mo):
+    # Exclude columns that are entirely NaN for the current subset — they would
+    # produce an empty chart due to an Altair data-serialization bug.
+    plottable_columns = [c for c in df.columns if df[c].notna().any()]
+
     horizontal_axis = mo.ui.dropdown(
-        options=df.columns.to_list(),
+        options=plottable_columns,
         value="reference_mass_ratio",
         label="Horizontal axis",
         allow_select_none=False,
     )
     vertical_axis = mo.ui.dropdown(
-        options=df.columns.to_list(),
+        options=plottable_columns,
         value="reference_chi_eff",
         label="Vertical axis",
         allow_select_none=False,
     )
     marker_size = mo.ui.dropdown(
-        options=df.columns.to_list(),
+        options=plottable_columns,
         value="reference_chi1_perp",
         label="Marker size",
     )
     marker_color = mo.ui.dropdown(
-        options=df.columns.to_list(),
+        options=plottable_columns,
         value="reference_chi2_perp",
         label="Marker color",
     )
@@ -288,10 +292,18 @@ def _(
     #used_selectors = ["SXS ID"] + [s.value for s in selectors if s.value is not None]
     df_restricted = table_data[used_selectors]
 
+    # Altair 6 serializes DataFrames to Vega in a way that causes "Infinite extent"
+    # scale failures for every field when the DataFrame contains any all-NaN column,
+    # even if the axis fields themselves have perfectly valid values.  Dropping those
+    # columns before passing to alt.Chart works around the bug; the tooltip list is
+    # updated to match so Vega doesn't reference absent fields.
+    df_plot = df_restricted.loc[:, df_restricted.notna().any()]
+    tooltip_selectors = [s for s in used_selectors if s in df_plot.columns]
+
     kwargs = dict(
         x=horizontal_axis.value,
         y=vertical_axis.value,
-        tooltip=used_selectors,
+        tooltip=tooltip_selectors,
     )
     if marker_size.value is not None:
         kwargs["size"] = marker_size.value
@@ -300,7 +312,7 @@ def _(
         kwargs["color"] = alt.Color(marker_color.value).scale(scheme="viridis")
 
     chart = mo.ui.altair_chart(
-        alt.Chart(df_restricted, height=400)
+        alt.Chart(df_plot, height=400)
         .mark_circle(
             stroke="#303030",
             strokeWidth=1,
