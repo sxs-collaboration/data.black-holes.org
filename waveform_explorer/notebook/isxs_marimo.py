@@ -5,7 +5,6 @@ import csv
 import re
 import plotly.graph_objects as go
 import marimo as mo
-from IPython.display import display
 import plotly.io as pio
 import requests
 from io import BytesIO
