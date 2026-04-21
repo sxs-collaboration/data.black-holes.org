@@ -5,7 +5,7 @@
 [project]
 name = "data.black-holes.org"
 version = "1.0.0"
-requires-python = ">=3.13,<3.14"
+requires-python = ">=3.14,<3.15"
 
 # Ditto the fakery here.  This just lets marimo run
 [tool.setuptools.packages.find]
@@ -23,5 +23,7 @@ run_catalog = "marimo run --sandbox marimo_catalog/notebook.py"
 run_explorer = "marimo run --sandbox waveform_explorer/notebook/SXSInteractivePlots.py"
 check_catalog = "uv run marimo_catalog/notebook.py"  # Just to see if the script runs successfully
 check_explorer = "uv run waveform_explorer/notebook/SXSInteractivePlots.py"
+upgrade_catalog = "uv remove --script marimo_catalog/notebook.py altair anywidget numpy pandas pyarrow pyodide-http requests sxscatalog traitlets && uv add --script marimo_catalog/notebook.py --python 3.14 altair anywidget 'marimo>=0.23.0,!=0.23.1' numpy pandas pyarrow pyodide-http requests sxscatalog traitlets && sed -i '' 's/\"\\([a-z][a-z0-9_-]*\\)>=\\([0-9][0-9.]*\\)\"/\"\\1==\\2\"/g' marimo_catalog/notebook.py"
+upgrade_explorer = "uv remove --script waveform_explorer/notebook/SXSInteractivePlots.py matplotlib numpy pandas plotly requests scipy && uv add --script waveform_explorer/notebook/SXSInteractivePlots.py --python 3.14 'marimo>=0.23.0,!=0.23.1' matplotlib numpy pandas plotly requests scipy && sed -i '' 's/\"\\([a-z][a-z0-9_-]*\\)>=\\([0-9][0-9.]*\\)\"/\"\\1==\\2\"/g' waveform_explorer/notebook/SXSInteractivePlots.py"
 convert_catalog = "marimo export html-wasm marimo_catalog/notebook.py -f -o document_root/simulations --mode run"
 convert_explorer = "marimo export html-wasm waveform_explorer/notebook/SXSInteractivePlots.py -f -o document_root/waveform-explorer --mode run"

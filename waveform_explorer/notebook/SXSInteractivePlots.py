@@ -1,14 +1,13 @@
 # /// script
 # requires-python = ">=3.13"
 # dependencies = [
-#     "ipython==9.7.0",
-#     "marimo==0.17.8",
-#     "matplotlib==3.10.7",
-#     "numpy==2.3.4",
-#     "pandas==2.3.3",
-#     "plotly==6.4.0",
-#     "requests==2.32.5",
-#     "scipy==1.16.3",
+#     "marimo>=0.23.0,!=0.23.1",
+#     "matplotlib==3.10.8",
+#     "numpy==2.4.4",
+#     "pandas==3.0.2",
+#     "plotly==6.7.0",
+#     "requests==2.33.1",
+#     "scipy==1.17.1",
 # ]
 # ///
 
@@ -29,7 +28,6 @@ def _():
     import pandas as pd
     import scipy.interpolate  
     import matplotlib.pyplot as plt
-    from IPython.display import display
     import plotly.graph_objects as go
     import plotly.io as pio
     pio.renderers.default = 'iframe'

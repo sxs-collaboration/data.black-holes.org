@@ -1,27 +1,23 @@
 # /// script
 # requires-python = ">=3.12"
 # dependencies = [
-#     "altair==5.5.0",
-#     "anywidget==0.9.18",
+#     "altair==6.0.0",
+#     "anywidget==0.10.0",
 #     "marimo>=0.23.0,!=0.23.1",
-#     "numpy==2.3.2",
-#     "pandas==2.3.2",
-#     "pyarrow==21.0.0",
+#     "numpy==2.4.4",
+#     "pandas==3.0.2",
+#     "pyarrow==23.0.1",
 #     "pyodide-http==0.2.2",
-#     "requests==2.32.5",
-#     "sxscatalog==3.0.25",
+#     "requests==2.33.1",
+#     "sxscatalog==3.0.26",
 #     "traitlets==5.14.3",
 # ]
 # ///
 
 import marimo
 
-__generated_with = "0.23.0"
-app = marimo.App(
-    width="full",
-    app_title="SXS Catalog",
-    html_head_file="",
-)
+__generated_with = "0.23.2"
+app = marimo.App(width="full", app_title="SXS Catalog", html_head_file="")
 
 
 @app.cell(hide_code=True)
