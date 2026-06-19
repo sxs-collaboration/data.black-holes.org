@@ -87,7 +87,7 @@ def _(current_time, mo, release_published, tag_name):
         ```
 
         That dataframe can be manipulated [as usual by pandas](https://pandas.pydata.org/pandas-docs/stable/user_guide/10min.html).
-        See the [`sxs` documentation](https://sxs.readthedocs.io/en/main/tutorials/01-Simulations_and_Metadata/) for details about the metadata.
+        See the [`sxs` documentation](https://sxs.readthedocs.io/en/main/tutorials/01-Catalog_Dataframe/) for details about the metadata.
 
         Below, the dataframe is presented in graphical and tabular form, allowing you to explore it interactively.
         """
@@ -190,11 +190,11 @@ def _(deprecation, df0, eccentricity, precession, system_type):
 
 
 @app.cell(hide_code=True)
-def _(mo, simple_filtering):
+def _(expert_filtering, mo):
     # Brief instructions for the table
     (
         mo.md("---\nClick the column headings to sort or filter by any value.")
-        if simple_filtering.value
+        if not expert_filtering.value
         else mo.md("---\nClick the column headings to sort.  Add a transform to filter or otherwise alter the data table.")
     )
     return
@@ -202,14 +202,14 @@ def _(mo, simple_filtering):
 
 @app.cell(hide_code=True)
 def _(mo):
-    simple_filtering = mo.ui.checkbox(label="Simple filtering")
-    simple_filtering
-    return (simple_filtering,)
+    expert_filtering = mo.ui.switch(label="Expert filtering")
+    expert_filtering
+    return (expert_filtering,)
 
 
 @app.cell(hide_code=True)
-def _(df, mo, simple_filtering):
-    if simple_filtering.value:
+def _(df, expert_filtering, mo):
+    if not expert_filtering.value:
         table = mo.ui.table(df, page_size=20, show_column_summaries=True, max_columns=df.shape[1]+1)
     else:
         table = mo.ui.dataframe(df, page_size=20)
@@ -218,12 +218,12 @@ def _(df, mo, simple_filtering):
 
 
 @app.cell(hide_code=True)
-def _(mo, simple_filtering):
+def _(expert_filtering, mo):
     mo.md(
         "We can plot selected columns from the filtered data above."
         + (
             "  If you select checkboxes in the table, only those rows will be plotted."
-            if simple_filtering.value else ""
+            if not expert_filtering.value else ""
         )
     )
     return
