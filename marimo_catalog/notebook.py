@@ -54,6 +54,16 @@ def _(pd):
     # persistently cache large data files.  Normally, we would use `sxs` itself and load the
     # dataframe with `sim = sxs.load("simulations", tag={tag})`.
     import sxscatalog
+    import sys
+
+    # In the Pyodide/WASM build that powers the website, `sxscatalog`'s download
+    # progress bar (tqdm) tries to create a `multiprocessing.RLock`, which the
+    # marimo WASM runtime forbids (UnsupportedWasmConcurrencyError) — this aborts
+    # the data download and leaves the page with no table.  Disable the progress
+    # bar, but ONLY under Pyodide (where the filesystem is ephemeral); run natively
+    # this leaves the user's real sxs config untouched.
+    if sys.platform == "emscripten":
+        sxscatalog.utilities.write_config(download_progress=False)
 
     current_time = pd.Timestamp.now().strftime("%H:%M on %B %d, %Y")
 
